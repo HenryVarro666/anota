@@ -75,8 +75,8 @@ def final_label(db, task_id):
     severity = tied[-1]  # tie -> stricter (SEVERITIES is ordered mild->severe)
     newest = max(anns, key=lambda a: a["id"])
     return {"error_types": maj or ["no_error"], "worst_severity": severity,
-            "adequacy": int(median(a["adequacy"] for a in anns)),
-            "fluency": int(median(a["fluency"] for a in anns)),
+            "adequacy": int(median(a["adequacy"] for a in anns) + 0.5),
+            "fluency": int(median(a["fluency"] for a in anns) + 0.5),
             "correction": newest["correction"], "note": newest["note"],
             "source_kind": "aggregate", "unresolved": unresolved}
 

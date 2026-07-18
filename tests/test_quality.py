@@ -54,6 +54,14 @@ def test_final_label_majority_and_tie_severity():
     assert fl["adequacy"] == 3                        # median of 2,4
     assert fl["source_kind"] == "aggregate"
 
+def test_final_label_median_rounds_half_up():
+    db = Database(":memory:"); seed(db)
+    add_ann(db, "t1", "chao", ["omission"], "major", adequacy=2)
+    add_ann(db, "t1", "maria", ["omission"], "major", adequacy=3)
+    fl = quality.final_label(db, "t1")
+    assert fl["adequacy"] == 3                          # median(2,3)=2.5 rounds up to 3
+    assert fl["source_kind"] == "aggregate"
+
 def test_latest_annotation_wins_per_annotator():
     db = Database(":memory:"); seed(db)
     add_ann(db, "t1", "chao", ["omission"], "major")
