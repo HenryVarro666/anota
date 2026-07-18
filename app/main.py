@@ -218,45 +218,46 @@ def create_app(db_path=":memory:", demo=False, data_dir=None, export_dir=None):
 
     @app.post("/api/routing/build")
     def api_routing(req: RoutingRequest):
-        if req.signal == "judge_confidence":
-            ranked = db.query("""
-                SELECT t.id, t.batch_id FROM tasks t JOIN (
-                  SELECT task_id, confidence, MAX(id) FROM judge_results GROUP BY task_id
-                ) j ON j.task_id = t.id
-                WHERE t.id NOT LIKE '%::r%'
-                ORDER BY j.confidence ASC LIMIT ?""", (req.top_n,))
-        elif req.signal == "lf_conflict":
-            cands = [t for t in db.query("SELECT * FROM tasks WHERE id NOT LIKE '%::r%'")
-                     if any(f["label"] == "ERROR" for f in json.loads(t["lf_flags"]))]
-            cands.sort(key=lambda t: -sum(1 for f in json.loads(t["lf_flags"])
-                                          if f["label"] == "ERROR"))
-            ranked = cands[:req.top_n]
-        else:
-            raise HTTPException(422, "signal must be judge_confidence|lf_conflict")
-        if not ranked:
-            raise HTTPException(409, "no candidates — run the judge first")
-        src_batch = db.one("SELECT * FROM batches WHERE id=?", (ranked[0]["batch_id"],))
-        n_existing = db.one("SELECT COUNT(*) n FROM batches WHERE name LIKE 'routing-%'")["n"]
-        name = f"routing-{n_existing + 1}"
-        new_bid = db.execute(
-            "INSERT INTO batches(name, show_suggestions, overlap, lang_profile, guideline_version)"
-            " VALUES(?,1,1,?,?)", (name, src_batch["lang_profile"], src_batch["guideline_version"]))
-        for r in ranked:
-            t = db.one("SELECT * FROM tasks WHERE id=?", (r["id"],))
-            new_id = f"{t['id']}::r{new_bid}"
-            db.execute("INSERT INTO tasks(id,batch_id,source,hypothesis,reference,metadata,"
-                       "lf_flags) VALUES(?,?,?,?,?,?,?)",
-                       (new_id, new_bid, t["source"], t["hypothesis"], t["reference"],
-                        t["metadata"], t["lf_flags"]))
-            jr = db.one("SELECT * FROM judge_results WHERE task_id=? ORDER BY id DESC LIMIT 1",
-                        (t["id"],))
-            if jr:
-                db.execute("INSERT INTO judge_results(task_id,verdict,confidence,model,is_mock)"
-                           " VALUES(?,?,?,?,?)", (new_id, jr["verdict"], jr["confidence"],
-                                                  jr["model"], jr["is_mock"]))
-        db.audit("system", "routing_build", "batch", new_bid,
-                 {"signal": req.signal, "n": len(ranked)})
-        return {"batch_id": new_bid, "name": name, "n": len(ranked)}
+        with db.lock:
+            if req.signal == "judge_confidence":
+                ranked = db.query("""
+                    SELECT t.id, t.batch_id FROM tasks t JOIN (
+                      SELECT task_id, confidence, MAX(id) FROM judge_results GROUP BY task_id
+                    ) j ON j.task_id = t.id
+                    WHERE t.id NOT LIKE '%::r%'
+                    ORDER BY j.confidence ASC LIMIT ?""", (req.top_n,))
+            elif req.signal == "lf_conflict":
+                cands = [t for t in db.query("SELECT * FROM tasks WHERE id NOT LIKE '%::r%'")
+                         if any(f["label"] == "ERROR" for f in json.loads(t["lf_flags"]))]
+                cands.sort(key=lambda t: -sum(1 for f in json.loads(t["lf_flags"])
+                                              if f["label"] == "ERROR"))
+                ranked = cands[:req.top_n]
+            else:
+                raise HTTPException(422, "signal must be judge_confidence|lf_conflict")
+            if not ranked:
+                raise HTTPException(409, "no candidates — run the judge first")
+            src_batch = db.one("SELECT * FROM batches WHERE id=?", (ranked[0]["batch_id"],))
+            n_existing = db.one("SELECT COUNT(*) n FROM batches WHERE name LIKE 'routing-%'")["n"]
+            name = f"routing-{n_existing + 1}"
+            new_bid = db.execute(
+                "INSERT INTO batches(name, show_suggestions, overlap, lang_profile, guideline_version)"
+                " VALUES(?,1,1,?,?)", (name, src_batch["lang_profile"], src_batch["guideline_version"]))
+            for r in ranked:
+                t = db.one("SELECT * FROM tasks WHERE id=?", (r["id"],))
+                new_id = f"{t['id']}::r{new_bid}"
+                db.execute("INSERT INTO tasks(id,batch_id,source,hypothesis,reference,metadata,"
+                           "lf_flags) VALUES(?,?,?,?,?,?,?)",
+                           (new_id, new_bid, t["source"], t["hypothesis"], t["reference"],
+                            t["metadata"], t["lf_flags"]))
+                jr = db.one("SELECT * FROM judge_results WHERE task_id=? ORDER BY id DESC LIMIT 1",
+                            (t["id"],))
+                if jr:
+                    db.execute("INSERT INTO judge_results(task_id,verdict,confidence,model,is_mock)"
+                               " VALUES(?,?,?,?,?)", (new_id, jr["verdict"], jr["confidence"],
+                                                      jr["model"], jr["is_mock"]))
+            db.audit("system", "routing_build", "batch", new_bid,
+                     {"signal": req.signal, "n": len(ranked)})
+            return {"batch_id": new_bid, "name": name, "n": len(ranked)}
 
     @app.post("/api/export")
     def api_export(req: ExportRequest):
