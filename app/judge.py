@@ -3,7 +3,6 @@ if it is down, annotation continues untouched. MockJudge keeps demos honest & of
 import hashlib
 import json
 import os
-import re
 
 import httpx
 
@@ -44,13 +43,20 @@ class MockJudge:
 
 
 def parse_judge_json(content):
-    m = re.search(r"\{.*\}", content, re.S)
-    if not m:
+    decoder = json.JSONDecoder()
+    raw = None
+    for i, ch in enumerate(content):
+        if ch != "{":
+            continue
+        try:
+            candidate, _ = decoder.raw_decode(content, i)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(candidate, dict):
+            raw = candidate
+            break
+    if raw is None:
         raise JudgeUnavailable("judge returned no JSON")
-    try:
-        raw = json.loads(m.group(0))
-    except json.JSONDecodeError as e:
-        raise JudgeUnavailable(f"judge JSON invalid: {e}") from e
     errs = [e for e in raw.get("error_types", []) if e in ERROR_TYPES] or ["no_error"]
     sev = raw.get("worst_severity")
     if sev not in SEVERITIES:
@@ -102,7 +108,7 @@ class OpenAIJudge:
                            timeout=self.timeout)
             r.raise_for_status()
             content = r.json()["choices"][0]["message"]["content"]
-        except (httpx.HTTPError, KeyError, IndexError) as e:
+        except (httpx.HTTPError, ValueError, KeyError, IndexError) as e:
             raise JudgeUnavailable(str(e)) from e
         return parse_judge_json(content)
 
