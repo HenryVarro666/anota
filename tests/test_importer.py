@@ -32,3 +32,21 @@ def test_aqb_profile_maps_fields(tmp_path):
     assert meta["arm"] == "wait3" and meta["al_ms"] == 1750.5
     flags = json.loads(t["lf_flags"])
     assert any(f["lf"] == "lf_negation_drop" and f["label"] == "ERROR" for f in flags)
+
+def test_import_demo_scopes_judge_to_its_batch():
+    db = Database(":memory:")
+    # Pre-insert a foreign batch with a task
+    foreign_bid = db.execute(
+        "INSERT INTO batches(name) VALUES('other')")
+    db.execute(
+        "INSERT INTO tasks(id,batch_id,source,hypothesis) VALUES('z9',?,?,?)",
+        (foreign_bid, 's', 'h'))
+    # Run import_demo
+    res = importer.import_demo(db, DATA)
+    # Verify only demo batch's tasks got judge_results (30 total)
+    assert res["n"] == 30
+    judge_count = db.one("SELECT COUNT(*) n FROM judge_results")["n"]
+    assert judge_count == 30
+    # Verify the foreign task got no judge_result
+    z9_result = db.one("SELECT COUNT(*) n FROM judge_results WHERE task_id='z9'")
+    assert z9_result["n"] == 0
