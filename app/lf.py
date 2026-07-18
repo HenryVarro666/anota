@@ -12,30 +12,36 @@ PROFILES = {
         "src_neg": re.compile(r"\b(no|not|never|without|don't|do not|cannot|must not)\b", re.I),
         "hyp_neg": re.compile(r"\b(no|nunca|sin|jamás|tampoco|ni)\b", re.I),
         "len_bounds": (0.7, 1.6),
+        "src_lang": "en",
+        "hyp_lang": "es",
     },
     "zh-en": {
         "src_neg": re.compile(r"[不没無无别勿禁未]"),
         "hyp_neg": re.compile(r"\b(no|not|never|without|none|neither|nor)\b", re.I),
         "len_bounds": (1.0, 6.0),
+        "src_lang": "zh",
+        "hyp_lang": "en",
     },
 }
 
 ZH_DIGITS = {"零": "0", "一": "1", "两": "2", "二": "2", "三": "3", "四": "4",
              "五": "5", "六": "6", "七": "7", "八": "8", "九": "9", "十": "10"}
-EN_WORDS = {"once": "1", "twice": "2", "thrice": "3", "single": "1", "double": "2", "triple": "3"}
-ES_WORDS = {"una": "1", "dos": "2", "tres": "3", "cuatro": "4", "cinco": "5", "seis": "6",
-            "siete": "7", "ocho": "8", "nueve": "9", "diez": "10"}
+EN_WORDS = {"once": "1", "twice": "2", "thrice": "3"}
+ES_WORDS = {"dos": "2", "tres": "3", "once": "11"}
 NUM_RE = re.compile(r"\d+(?:\.\d+)?%?")
 CJK_RE = re.compile(r"[一-鿿]")
 
 
-def _numbers(text):
-    for zh, d in ZH_DIGITS.items():
-        text = text.replace(zh, d)
-    for en, d in EN_WORDS.items():
-        text = re.sub(r"\b" + en + r"\b", d, text, flags=re.I)
-    for es, d in ES_WORDS.items():
-        text = re.sub(r"\b" + es + r"\b", d, text, flags=re.I)
+def _numbers(text, lang):
+    if lang == "zh":
+        for zh, d in ZH_DIGITS.items():
+            text = text.replace(zh, d)
+    elif lang == "en":
+        for en, d in EN_WORDS.items():
+            text = re.sub(r"\b" + en + r"\b", d, text, flags=re.I)
+    elif lang == "es":
+        for es, d in ES_WORDS.items():
+            text = re.sub(r"\b" + es + r"\b", d, text, flags=re.I)
     return set(NUM_RE.findall(text))
 
 
@@ -48,8 +54,8 @@ def _lf_negation(src, hyp, prof):
     return ERROR, f"source negation '{m.group(0)}' has no counterpart"
 
 
-def _lf_numbers(src, hyp):
-    s, h = _numbers(src), _numbers(hyp)
+def _lf_numbers(src, hyp, prof):
+    s, h = _numbers(src, prof["src_lang"]), _numbers(hyp, prof["hyp_lang"])
     if not s:
         return ABSTAIN, ""
     missing = s - h
@@ -88,7 +94,7 @@ def run_lfs(source, hypothesis, lang_profile):
     results = []
     for name, (label, evidence) in [
         ("lf_negation_drop", _lf_negation(source, hypothesis, prof)),
-        ("lf_number_mismatch", _lf_numbers(source, hypothesis)),
+        ("lf_number_mismatch", _lf_numbers(source, hypothesis, prof)),
         ("lf_untranslated_fragment", _lf_untranslated(source, hypothesis, lang_profile)),
         ("lf_length_ratio", _lf_length(source, hypothesis, prof)),
     ]:
