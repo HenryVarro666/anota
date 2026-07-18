@@ -1,3 +1,6 @@
+import json
+
+import httpx
 import pytest
 from app.judge import MockJudge, OpenAIJudge, JudgeUnavailable, parse_judge_json, get_judge
 
@@ -30,8 +33,31 @@ def test_parse_judge_json_garbage_raises():
     with pytest.raises(JudgeUnavailable):
         parse_judge_json("no json here")
 
+def test_parse_judge_json_ignores_braces_in_reasoning():
+    content = 'I checked {omission, mistranslation} first. Verdict: ' \
+              '{"rationale":"r","error_types":["omission"],' \
+              '"worst_severity":"major","adequacy":2,"confidence":0.8}'
+    v = parse_judge_json(content)
+    assert v["error_types"] == ["omission"]
+
 def test_openai_judge_unreachable_raises():
     j = OpenAIJudge("http://127.0.0.1:1", model="m", timeout=0.2)
+    with pytest.raises(JudgeUnavailable):
+        j.evaluate({"id": "t1", "source": "s", "hypothesis": "h"}, [])
+
+def test_openai_judge_malformed_200_raises_unavailable(monkeypatch):
+    class FakeResponse:
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            raise json.JSONDecodeError("bad", "", 0)
+
+    def fake_post(*args, **kwargs):
+        return FakeResponse()
+
+    monkeypatch.setattr(httpx, "post", fake_post)
+    j = OpenAIJudge("http://127.0.0.1:1", model="m")
     with pytest.raises(JudgeUnavailable):
         j.evaluate({"id": "t1", "source": "s", "hypothesis": "h"}, [])
 
