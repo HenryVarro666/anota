@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PropioQA Workbench</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header id="topbar">
+  <div class="brand">Propio<span>QA</span> <small>Workbench</small></div>
+  <nav id="tabs">
+    <button data-tab="annotate" class="tab active">Annotate</button>
+    <button data-tab="review" class="tab">Review</button>
+    <button data-tab="dashboard" class="tab">Dashboard</button>
+  </nav>
+  <div class="top-right">
+    <span id="judge-badge" class="badge">judge: …</span>
+    <input id="annotator" placeholder="annotator id" autocomplete="off">
+    <button id="start-btn" class="primary">Start</button>
+    <button id="theme-btn" title="toggle theme">◐</button>
+  </div>
+</header>
+<main>
+  <section id="view-annotate" class="view active">
+    <div class="empty">Enter an annotator id and press <b>Start</b>.</div>
+  </section>
+  <section id="view-review" class="view"><div class="empty">Review queue loads here.</div></section>
+  <section id="view-dashboard" class="view"><div class="empty">Dashboard loads here.</div></section>
+</main>
+<div id="modal" class="hidden"><div id="modal-card"><button id="modal-close">✕</button><div id="modal-body"></div></div></div>
+<div id="toast" class="hidden"></div>
+<script src="app.js"></script>
+<script src="review.js"></script>
+<script src="dash.js"></script>
+</body>
+</html>
