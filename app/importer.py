@@ -60,7 +60,7 @@ def load_golden(db, path, actor="system"):
         db.execute("INSERT OR REPLACE INTO golden_answers(task_id, answer) VALUES(?,?)",
                    (row["task_id"], json.dumps(row["answer"], ensure_ascii=False)))
         n += 1
-    db.audit(actor, "load_golden", "golden", path, {"n": n})
+    db.audit(actor, "load_golden", "golden", str(path), {"n": n})
     return n
 
 
@@ -81,7 +81,7 @@ def import_demo(db, data_dir):
              row["worst_severity"], row["adequacy"], row["fluency"], row.get("note", ""),
              row.get("elapsed_ms", 45000)))
     mj = MockJudge()
-    for t in db.query("SELECT * FROM tasks"):
+    for t in db.query("SELECT * FROM tasks WHERE batch_id=?", (res["batch_id"],)):
         v = mj.evaluate(t, json.loads(t["lf_flags"]))
         db.execute(
             "INSERT INTO judge_results(task_id,verdict,confidence,model,is_mock) "
