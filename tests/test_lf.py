@@ -48,6 +48,20 @@ def test_length_ratio():
     r2 = run_lfs("Short.", "Corto.", "en-es")
     assert get(r2, "lf_length_ratio")["label"] == ABSTAIN  # source under 10 chars
 
+def test_spanish_once_is_eleven():
+    r = run_lfs("Take the pill every 11 hours.", "Tome la pastilla cada once horas.", "en-es")
+    assert get(r, "lf_number_mismatch")["label"] == OK  # es side maps once->11
+
+def test_twice_dos_equivalence_en_es():
+    r = run_lfs("Apply the cream twice daily to the wound.",
+                "Aplique la crema dos veces al día en la herida.", "en-es")
+    assert get(r, "lf_number_mismatch")["label"] == OK
+
+def test_single_double_are_not_numbers():
+    r = run_lfs("Apply a single thin layer twice daily.",
+                "Aplique una capa fina dos veces al día.", "en-es")
+    assert get(r, "lf_number_mismatch")["label"] == OK  # src numbers = {2} from twice only
+
 def test_always_four_results():
     r = run_lfs("Take with food.", "Tome con comida.", "en-es")
     assert [x["lf"] for x in r] == ["lf_negation_drop", "lf_number_mismatch",
