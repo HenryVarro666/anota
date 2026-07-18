@@ -6,6 +6,12 @@ LEASE_MINUTES = 30
 
 
 def _reap_expired(db):
+    expired = db.query(
+        "SELECT id, task_id, annotator FROM assignments WHERE status='assigned' "
+        "AND lease_expires_at < datetime('now')")
+    for row in expired:
+        db.audit("system", "lease_expired", "assignment", row["id"],
+                  {"task_id": row["task_id"], "annotator": row["annotator"]})
     db.execute("DELETE FROM assignments WHERE status='assigned' "
                "AND lease_expires_at < datetime('now')")
 
@@ -23,10 +29,18 @@ def _task_payload(db, assignment_id, task_id):
 def claim(db, annotator, batch_id=None):
     with db.lock:
         _reap_expired(db)
-        open_row = db.one(
-            "SELECT id, task_id FROM assignments WHERE annotator=? AND status='assigned' "
-            "ORDER BY id LIMIT 1", (annotator,))
+        resume_clause, resume_params = "", [annotator]
+        if batch_id is not None:
+            resume_clause = "AND t.batch_id=?"
+            resume_params.append(batch_id)
+        open_row = db.one(f"""
+            SELECT a.id, a.task_id FROM assignments a JOIN tasks t ON t.id=a.task_id
+            WHERE a.annotator=? AND a.status='assigned' {resume_clause}
+            ORDER BY a.id LIMIT 1""", tuple(resume_params))
         if open_row:
+            db.execute(
+                "UPDATE assignments SET lease_expires_at=datetime('now', ?) WHERE id=?",
+                (f"+{LEASE_MINUTES} minutes", open_row["id"]))
             return _task_payload(db, open_row["id"], open_row["task_id"])
         clause, params = "", [annotator, annotator]
         if batch_id is not None:
@@ -90,6 +104,13 @@ def undo(db, annotator):
                    "ORDER BY id DESC LIMIT 1", (annotator,))
         if a is None:
             return None
+        open_row = db.one(
+            "SELECT id, task_id FROM assignments WHERE annotator=? AND status='assigned' "
+            "ORDER BY id LIMIT 1", (annotator,))
+        if open_row:
+            db.execute("DELETE FROM assignments WHERE id=?", (open_row["id"],))
+            db.audit(annotator, "release", "assignment", open_row["id"],
+                      {"task_id": open_row["task_id"]})
         db.execute("UPDATE assignments SET status='assigned', "
                    "lease_expires_at=datetime('now', ?) WHERE id=?",
                    (f"+{LEASE_MINUTES} minutes", a["id"]))
