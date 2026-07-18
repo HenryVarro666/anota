@@ -75,7 +75,11 @@ async function claimNext() {
     const r = await api("/claim", { annotator: state.annotator });
     state.progress = r.progress;
     renderTask(r.task);
-  } catch (e) { toast("claim failed: " + e.message, true); }
+  } catch (e) {
+    toast("claim failed: " + e.message, true);
+    $("#view-annotate").innerHTML = `<div class="empty">claim failed — <button id="btn-retry" class="primary">Retry</button></div>`;
+    $("#btn-retry").onclick = claimNext;
+  }
 }
 
 function renderTask(task) {
@@ -150,6 +154,11 @@ function setSeg(name, val) {
   state.sel[name] = val;
   document.querySelectorAll(`#seg-${name} button`).forEach(b =>
     b.classList.toggle("sel", String(b.dataset.v) === String(val)));
+  if (name === "severity" && val !== "neutral" && state.sel.errors.size === 1 && state.sel.errors.has("no_error")) {
+    state.sel.errors.delete("no_error");
+    document.querySelectorAll("#chips-errors .chip").forEach(c =>
+      c.classList.toggle("sel", state.sel.errors.has(c.dataset.v)));
+  }
 }
 function toggleError(e) {
   const s = state.sel.errors;
@@ -165,13 +174,23 @@ async function submit() {
   if (!sel.errors.size) return toast("pick error types (0 = no error)", true);
   if (!sel.severity) return toast("pick severity (v)", true);
   if (!sel.adequacy || !sel.fluency) return toast("rate adequacy (1-5) and fluency (⇧1-5)", true);
+  if (sel.errors.has("no_error") && sel.severity !== "neutral")
+    return toast("no_error requires severity neutral (server rule)", true);
+  if (!sel.errors.has("no_error") && sel.severity === "neutral")
+    return toast("a real error cannot be neutral — pick severity (v)", true);
+  if (sel.severity === "critical" && !$("#note").value.trim()) {
+    $("#note").focus();
+    return toast("critical requires a note (x)", true);
+  }
   try {
     await api("/submit", { annotator: state.annotator, assignment_id: task.assignment_id,
       error_types: [...sel.errors], worst_severity: sel.severity,
       adequacy: sel.adequacy, fluency: sel.fluency,
       correction: $("#correction").value, note: $("#note").value,
       elapsed_ms: Date.now() - state.startTs });
-    toast("saved ✓"); claimNext();
+    toast("saved ✓");
+    state.task = null;
+    claimNext();
   } catch (e) { toast(e.message, true); }
 }
 async function skip() {
