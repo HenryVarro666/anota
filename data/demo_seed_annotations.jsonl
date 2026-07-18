@@ -1,0 +1,3 @@
+{"task_id":"t001","annotator":"maria","error_types":["no_error"],"worst_severity":"neutral","adequacy":5,"fluency":5,"note":"","elapsed_ms":41000}
+{"task_id":"t002","annotator":"maria","error_types":["negation_polarity"],"worst_severity":"critical","adequacy":2,"fluency":4,"note":"'do not' dropped — meaning inverted","elapsed_ms":67000}
+{"task_id":"t003","annotator":"maria","error_types":["no_error"],"worst_severity":"neutral","adequacy":5,"fluency":5,"note":"","elapsed_ms":38000}

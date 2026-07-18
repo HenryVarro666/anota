@@ -1,0 +1,6 @@
+{"task_id":"t002","answer":{"error_types":["negation_polarity"],"worst_severity":"critical","adequacy":2}}
+{"task_id":"t003","answer":{"error_types":["no_error"],"worst_severity":"neutral","adequacy":5}}
+{"task_id":"t007","answer":{"error_types":["number_unit"],"worst_severity":"critical","adequacy":2}}
+{"task_id":"t012","answer":{"error_types":["omission"],"worst_severity":"major","adequacy":3}}
+{"task_id":"t021","answer":{"error_types":["no_error"],"worst_severity":"neutral","adequacy":5}}
+{"task_id":"t027","answer":{"error_types":["terminology"],"worst_severity":"critical","adequacy":2}}

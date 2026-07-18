@@ -1,0 +1,30 @@
+{"id":"t001","source":"Take one tablet every morning with breakfast.","translation":"Tome una tableta cada mañana con el desayuno.","metadata":{"arm":"wait1","al_ms":920}}
+{"id":"t002","source":"Do not stop taking this medication without talking to your doctor.","translation":"Deje de tomar este medicamento sin hablar con su médico.","metadata":{"arm":"wait1","al_ms":940}}
+{"id":"t003","source":"Drink plenty of water throughout the day.","translation":"Beba mucha agua durante el día.","metadata":{"arm":"wait1","al_ms":880}}
+{"id":"t004","source":"Call our office if you have a fever above 38 degrees.","translation":"Llame a nuestra oficina si tiene fiebre de más de 38 grados.","metadata":{"arm":"wait1","al_ms":905}}
+{"id":"t005","source":"Apply the cream to the affected area twice a day for two weeks.","translation":"Aplique la crema dos veces al día.","metadata":{"arm":"wait1","al_ms":950}}
+{"id":"t006","source":"Your appointment is scheduled for next Tuesday at 10 a.m.","translation":"Su cita está programada para el próximo martes a las 10 de la mañana.","metadata":{"arm":"wait1","al_ms":915}}
+{"id":"t007","source":"Take 5 mg twice a day for 7 days.","translation":"Tome 50 mg dos veces al día durante 7 días.","metadata":{"arm":"wait1","al_ms":890}}
+{"id":"t008","source":"This medication may cause drowsiness.","translation":"Este medicamento puede causar somnolencia.","metadata":{"arm":"wait1","al_ms":900}}
+{"id":"t009","source":"You must not drive after taking this medicine.","translation":"Puede conducir después de tomar este medicamento.","metadata":{"arm":"wait1","al_ms":930}}
+{"id":"t010","source":"The patient has a history of hypertension.","translation":"El paciente tiene antecedentes de hipotensión.","metadata":{"arm":"wait1","al_ms":925}}
+{"id":"t011","source":"Keep this medication out of reach of children.","translation":"Mantenga este medicamento fuera del alcance de los niños.","metadata":{"arm":"wait3","al_ms":1810}}
+{"id":"t012","source":"If you miss a dose, take it as soon as you remember, unless it is almost time for your next dose.","translation":"Si olvida una dosis, tómela tan pronto como lo recuerde.","metadata":{"arm":"wait3","al_ms":1850}}
+{"id":"t013","source":"Avoid alcohol while taking this medication.","translation":"Evite el alcohol mientras toma este medicamento.","metadata":{"arm":"wait3","al_ms":1790}}
+{"id":"t014","source":"Your blood pressure today is 130 over 85.","translation":"Su presión arterial hoy es 130 sobre 85.","metadata":{"arm":"wait3","al_ms":1820}}
+{"id":"t015","source":"Give the child 2.5 ml of the syrup every 8 hours.","translation":"Dele al niño 25 ml del jarabe cada 8 horas.","metadata":{"arm":"wait3","al_ms":1840}}
+{"id":"t016","source":"The wound should be kept clean and dry.","translation":"La herida debe mantenerse limpia y seca.","metadata":{"arm":"wait3","al_ms":1800}}
+{"id":"t017","source":"Fasting is required: no food or drink after midnight before your surgery.","translation":"Se requiere ayuno antes de su cirugía.","metadata":{"arm":"wait3","al_ms":1860}}
+{"id":"t018","source":"Take the antibiotic until it is completely finished.","translation":"Tome el antibiótico hasta terminarlo por completo.","metadata":{"arm":"wait3","al_ms":1795}}
+{"id":"t019","source":"This inhaler is for asthma attacks.","translation":"Este inhalador es para ataques de ansiedad.","metadata":{"arm":"wait3","al_ms":1830}}
+{"id":"t020","source":"Wear the compression stockings during the day.","translation":"Use las medias de compresión durante el día.","metadata":{"arm":"wait3","al_ms":1815}}
+{"id":"t021","source":"Check your blood sugar before each meal.","translation":"Controle su nivel de azúcar en la sangre antes de cada comida.","metadata":{"arm":"offline","al_ms":3620}}
+{"id":"t022","source":"The maximum dose is 4 tablets in 24 hours.","translation":"La dosis máxima es de 4 tabletas en 2 horas.","metadata":{"arm":"offline","al_ms":3650}}
+{"id":"t023","source":"Bring a list of all your current medications to your visit.","translation":"Traiga una lista de todos sus medicamentos actuales a su visita.","metadata":{"arm":"offline","al_ms":3600}}
+{"id":"t024","source":"Do not take this medication on an empty stomach.","translation":"Tome este medicamento con el estómago vacío.","metadata":{"arm":"offline","al_ms":3640}}
+{"id":"t025","source":"Physical therapy sessions will begin next week.","translation":"Las sesiones de fisioterapia comenzarán la próxima semana.","metadata":{"arm":"offline","al_ms":3610}}
+{"id":"t026","source":"Use sunscreen while taking this antibiotic.","translation":"Use protector solar mientras toma este antibiótico.","metadata":{"arm":"offline","al_ms":3590}}
+{"id":"t027","source":"You will need a referral to see the cardiologist.","translation":"Necesitará una referencia para ver al dermatólogo.","metadata":{"arm":"offline","al_ms":3630}}
+{"id":"t028","source":"Elevate your leg and apply ice for 20 minutes.","translation":"Eleve la pierna y aplique hielo durante 20 minutos.","metadata":{"arm":"offline","al_ms":3605}}
+{"id":"t029","source":"The test results will be ready in 3 business days.","translation":"Los resultados estarán listos en 3 días hábiles.","metadata":{"arm":"offline","al_ms":3615}}
+{"id":"t030","source":"Schedule a follow-up appointment in two months.","translation":"Programe una cita de seguimiento en dos meses.","metadata":{"arm":"offline","al_ms":3625}}
