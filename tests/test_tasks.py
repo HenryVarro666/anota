@@ -72,3 +72,55 @@ def test_progress():
     db, bid = make_db(n_tasks=3)
     c = tasks.claim(db, "chao"); tasks.submit(db, "chao", c["assignment_id"], PAYLOAD)
     assert tasks.progress(db, "chao", bid) == {"done": 1, "total": 3}
+
+def test_undo_releases_current_open_assignment():
+    db, bid = make_db()
+    c0 = tasks.claim(db, "chao")
+    tasks.submit(db, "chao", c0["assignment_id"], PAYLOAD)
+    c1 = tasks.claim(db, "chao")
+    assert c1["task_id"] == "t001"
+    u = tasks.undo(db, "chao")
+    assert u["task_id"] == c0["task_id"]
+    assert db.one("SELECT COUNT(*) n FROM assignments WHERE id=?",
+                  (c1["assignment_id"],))["n"] == 0
+    tasks.submit(db, "chao", u["assignment_id"], PAYLOAD)  # free chao up again
+    c2 = tasks.claim(db, "chao")
+    assert c2["task_id"] == "t001"  # released task is claimable again
+
+def test_claim_resume_respects_batch_id():
+    db, bid = make_db()
+    bid2 = db.execute("INSERT INTO batches(name, overlap) VALUES('b2', 1)")
+    db.execute("INSERT INTO tasks(id, batch_id, source, hypothesis) VALUES('x000', ?, 'sx', 'hx')",
+               (bid2,))
+    c1 = tasks.claim(db, "chao")  # opens assignment in batch 1
+    assert c1["batch_id"] == bid
+    c2 = tasks.claim(db, "chao", batch_id=bid2)
+    assert c2["task_id"] == "x000"  # resume skips the batch-1 open assignment
+    assert db.one("SELECT status FROM assignments WHERE id=?",
+                  (c1["assignment_id"],))["status"] == "assigned"  # untouched
+
+def test_resume_refreshes_lease():
+    db, bid = make_db(n_tasks=1)
+    c = tasks.claim(db, "chao")
+    db.execute("UPDATE assignments SET lease_expires_at=datetime('now','+1 minute') WHERE id=?",
+               (c["assignment_id"],))
+    tasks.claim(db, "chao")  # resume path
+    row = db.one("SELECT (lease_expires_at > datetime('now','+25 minutes')) ok "
+                 "FROM assignments WHERE id=?", (c["assignment_id"],))
+    assert row["ok"] == 1
+
+def test_reap_is_audited():
+    db, bid = make_db(n_tasks=1)
+    c = tasks.claim(db, "chao")
+    db.execute("UPDATE assignments SET lease_expires_at=datetime('now','-1 minute') WHERE id=?",
+               (c["assignment_id"],))
+    tasks.claim(db, "maria")  # triggers reap
+    rows = db.query("SELECT * FROM audit_log WHERE action='lease_expired'")
+    assert len(rows) == 1
+    assert rows[0]["actor"] == "system"
+
+def test_skip_foreign_assignment_rejected():
+    db, bid = make_db()
+    c = tasks.claim(db, "chao")
+    with pytest.raises(LookupError):
+        tasks.skip(db, "maria", c["assignment_id"], "reason")
