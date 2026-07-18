@@ -36,7 +36,10 @@ def build_snapshot(db, filters=None, include_golden=False):
             if g:
                 item["golden"] = json.loads(g["answer"])
         items.append(item)
-    gv = db.one("SELECT guideline_version FROM batches ORDER BY id LIMIT 1")
+    if filters.get("batch_id"):
+        gv = db.one("SELECT guideline_version FROM batches WHERE id=?", (filters["batch_id"],))
+    else:
+        gv = db.one("SELECT guideline_version FROM batches ORDER BY id LIMIT 1")
     return {"guideline_version": gv["guideline_version"] if gv else "v1.0",
             "filters": filters, "items": items, "annotators": sorted(annotators)}
 

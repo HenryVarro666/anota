@@ -40,3 +40,19 @@ def test_golden_jsonl_roundtrip(tmp_path):
     assert export.export_golden_jsonl(db, out) == 1
     row = json.loads(out.read_text().splitlines()[0])
     assert row["id"] == "t1" and row["answer"]["error_types"] == ["omission"]
+
+def test_snapshot_guideline_version_scoped_to_filtered_batch():
+    db = Database(":memory:"); b1_id = seed(db)
+    # Create second batch with v2.0
+    b2_id = db.execute("INSERT INTO batches(name, guideline_version) VALUES('b2','v2.0')")
+    db.execute("INSERT INTO tasks(id,batch_id,source,hypothesis,metadata) VALUES(?,?,?,?,?)",
+               ("t2", b2_id, "s", "h", json.dumps({"arm": "wait1"})))
+    add_ann(db, "t2", "chao", ["omission"], "major")
+    # Unfiltered snapshot should use first batch's version (v1.0 default)
+    snap_unfiltered = export.build_snapshot(db)
+    assert snap_unfiltered["guideline_version"] == "v1.0"
+    # Filtered snapshot for b2 should use b2's version (v2.0)
+    snap_filtered = export.build_snapshot(db, {"batch_id": b2_id})
+    assert snap_filtered["guideline_version"] == "v2.0"
+    assert len(snap_filtered["items"]) == 1
+    assert snap_filtered["items"][0]["task"]["id"] == "t2"
