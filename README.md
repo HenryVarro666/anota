@@ -97,13 +97,16 @@ The 5-minute path through the whole closed loop:
 2. **Dashboard** — the *error type × latency arm* matrix shows what the low-latency arm
    costs in omission/negation errors; annotator table tracks golden accuracy and pace;
    κ panels track inter-annotator and judge–human agreement.
-3. **Route** — *Build routing batch* from lowest judge confidence, then click **annotate**
+3. **Probe & calibrate** — *Build judge probe* creates synthetic errors with known truth;
+   *run judge* on it (pooled, live progress) and the calibration card fills in per-type
+   recall and false-alarm rates. Now the judge's confidence has earned meaning.
+4. **Route** — *Build routing batch* from lowest judge confidence, then click **annotate**
    on the new batch row: claims now carry judge + lint suggestion chips (labeled MOCK when
    the mock judge produced them).
-4. **Review** — the queue ranks human/judge/lint disagreement first. Open an item to see the
+5. **Review** — the queue ranks human/judge/lint disagreement first. Open an item to see the
    three-way comparison; **Approve** or **Overturn** with a case note — case notes are the
    raw material for the next guideline version.
-5. **Export** — a content-hashed, versioned snapshot lands in `exports/`.
+6. **Export** — a content-hashed, versioned snapshot lands in `exports/`.
 
 ## Keyboard reference
 
@@ -232,13 +235,28 @@ ANOTA_JUDGE=openai ANOTA_JUDGE_BASE_URL=http://localhost:8000/v1 .venv/bin/pytho
 
 Judge failure never breaks annotation: the top-bar badge degrades and humans keep working.
 
-Field-tested against a self-hosted **Qwen3-14B** (vLLM, reasoning mode on): ~4 s/task
-sequential over the 30 demo tasks, and it caught **all 12 planted errors — including the
-three terminology swaps that are invisible to lint** (hipertensión→hipotensión-class), with
-accurate rationales. That contrast (lint-bound MockJudge vs semantic LLM judge) is exactly
-what the *Judge calibration* dashboard card measures: judge-vs-golden κ, per-error-type
-recall, and false alarms on clean goldens — **calibrate before you trust** the judge's
-confidence for routing.
+Judge runs are **pooled (8 workers)** and can run in the background: the dashboard's
+per-batch *run judge* button shows live `done/total` progress (`POST /api/judge/run`
+with `background: true`, poll `GET /api/judge/status`).
+
+### Probe: measure the judge before trusting it
+
+*Build judge probe* (dashboard) creates a batch of **synthetic hard negatives with known
+truth**: clean demo translations are programmatically perturbed — negation injected, first
+number ×10, a domain term swapped, a trailing clause dropped — plus unmodified clean
+controls. Because the injected error *is* the ground truth, probe items feed the
+judge-vs-golden calibration card without any human labeling: per-error-type recall,
+false-alarm rate on clean items, and κ against golden.
+
+Field-tested against a self-hosted **Qwen3-14B** (vLLM, reasoning mode on): 15-task probe
+judged in **10 s** (pooled; ~4 s/task when sequential), and across demo golden + probe
+(n=21) it scored **κ_bin 1.0, κ_sev 0.85, 4/4 recall on every error type, 0/5 clean false
+alarms** — including terminology swaps that are invisible to lint:
+
+![Judge calibration](docs/screenshots/judge-calibration.png)
+
+That contrast (lint-bound MockJudge vs semantic LLM judge) is the point of the card:
+**calibrate before you trust** the judge's confidence for routing.
 
 ## HTTP API
 
@@ -254,7 +272,9 @@ the same way.
 | `/review/queue` | GET | unreviewed latest annotations, disagreement-ranked, with judge + lint context |
 | `/review/{annotation_id}` | POST | `{verdict: approved\|overturned, case_note, replacement?}` |
 | `/stats/overview` · `/stats/matrix` · `/stats/annotators` · `/stats/agreement` | GET | dashboard aggregates (pairwise κ, judge×human κ, judge-vs-golden calibration incl. per-type recall, golden accuracy, error×arm matrix with `sources` disclosure) |
-| `/judge/run` | POST | `{batch_id}` → judge every task in the batch (`503` if unreachable) |
+| `/judge/run` | POST | `{batch_id, background?}` → judge every task, pooled 8-wide; sync returns `{n}`, background returns immediately (`503` if unreachable, `409` if already running) |
+| `/judge/status` | GET | per-batch judge-run progress `{done, total, running, error}` |
+| `/probe/build` | POST | `{source_batch_id?, per_type?}` → synthetic hard-negative batch with golden truth auto-registered |
 | `/routing/build` | POST | `{top_n, signal: judge_confidence\|lf_conflict}` → new routing batch |
 | `/export` | POST | `{batch_id?, include_golden?}` → versioned snapshot |
 | `/guideline`, `/health` | GET | rubric text; server + judge status |
@@ -314,6 +334,9 @@ positive/negative/abstain fixtures in `tests/test_lf.py`. Prefer ABSTAIN over gu
 
 **Swap the judge**: implement `.evaluate(task, lf_results) -> dict` with the verdict keys
 (see `app/judge.py`) — anything from a rules engine to a hosted model.
+
+**Add a perturbation**: one function in `app/perturb.py` (`hyp -> perturbed | None`)
+registered in `PERTURBATIONS` with its truth label — probe batches pick it up automatically.
 
 **Regenerate README screenshots** (needs Chrome + a running `--demo` server):
 

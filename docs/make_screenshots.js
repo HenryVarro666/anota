@@ -30,6 +30,8 @@ const OUT = __dirname + "/screenshots";
   await page.click('.tab[data-tab="dashboard"]');
   await page.waitForSelector(".matrix", { timeout: 5000 });
   await page.screenshot({ path: OUT + "/dashboard-light.png" });
+  const cal = await page.$("#judge-cal-card");
+  if (cal) await cal.screenshot({ path: OUT + "/judge-calibration.png" });
 
   await prep("dark");
   await page.click('.tab[data-tab="review"]');
