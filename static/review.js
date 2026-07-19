@@ -16,7 +16,7 @@
       <div class="card" id="rq-list" style="padding:6px">
         ${queue.map((q, i) => `<div class="rq-item" data-i="${i}">
            <b>${esc(q.task.id)}</b> · ${esc(q.annotation.annotator)}
-           <span class="dis">Δ ${q.disagreement}</span></div>`).join("")}
+           <span class="dis">Δ ${esc(q.disagreement)}</span></div>`).join("")}
       </div>
       <div class="card" id="rq-detail"><div class="empty">Select an item.</div></div></div>`;
     v.querySelector("#rq-list").onclick = e => {
@@ -41,6 +41,8 @@
     d.innerHTML = `
       <div class="textpanel"><div class="lbl">Source</div><div class="txt">${esc(q.task.source)}</div></div>
       <div class="textpanel"><div class="lbl">Hypothesis</div><div class="txt">${esc(q.task.hypothesis)}</div></div>
+      ${q.task.reference ? `<details class="ref"><summary>reference</summary>
+        <div class="textpanel"><div class="txt">${esc(q.task.reference)}</div></div></details>` : ""}
       <div class="threeway">
         ${col("Human · " + esc(q.annotation.annotator), labelBlock(q.annotation))}
         ${col("Judge" + (judge?.is_mock ? " · MOCK" : ""),
@@ -74,6 +76,9 @@
       if (t === "no_error") { chosen.clear(); chosen.add(t); }
       else { chosen.delete("no_error"); chosen.has(t) ? chosen.delete(t) : chosen.add(t); }
       d.querySelectorAll(".chip").forEach(x => x.classList.toggle("sel", chosen.has(x.dataset.v)));
+      const sevSel = d.querySelector("#rv-sev");
+      if (chosen.has("no_error")) sevSel.value = "neutral";
+      else if (chosen.size && sevSel.value === "neutral") sevSel.value = "major";
     };
     d.querySelector("#rv-approve").onclick = () => verdict(q, { reviewer: "lead", verdict: "approved" });
     d.querySelector("#rv-overturn-toggle").onclick = () =>
@@ -82,7 +87,12 @@
       const caseNote = d.querySelector("#rv-case").value.trim();
       if (!chosen.size) return toast("pick replacement error types", true);
       if (!caseNote) return toast("case note required — it feeds the guideline", true);
-      const sev = d.querySelector("#rv-sev").value;
+      const sevSel = d.querySelector("#rv-sev");
+      let sev = sevSel.value;
+      const noErrorOnly = chosen.size === 1 && chosen.has("no_error");
+      if (!noErrorOnly && sev === "neutral")
+        return toast("a real error cannot be neutral — pick a severity", true);
+      if (noErrorOnly && sev !== "neutral") { sev = "neutral"; sevSel.value = "neutral"; }
       verdict(q, { reviewer: "lead", verdict: "overturned", case_note: caseNote,
         replacement: { error_types: [...chosen], worst_severity: sev,
           adequacy: +d.querySelector("#rv-adq").value, fluency: +d.querySelector("#rv-flu").value,
