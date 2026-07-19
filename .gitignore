@@ -4,3 +4,4 @@ __pycache__/
 *.db
 exports/
 .pytest_cache/
+node_modules/
