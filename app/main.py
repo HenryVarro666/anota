@@ -54,7 +54,7 @@ class ExportRequest(BaseModel):
 
 
 def create_app(db_path=":memory:", demo=False, data_dir=None, export_dir=None):
-    app = FastAPI(title="PropioQA Workbench")
+    app = FastAPI(title="Anota Workbench")
     db = Database(db_path)
     app.state.db = db
     app.state.export_dir = export_dir or str(APP_DIR / "exports")

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PropioQA Workbench entry point.  python run.py --demo  ->  http://localhost:8420"""
+"""Anota Workbench entry point.  python run.py --demo  ->  http://localhost:8420"""
 import argparse
 import os
 import tempfile
@@ -11,10 +11,12 @@ from app import importer
 from app.main import create_app
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(description="PropioQA Workbench")
+    ap = argparse.ArgumentParser(description="Anota Workbench")
     ap.add_argument("--demo", action="store_true", help="fresh demo DB + synthetic data")
     ap.add_argument("--port", type=int, default=8420)
-    ap.add_argument("--db", default="propioqa.db")
+    ap.add_argument("--host", default="127.0.0.1",
+                     help="bind address (use 0.0.0.0 inside containers)")
+    ap.add_argument("--db", default="anota.db")
     ap.add_argument("--import-file", help="JSONL file to import as a new batch")
     ap.add_argument("--profile", choices=["generic", "aqb"], default="generic",
                      help="field-mapping profile for --import-file (default: generic)")
@@ -27,7 +29,7 @@ if __name__ == "__main__":
     ap.add_argument("--overlap", type=int, default=1,
                      help="annotator overlap for the imported batch (default: 1)")
     a = ap.parse_args()
-    db_path = (os.path.join(tempfile.mkdtemp(prefix="propioqa_demo_"), "demo.db")
+    db_path = (os.path.join(tempfile.mkdtemp(prefix="anota_demo_"), "demo.db")
                if a.demo else a.db)
     app = create_app(db_path=db_path, demo=a.demo)
     if a.import_file:
@@ -40,5 +42,5 @@ if __name__ == "__main__":
         if a.golden:
             n_golden = importer.load_golden(app.state.db, a.golden, actor="cli")
             print(f"Loaded {n_golden} golden answers from {a.golden}")
-    print(f"PropioQA Workbench → http://localhost:{a.port}   (db: {db_path})")
-    uvicorn.run(app, host="127.0.0.1", port=a.port)
+    print(f"Anota Workbench → http://localhost:{a.port}   (db: {db_path})")
+    uvicorn.run(app, host=a.host, port=a.port)

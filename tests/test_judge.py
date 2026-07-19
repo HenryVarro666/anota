@@ -62,5 +62,5 @@ def test_openai_judge_malformed_200_raises_unavailable(monkeypatch):
         j.evaluate({"id": "t1", "source": "s", "hypothesis": "h"}, [])
 
 def test_get_judge_default_mock(monkeypatch):
-    monkeypatch.delenv("PROPIOQA_JUDGE", raising=False)
+    monkeypatch.delenv("ANOTA_JUDGE", raising=False)
     assert get_judge().is_mock is True
