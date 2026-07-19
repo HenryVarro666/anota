@@ -1,6 +1,8 @@
 """API layer. The one non-negotiable: batch policy is enforced HERE, server-side —
 a clean-batch claim response never even contains the suggestion fields."""
 import json
+import threading
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
@@ -8,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from . import export as exportmod
-from . import importer, quality
+from . import importer, perturb, quality
 from . import tasks as taskmod
 from .db import Database
 from .judge import JudgeUnavailable, get_judge, judge_health
@@ -41,6 +43,12 @@ class ReviewRequest(BaseModel):
 
 class JudgeRunRequest(BaseModel):
     batch_id: int
+    background: bool = False
+
+
+class ProbeRequest(BaseModel):
+    source_batch_id: int | None = None
+    per_type: int = 3
 
 
 class RoutingRequest(BaseModel):
@@ -198,24 +206,77 @@ def create_app(db_path=":memory:", demo=False, data_dir=None, export_dir=None):
                 "judge_human": quality.judge_human_agreement(db),
                 "judge_golden": quality.judge_golden_calibration(db)}
 
-    @app.post("/api/judge/run")
-    def api_judge_run(req: JudgeRunRequest):
+    app.state.judge_runs = {}
+    progress_lock = threading.Lock()
+
+    def _run_judge_batch(batch_id):
+        """Pooled judge evaluation over one batch; progress in app.state.judge_runs."""
+        st = app.state.judge_runs[batch_id]
         j = get_judge(guideline)
-        n = 0
-        for t in db.query("SELECT * FROM tasks WHERE batch_id=?", (req.batch_id,)):
+        rows = db.query("SELECT * FROM tasks WHERE batch_id=?", (batch_id,))
+        with progress_lock:
+            st.update(total=len(rows), done=0, error=None,
+                      model=j.model, is_mock=j.is_mock)
+
+        def one(t):
             try:
                 v = j.evaluate(t, json.loads(t["lf_flags"]))
             except JudgeUnavailable as e:
-                raise HTTPException(503, f"judge unavailable: {e}")
+                with progress_lock:
+                    st["error"] = str(e)
+                return
             db.execute("INSERT INTO judge_results(task_id,verdict,confidence,model,is_mock) "
                        "VALUES(?,?,?,?,?)",
                        (t["id"], json.dumps({k: v[k] for k in ("error_types", "worst_severity",
                                                                "adequacy", "rationale")},
                                             ensure_ascii=False),
                         v["confidence"], j.model, int(j.is_mock)))
-            n += 1
-        db.audit("system", "judge_run", "batch", req.batch_id, {"n": n, "model": j.model})
-        return {"n": n, "model": j.model, "is_mock": j.is_mock}
+            with progress_lock:
+                st["done"] += 1
+
+        with ThreadPoolExecutor(max_workers=8) as ex:
+            list(ex.map(one, rows))
+        with progress_lock:
+            st["running"] = False
+            st["model"] = j.model
+        db.audit("system", "judge_run", "batch", batch_id,
+                 {"n": st["done"], "model": j.model, "error": st["error"]})
+
+    @app.post("/api/judge/run")
+    def api_judge_run(req: JudgeRunRequest):
+        st = app.state.judge_runs.get(req.batch_id)
+        if st and st.get("running"):
+            raise HTTPException(409, "a judge run is already in progress for this batch")
+        app.state.judge_runs[req.batch_id] = {"running": True, "done": 0, "total": 0,
+                                              "error": None, "model": None, "is_mock": True}
+        if req.background:
+            threading.Thread(target=_run_judge_batch, args=(req.batch_id,),
+                             daemon=True).start()
+            return {"started": True, "batch_id": req.batch_id}
+        _run_judge_batch(req.batch_id)
+        st = app.state.judge_runs[req.batch_id]
+        if st["error"] and st["done"] < st["total"]:
+            raise HTTPException(503, f"judge unavailable: {st['error']} "
+                                     f"({st['done']}/{st['total']} completed)")
+        return {"n": st["done"], "model": st["model"], "is_mock": st["is_mock"]}
+
+    @app.get("/api/judge/status")
+    def api_judge_status():
+        return app.state.judge_runs
+
+    @app.post("/api/probe/build")
+    def api_probe_build(req: ProbeRequest):
+        source = req.source_batch_id or (db.one(
+            "SELECT id FROM batches WHERE name NOT LIKE 'probe-%' "
+            "AND name NOT LIKE 'routing-%' ORDER BY id LIMIT 1") or {}).get("id")
+        if source is None:
+            raise HTTPException(409, "no source batch available")
+        try:
+            return perturb.build_probe(db, source, per_type=req.per_type)
+        except LookupError as e:
+            raise HTTPException(404, str(e))
+        except ValueError as e:
+            raise HTTPException(409, str(e))
 
     @app.post("/api/routing/build")
     def api_routing(req: RoutingRequest):
@@ -225,10 +286,10 @@ def create_app(db_path=":memory:", demo=False, data_dir=None, export_dir=None):
                     SELECT t.id, t.batch_id FROM tasks t JOIN (
                       SELECT task_id, confidence, MAX(id) FROM judge_results GROUP BY task_id
                     ) j ON j.task_id = t.id
-                    WHERE t.id NOT LIKE '%::r%'
+                    WHERE t.id NOT LIKE '%::%'
                     ORDER BY j.confidence ASC LIMIT ?""", (req.top_n,))
             elif req.signal == "lf_conflict":
-                cands = [t for t in db.query("SELECT * FROM tasks WHERE id NOT LIKE '%::r%'")
+                cands = [t for t in db.query("SELECT * FROM tasks WHERE id NOT LIKE '%::%'")
                          if any(f["label"] == "ERROR" for f in json.loads(t["lf_flags"]))]
                 cands.sort(key=lambda t: -sum(1 for f in json.loads(t["lf_flags"])
                                               if f["label"] == "ERROR"))

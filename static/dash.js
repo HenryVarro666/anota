@@ -7,11 +7,13 @@
   window.stopDashPoll = () => { clearInterval(pollId); pollId = null; };
   window.renderDashboard = async function (startPoll) {
     const v = document.querySelector("#view-dashboard");
-    let o, m, a, g, b;
+    let o, m, a, g, b, jr;
     try {
-      [o, m, a, g, b] = await Promise.all([api("/stats/overview"), api("/stats/matrix"),
-        api("/stats/annotators"), api("/stats/agreement"), api("/batches")]);
+      [o, m, a, g, b, jr] = await Promise.all([api("/stats/overview"), api("/stats/matrix"),
+        api("/stats/annotators"), api("/stats/agreement"), api("/batches"),
+        api("/judge/status")]);
     } catch (e) { v.innerHTML = `<div class="empty">${esc(e.message)}</div>`; return; }
+    const anyRunning = Object.values(jr).some(s => s.running);
     v.innerHTML = `
       <div class="cards">
         ${stat(o.n_tasks, "tasks")} ${stat(o.n_annotations, "annotations")}
@@ -38,20 +40,48 @@
           κ<sub>bin</sub> <b>${g.judge_human.kappa_binary}</b></div>` : ""}</div>
       ${g.judge_golden ? judgeCalibration(g.judge_golden) : ""}
       <div class="card"><h3>Batches & routing</h3>
-        <table id="batches-table"><tr><th>batch</th><th>tasks</th><th>overlap</th><th>suggestions</th><th>actions</th></tr>
-        ${b.map(x => `<tr><td>${esc(x.name)}</td><td>${x.n_tasks}</td><td>${x.overlap}</td>
+        <table id="batches-table"><tr><th>batch</th><th>tasks</th><th>overlap</th><th>suggestions</th><th>judge</th><th>actions</th></tr>
+        ${b.map(x => {
+          const s = jr[x.id];
+          const cell = s && s.running
+            ? `⏳ ${s.done}/${s.total || "…"}`
+            : `<button data-judge="${x.id}">run judge</button>` +
+              (s && s.error ? ` <span title="${esc(s.error)}">⚠</span>` : "");
+          return `<tr><td>${esc(x.name)}</td><td>${x.n_tasks}</td><td>${x.overlap}</td>
           <td>${x.show_suggestions ? "ON" : "off"}</td>
-          <td><button data-annotate="${x.id}">annotate</button></td></tr>`).join("")}</table>
+          <td>${cell}</td>
+          <td><button data-annotate="${x.id}">annotate</button></td></tr>`;
+        }).join("")}</table>
         <div class="form-inline" style="margin-top:10px">
           <label>route top</label><input type="number" id="rt-n" value="10" min="1">
           <select id="rt-signal"><option value="judge_confidence">lowest judge confidence</option>
             <option value="lf_conflict">most LF errors</option></select>
           <button class="primary" id="rt-build">Build routing batch</button>
+          <button id="probe-btn" title="synthetic hard-negatives with known truth — feeds judge calibration">Build judge probe</button>
           <button id="ex-btn">Export snapshot</button>
         </div></div>`;
-    v.querySelector("#batches-table").onclick = e => {
-      const btn = e.target.closest("[data-annotate]");
-      if (btn) window.ANOTA.annotateBatch(+btn.dataset.annotate);
+    v.querySelector("#batches-table").onclick = async e => {
+      const ab = e.target.closest("[data-annotate]");
+      if (ab) return window.ANOTA.annotateBatch(+ab.dataset.annotate);
+      const jb = e.target.closest("[data-judge]");
+      if (jb) {
+        jb.disabled = true;
+        try {
+          await api("/judge/run", { batch_id: +jb.dataset.judge, background: true });
+          toast("judge run started");
+          window.renderDashboard();
+        } catch (err) { toast(err.message, true); jb.disabled = false; }
+      }
+    };
+    v.querySelector("#probe-btn").onclick = async () => {
+      const btn = v.querySelector("#probe-btn");
+      btn.disabled = true;
+      try {
+        const r = await api("/probe/build", {});
+        toast(`${r.name}: ${r.n} probe tasks with known truth — now run the judge on it`);
+        window.renderDashboard();
+      } catch (err) { toast(err.message, true); }
+      finally { btn.disabled = false; }
     };
     v.querySelector("#rt-build").onclick = async () => {
       const btn = v.querySelector("#rt-build");
@@ -72,6 +102,7 @@
       finally { btn.disabled = false; }
     };
     if (startPoll && !pollId) pollId = setInterval(() => window.renderDashboard(), 5000);
+    if (anyRunning && !startPoll && !pollId) setTimeout(() => window.renderDashboard(), 1500);
   };
 
   const stat = (n, l) => `<div class="card stat"><div class="num">${esc(n)}</div><div class="lbl">${l}</div></div>`;
@@ -80,7 +111,7 @@
     const rows = Object.entries(c.per_type).map(([t, v]) =>
       `<tr><td>${esc(t)}</td><td>${v.detected}/${v.n}</td>
        <td>${((v.detected / v.n) * 100).toFixed(0)}%</td></tr>`).join("");
-    return `<div class="card"><h3>Judge calibration — vs golden set</h3>
+    return `<div class="card" id="judge-cal-card"><h3>Judge calibration — vs golden set</h3>
       <div>n=${c.n} golden pairs · κ<sub>bin</sub> <b>${c.kappa_binary}</b> ·
         κ<sub>sev</sub> <b>${c.kappa_severity}</b> ·
         exact type match <b>${(c.exact_type_match * 100).toFixed(0)}%</b> ·

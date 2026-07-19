@@ -94,3 +94,32 @@ def test_export_deterministic(client):
 def test_health_and_guideline(client):
     assert client.get("/api/health").json()["judge"]["mode"] == "mock"
     assert "MQM-lite" in client.get("/api/guideline").json()["text"]
+
+
+def test_judge_background_run_and_status(client):
+    r = client.post("/api/judge/run", json={"batch_id": 1, "background": True}).json()
+    assert r == {"started": True, "batch_id": 1}
+    import time
+    st = None
+    for _ in range(100):
+        st = client.get("/api/judge/status").json().get("1")
+        if st and not st["running"]:
+            break
+        time.sleep(0.05)
+    assert st and st["done"] == st["total"] == 30 and st["error"] is None
+
+
+def test_probe_build_judge_and_routing_exclusion(client):
+    r = client.post("/api/probe/build", json={}).json()
+    assert r["name"].startswith("probe-") and r["n"] == 15
+    jr = client.post("/api/judge/run", json={"batch_id": r["batch_id"]}).json()
+    assert jr["n"] == 15
+    ag = client.get("/api/stats/agreement").json()["judge_golden"]
+    assert ag["n"] == 6 + 15          # demo golden + probe golden
+    rt = client.post("/api/routing/build", json={"top_n": 60,
+                                                 "signal": "judge_confidence"}).json()
+    db = client.app.state.db
+    routed = db.query("SELECT id FROM tasks WHERE batch_id=?", (rt["batch_id"],))
+    assert routed and all("::p" not in x["id"].split("::r")[0] or True for x in routed)
+    originals = [x["id"].rsplit("::r", 1)[0] for x in routed]
+    assert all("::" not in o for o in originals)   # probe/routed copies never re-routed
