@@ -2,7 +2,7 @@
 "use strict";
 
 const state = { annotator: localStorage.getItem("pqa_annotator") || "",
-                task: null, startTs: 0, sel: null, timerId: null };
+                task: null, startTs: 0, sel: null, timerId: null, batchId: null };
 
 const $ = (s, el) => (el || document).querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g,
@@ -72,7 +72,9 @@ function start() {
 
 async function claimNext() {
   try {
-    const r = await api("/claim", { annotator: state.annotator });
+    const body = { annotator: state.annotator };
+    if (state.batchId != null) body.batch_id = state.batchId;
+    const r = await api("/claim", body);
     state.progress = r.progress;
     renderTask(r.task);
   } catch (e) {
@@ -97,6 +99,7 @@ function renderTask(task) {
       ${meta.arm ? `<span>arm <b>${esc(meta.arm)}</b></span>` : ""}
       <span id="timer">0:00</span>
       <span>batch <b>${esc(task.batch.name)}</b></span>
+      ${state.batchId != null ? `<span>filter: batch ${esc(state.batchId)} <button id="clear-batch" style="background:none;border:0;color:var(--err);cursor:pointer">×</button></span>` : ""}
     </div>
     <div class="textpanel"><div class="lbl">Source</div><div class="txt">${esc(task.source)}</div></div>
     <div class="textpanel"><div class="lbl">Hypothesis</div><div class="txt">${esc(task.hypothesis)}</div></div>
@@ -138,6 +141,8 @@ function renderTask(task) {
   $("#seg-severity").onclick = e => e.target.dataset.v && setSeg("severity", e.target.dataset.v);
   $("#chips-errors").onclick = e => { const c = e.target.closest(".chip"); if (c) toggleError(c.dataset.v); };
   $("#btn-submit").onclick = submit; $("#btn-skip").onclick = skip; $("#btn-undo").onclick = undo;
+  const clearBatchBtn = $("#clear-batch");
+  if (clearBatchBtn) clearBatchBtn.onclick = () => { state.batchId = null; claimNext(); };
 }
 
 function renderSuggestions(sugg) {
@@ -241,4 +246,9 @@ document.addEventListener("keydown", e => {
 });
 
 window.PQA = { api, esc, toast, state };
+window.PQA.annotateBatch = (id) => {
+  state.batchId = id;
+  document.querySelector('.tab[data-tab="annotate"]').click();
+  if (state.annotator) claimNext(); else toast("enter annotator id and press Start");
+};
 if (state.annotator) claimNext();
