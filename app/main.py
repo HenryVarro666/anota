@@ -195,7 +195,8 @@ def create_app(db_path=":memory:", demo=False, data_dir=None, export_dir=None):
     @app.get("/api/stats/agreement")
     def api_agreement():
         return {"pairwise": quality.pairwise_kappa(db),
-                "judge_human": quality.judge_human_agreement(db)}
+                "judge_human": quality.judge_human_agreement(db),
+                "judge_golden": quality.judge_golden_calibration(db)}
 
     @app.post("/api/judge/run")
     def api_judge_run(req: JudgeRunRequest):

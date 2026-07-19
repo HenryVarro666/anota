@@ -163,6 +163,42 @@ def judge_human_agreement(db):
                 [j["worst_severity"] for _, j in pairs], SEVERITIES, weights="linear"), 3)}
 
 
+def judge_golden_calibration(db):
+    """Judge vs golden truth: the calibration report an LLM judge must earn before
+    its confidence is trusted for routing. Returns None until both sides exist."""
+    pairs = []
+    for g in db.query("SELECT task_id, answer FROM golden_answers"):
+        jr = db.one("SELECT verdict FROM judge_results WHERE task_id=? ORDER BY id DESC LIMIT 1",
+                    (g["task_id"],))
+        if jr:
+            pairs.append((json.loads(g["answer"]), json.loads(jr["verdict"])))
+    if not pairs:
+        return None
+    per_type = {}
+    for e in ERROR_TYPES:
+        if e == "no_error":
+            continue
+        pos = [(g, j) for g, j in pairs if e in g["error_types"]]
+        if pos:
+            per_type[e] = {"n": len(pos),
+                           "detected": sum(1 for g, j in pos if e in j["error_types"])}
+    clean = [(g, j) for g, j in pairs if g["error_types"] == ["no_error"]]
+    return {"n": len(pairs),
+            "exact_type_match": round(sum(1 for g, j in pairs
+                                          if set(g["error_types"]) == set(j["error_types"]))
+                                      / len(pairs), 3),
+            "kappa_binary": round(cohen_kappa(
+                [_binary(g) for g, _ in pairs], [_binary(j) for _, j in pairs],
+                ["error", "clean"]), 3),
+            "kappa_severity": round(cohen_kappa(
+                [g["worst_severity"] for g, _ in pairs],
+                [j["worst_severity"] for _, j in pairs], SEVERITIES, weights="linear"), 3),
+            "per_type": per_type,
+            "clean_n": len(clean),
+            "clean_false_alarms": sum(1 for g, j in clean
+                                      if j["error_types"] != ["no_error"])}
+
+
 def error_arm_matrix(db):
     per_arm, sources = {}, {"human": 0, "judge": 0}
     for t in db.query("SELECT id, metadata FROM tasks"):
