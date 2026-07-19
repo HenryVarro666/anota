@@ -37,9 +37,10 @@
           κ<sub>sev</sub> <b>${g.judge_human.kappa_severity}</b> ·
           κ<sub>bin</sub> <b>${g.judge_human.kappa_binary}</b></div>` : ""}</div>
       <div class="card"><h3>Batches & routing</h3>
-        <table><tr><th>batch</th><th>tasks</th><th>overlap</th><th>suggestions</th></tr>
+        <table id="batches-table"><tr><th>batch</th><th>tasks</th><th>overlap</th><th>suggestions</th><th>actions</th></tr>
         ${b.map(x => `<tr><td>${esc(x.name)}</td><td>${x.n_tasks}</td><td>${x.overlap}</td>
-          <td>${x.show_suggestions ? "ON" : "off"}</td></tr>`).join("")}</table>
+          <td>${x.show_suggestions ? "ON" : "off"}</td>
+          <td><button data-annotate="${x.id}">annotate</button></td></tr>`).join("")}</table>
         <div class="form-inline" style="margin-top:10px">
           <label>route top</label><input type="number" id="rt-n" value="10" min="1">
           <select id="rt-signal"><option value="judge_confidence">lowest judge confidence</option>
@@ -47,6 +48,10 @@
           <button class="primary" id="rt-build">Build routing batch</button>
           <button id="ex-btn">Export snapshot</button>
         </div></div>`;
+    v.querySelector("#batches-table").onclick = e => {
+      const btn = e.target.closest("[data-annotate]");
+      if (btn) window.PQA.annotateBatch(+btn.dataset.annotate);
+    };
     v.querySelector("#rt-build").onclick = async () => {
       const btn = v.querySelector("#rt-build");
       btn.disabled = true;
