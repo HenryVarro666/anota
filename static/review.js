@@ -13,9 +13,11 @@
     catch (e) { v.innerHTML = `<div class="empty">${esc(e.message)}</div>`; return; }
     if (!queue.length) { v.innerHTML = `<div class="empty">Review queue is empty ✓</div>`; return; }
     v.innerHTML = `<div class="review-grid">
-      <div class="card" id="rq-list" style="padding:6px">
+      <div class="card" id="rq-list">
         ${queue.map((q, i) => `<div class="rq-item" data-i="${i}">
-           <b>${esc(q.task.id)}</b> · ${esc(q.annotation.annotator)}
+           ${q.disagreement >= 3 ? `<span class="dot high"></span>`
+             : q.disagreement > 0 ? `<span class="dot mid"></span>` : ""}
+           <b>${esc(q.task.id)}</b><span>${esc(q.annotation.annotator)}</span>
            <span class="dis">Δ ${esc(q.disagreement)}</span></div>`).join("")}
       </div>
       <div class="card" id="rq-detail"><div class="empty">Select an item.</div></div></div>`;

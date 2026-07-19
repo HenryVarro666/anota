@@ -38,12 +38,21 @@ document.querySelectorAll(".tab").forEach(b => b.onclick = () => {
   if (b.dataset.tab === "dashboard") window.renderDashboard?.(true); else window.stopDashPoll?.();
 });
 
-/* ---------- theme + health ---------- */
+/* ---------- theme (auto -> light -> dark) + health ---------- */
+const THEMES = ["auto", "light", "dark"];
+const THEME_ICONS = { auto: "◐", light: "☀︎", dark: "☾" };
+let themeMode = localStorage.getItem("pqa_theme");
+if (!THEMES.includes(themeMode)) themeMode = "auto";
+function applyTheme(mode) {
+  document.documentElement.dataset.theme = mode === "auto" ? "" : mode;
+  const b = $("#theme-btn");
+  b.textContent = THEME_ICONS[mode]; b.title = "appearance: " + mode;
+}
+applyTheme(themeMode);
 $("#theme-btn").onclick = () => {
-  const cur = document.documentElement.dataset.theme === "light" ? "" : "light";
-  document.documentElement.dataset.theme = cur; localStorage.setItem("pqa_theme", cur);
+  themeMode = THEMES[(THEMES.indexOf(themeMode) + 1) % THEMES.length];
+  localStorage.setItem("pqa_theme", themeMode); applyTheme(themeMode);
 };
-document.documentElement.dataset.theme = localStorage.getItem("pqa_theme") || "";
 async function health() {
   try {
     const h = await api("/health");
@@ -99,7 +108,7 @@ function renderTask(task) {
       ${meta.arm ? `<span>arm <b>${esc(meta.arm)}</b></span>` : ""}
       <span id="timer">0:00</span>
       <span>batch <b>${esc(task.batch.name)}</b></span>
-      ${state.batchId != null ? `<span>filter: batch ${esc(state.batchId)} <button id="clear-batch" style="background:none;border:0;color:var(--err);cursor:pointer">×</button></span>` : ""}
+      ${state.batchId != null ? `<span>filter: batch ${esc(state.batchId)} <button id="clear-batch" class="link-x" title="clear batch filter">×</button></span>` : ""}
     </div>
     <div class="textpanel"><div class="lbl">Source</div><div class="txt">${esc(task.source)}</div></div>
     <div class="textpanel"><div class="lbl">Hypothesis</div><div class="txt">${esc(task.hypothesis)}</div></div>

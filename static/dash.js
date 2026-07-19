@@ -80,7 +80,8 @@
     const max = Math.max(...xs), w = 600, h = 40;
     const pts = xs.map((x, i) => `${(i / Math.max(1, xs.length - 1)) * w},${h - (x / max) * (h - 4)}`);
     return `<svg class="sparkline" viewBox="0 0 ${w} ${h + 4}" preserveAspectRatio="none">
-      <polyline fill="none" stroke="var(--accent)" stroke-width="2" points="${pts.join(" ")}"/></svg>`;
+      <polyline fill="none" stroke="var(--accent)" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" points="${pts.join(" ")}"/></svg>`;
   }
 
   function matrix(m) {
@@ -93,8 +94,9 @@
       html += `<div class="hcell">${esc(e)}</div>`;
       for (const a of m.arms) {
         const r = m.cells[a][e];
-        const alpha = r > 0 ? 0.10 + 0.75 * r : 0.03;
-        html += `<div class="cell" style="background:rgba(91,141,255,${alpha.toFixed(2)})">
+        const pct = Math.round((r > 0 ? 0.10 + 0.75 * r : 0.04) * 100);
+        html += `<div class="cell${r > 0.5 ? " hot" : ""}"
+                 style="background:color-mix(in srgb, var(--accent) ${pct}%, transparent)">
                  ${(r * 100).toFixed(0)}%</div>`;
       }
     }
