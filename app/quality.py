@@ -74,7 +74,7 @@ def final_label(db, task_id):
     tied = [s for s in SEVERITIES if sev_counts.get(s, 0) == top]
     severity = tied[-1]  # tie -> stricter (SEVERITIES is ordered mild->severe)
     newest = max(anns, key=lambda a: a["id"])
-    return {"error_types": maj or ["no_error"], "worst_severity": severity,
+    return {"error_types": maj, "worst_severity": severity,
             "adequacy": int(median(a["adequacy"] for a in anns) + 0.5),
             "fluency": int(median(a["fluency"] for a in anns) + 0.5),
             "correction": newest["correction"], "note": newest["note"],
@@ -146,6 +146,8 @@ def judge_human_agreement(db):
     pairs = []
     for t in db.query("SELECT id FROM tasks"):
         fl = final_label(db, t["id"])
+        if fl and fl.get("unresolved"):
+            continue
         jr = db.one("SELECT verdict FROM judge_results WHERE task_id=? ORDER BY id DESC LIMIT 1",
                     (t["id"],))
         if fl and jr:
@@ -165,6 +167,8 @@ def error_arm_matrix(db):
     per_arm, sources = {}, {"human": 0, "judge": 0}
     for t in db.query("SELECT id, metadata FROM tasks"):
         fl = final_label(db, t["id"])
+        if fl is not None and fl.get("unresolved"):
+            continue
         if fl is not None:
             sources["human"] += 1
         else:

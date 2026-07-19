@@ -167,15 +167,20 @@ function setSeg(name, val) {
 }
 function toggleError(e) {
   const s = state.sel.errors;
-  if (e === "no_error") { s.clear(); s.add("no_error"); setSeg("severity", "neutral"); }
+  if (e === "no_error") {
+    s.clear(); s.add("no_error"); setSeg("severity", "neutral");
+    if (state.sel.adequacy == null) setSeg("adequacy", 5);
+    if (state.sel.fluency == null) setSeg("fluency", 5);
+  }
   else { s.delete("no_error"); s.has(e) ? s.delete(e) : s.add(e); }
   document.querySelectorAll("#chips-errors .chip").forEach(c =>
     c.classList.toggle("sel", s.has(c.dataset.v)));
 }
 
+let submitting = false;
 async function submit() {
   const { sel, task } = state;
-  if (!task) return;
+  if (submitting || !task) return;
   if (!sel.errors.size) return toast("pick error types (0 = no error)", true);
   if (!sel.severity) return toast("pick severity (v)", true);
   if (!sel.adequacy || !sel.fluency) return toast("rate adequacy (1-5) and fluency (⇧1-5)", true);
@@ -187,6 +192,7 @@ async function submit() {
     $("#note").focus();
     return toast("critical requires a note (x)", true);
   }
+  submitting = true;
   try {
     await api("/submit", { annotator: state.annotator, assignment_id: task.assignment_id,
       error_types: [...sel.errors], worst_severity: sel.severity,
@@ -197,6 +203,7 @@ async function submit() {
     state.task = null;
     claimNext();
   } catch (e) { toast(e.message, true); }
+  finally { submitting = false; }
 }
 async function skip() {
   if (!state.task) return;
@@ -218,7 +225,10 @@ async function showGuideline() {
 
 /* ---------- keyboard ---------- */
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") return $("#modal").classList.add("hidden");
+  if (e.key === "Escape") {
+    if (e.target.matches("input, textarea")) return e.target.blur();
+    return $("#modal").classList.add("hidden");
+  }
   if (e.target.matches("input, textarea, select")) return;
   if (!$("#view-annotate").classList.contains("active") || !state.task) {
     if (e.key === "?") showGuideline();

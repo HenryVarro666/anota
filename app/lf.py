@@ -17,23 +17,39 @@ PROFILES = {
     },
     "zh-en": {
         "src_neg": re.compile(r"[不没無无别勿禁未]"),
-        "hyp_neg": re.compile(r"\b(no|not|never|without|none|neither|nor)\b", re.I),
+        "hyp_neg": re.compile(r"\b(no|not|never|without|none|neither|nor)\b|n't\b", re.I),
         "len_bounds": (1.0, 6.0),
         "src_lang": "zh",
         "hyp_lang": "en",
     },
 }
 
-ZH_DIGITS = {"零": "0", "一": "1", "两": "2", "二": "2", "三": "3", "四": "4",
-             "五": "5", "六": "6", "七": "7", "八": "8", "九": "9", "十": "10"}
+# Standalone single-char digits (excludes 十/一: 十 is fully handled by the compound
+# regex below, and lone 一 is too ambiguous outside a compound — it's mostly an
+# article/classifier/idiom filler in Chinese ("一次", "一下", "一起"), not a numeral.
+ZH_DIGITS = {"零": "0", "两": "2", "二": "2", "三": "3", "四": "4",
+             "五": "5", "六": "6", "七": "7", "八": "8", "九": "9"}
 EN_WORDS = {"once": "1", "twice": "2", "thrice": "3"}
 ES_WORDS = {"dos": "2", "tres": "3", "once": "11"}
 NUM_RE = re.compile(r"\d+(?:\.\d+)?%?")
 CJK_RE = re.compile(r"[一-鿿]")
 
+# Compound zh numerals ("tens" + "ones"): 二十->20, 十五->15, 二十一->21, 十->10.
+_ZH_TENS_DIGIT = {"一": 1, "二": 2, "两": 2, "三": 3, "四": 4, "五": 5,
+                  "六": 6, "七": 7, "八": 8, "九": 9}
+ZH_COMPOUND_RE = re.compile(r"([一二两三四五六七八九])?十([一二三四五六七八九])?")
+
+
+def _zh_compound(m):
+    tens_ch, ones_ch = m.group(1), m.group(2)
+    tens = _ZH_TENS_DIGIT.get(tens_ch, 1) if tens_ch else 1
+    ones = _ZH_TENS_DIGIT.get(ones_ch, 0) if ones_ch else 0
+    return str(tens * 10 + ones)
+
 
 def _numbers(text, lang):
     if lang == "zh":
+        text = ZH_COMPOUND_RE.sub(_zh_compound, text)
         for zh, d in ZH_DIGITS.items():
             text = text.replace(zh, d)
     elif lang == "en":

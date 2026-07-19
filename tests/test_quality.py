@@ -69,6 +69,21 @@ def test_latest_annotation_wins_per_annotator():
     fl = quality.final_label(db, "t1")
     assert fl["error_types"] == ["no_error"] and fl["source_kind"] == "single"
 
+def test_unresolved_disagreement_quarantined():
+    db = Database(":memory:"); seed(db)
+    add_ann(db, "t1", "chao", ["omission"], "major")
+    add_ann(db, "t1", "maria", ["terminology"], "critical")
+    fl = quality.final_label(db, "t1")
+    assert fl["unresolved"] is True
+    assert fl["error_types"] == []                    # no rubric-invalid no_error fallback
+    m = quality.error_arm_matrix(db)
+    assert "wait1" not in m["n"] or m["n"]["wait1"] == 0   # unresolved task quarantined
+    db.execute(
+        "INSERT INTO judge_results(task_id,verdict,confidence,model,is_mock) VALUES(?,?,?,?,1)",
+        ("t1", json.dumps({"error_types": ["omission"], "worst_severity": "major",
+                           "adequacy": 3, "rationale": "x"}), 0.9, "mock"))
+    assert quality.judge_human_agreement(db) is None   # unresolved skipped even with a judge row
+
 def test_error_arm_matrix():
     db = Database(":memory:"); bid = seed(db)
     db.execute("INSERT INTO tasks(id,batch_id,source,hypothesis,metadata) VALUES(?,?,?,?,?)",
