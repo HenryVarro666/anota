@@ -1,10 +1,13 @@
-# PropioQA Workbench
+# Anota Workbench
 
 A self-hosted, keyboard-first translation-QA annotation workbench.
 FastAPI + SQLite + vanilla JS — no ORM, no build chain, three runtime deps.
 
 **Demo-grade by design, with production notes inline. All bundled data is synthetic
 (EN→ES medication instructions written for this demo). No PHI anywhere.**
+
+Why it is built this way, how it compares to Label Studio / Argilla / Prodigy / Scale,
+and the deployment & roadmap analysis: **[docs/DESIGN.md](docs/DESIGN.md)**.
 
 ## Quick start
 
@@ -15,6 +18,16 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 
 `--demo` boots a throwaway DB with 30 synthetic tasks (12 planted errors), a golden
 set, a second annotator's labels, and pre-computed mock-judge verdicts.
+
+## Docker
+
+```bash
+docker build -t anota .
+docker run -p 8420:8420 -v anota-data:/data anota          # persistent DB in the volume
+docker run -p 8420:8420 anota --demo                       # throwaway demo instance
+```
+
+One container, no sidecar services — that absence is deliberate (see docs/DESIGN.md §5).
 
 ## What it embodies (one lesson per platform)
 
@@ -49,7 +62,7 @@ import summary reports how many were skipped.
 ## Real judge
 
 ```bash
-PROPIOQA_JUDGE=openai PROPIOQA_JUDGE_BASE_URL=http://localhost:8000/v1 \
+ANOTA_JUDGE=openai ANOTA_JUDGE_BASE_URL=http://localhost:8000/v1 \
   .venv/bin/python run.py --demo
 ```
 Any OpenAI-compatible endpoint works. If the judge is down, annotation is untouched —
@@ -57,7 +70,7 @@ the judge is a first-pass filter, never the final arbiter.
 
 ## 5-minute demo script
 
-1. **Annotate** (2 min): start as `chao`. Clean record on t001: `0 Space`
+1. **Annotate** (2 min): start as `alice`. Clean record on t001: `0 Space`
    (adequacy/fluency auto-default to 5 on `0` — works now). Error record on t002
    — negation dropped: `g` (negation) → `v` to critical → `2` adequacy → `⇧4`
    fluency → `x`, type the note, `Esc` to leave the box → `Space`.
@@ -65,7 +78,7 @@ the judge is a first-pass filter, never the final arbiter.
 2. **Dashboard** (1 min): error×arm matrix — low-latency arm degrades to
    omission/negation errors; golden accuracy per annotator; κ panel.
 3. **Routing loop** (2 min): Build routing batch from lowest judge confidence →
-   claim from it as `chao` → suggestion chips (MOCK-labeled) now visible →
+   claim from it as `alice` → suggestion chips (MOCK-labeled) now visible →
    Review tab → overturn one with a case note that feeds the guideline.
 
 ## Tests

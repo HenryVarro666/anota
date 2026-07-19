@@ -1,7 +1,7 @@
-/* PropioQA Workbench — core + Annotate tab. Review/Dashboard live in review.js/dash.js. */
+/* Anota Workbench — core + Annotate tab. Review/Dashboard live in review.js/dash.js. */
 "use strict";
 
-const state = { annotator: localStorage.getItem("pqa_annotator") || "",
+const state = { annotator: localStorage.getItem("anota_annotator") || "",
                 task: null, startTs: 0, sel: null, timerId: null, batchId: null };
 
 const $ = (s, el) => (el || document).querySelector(s);
@@ -41,7 +41,7 @@ document.querySelectorAll(".tab").forEach(b => b.onclick = () => {
 /* ---------- theme (auto -> light -> dark) + health ---------- */
 const THEMES = ["auto", "light", "dark"];
 const THEME_ICONS = { auto: "◐", light: "☀︎", dark: "☾" };
-let themeMode = localStorage.getItem("pqa_theme");
+let themeMode = localStorage.getItem("anota_theme");
 if (!THEMES.includes(themeMode)) themeMode = "auto";
 function applyTheme(mode) {
   document.documentElement.dataset.theme = mode === "auto" ? "" : mode;
@@ -51,7 +51,7 @@ function applyTheme(mode) {
 applyTheme(themeMode);
 $("#theme-btn").onclick = () => {
   themeMode = THEMES[(THEMES.indexOf(themeMode) + 1) % THEMES.length];
-  localStorage.setItem("pqa_theme", themeMode); applyTheme(themeMode);
+  localStorage.setItem("anota_theme", themeMode); applyTheme(themeMode);
 };
 async function health() {
   try {
@@ -75,7 +75,7 @@ $("#start-btn").onclick = start;
 function start() {
   state.annotator = $("#annotator").value.trim();
   if (!state.annotator) return toast("annotator id required", true);
-  localStorage.setItem("pqa_annotator", state.annotator);
+  localStorage.setItem("anota_annotator", state.annotator);
   claimNext();
 }
 
@@ -264,8 +264,8 @@ document.addEventListener("keydown", e => {
   }
 });
 
-window.PQA = { api, esc, toast, state };
-window.PQA.annotateBatch = (id) => {
+window.ANOTA = { api, esc, toast, state };
+window.ANOTA.annotateBatch = (id) => {
   state.batchId = id;
   document.querySelector('.tab[data-tab="annotate"]').click();
   if (state.annotator) claimNext(); else toast("enter annotator id and press Start");

@@ -1,7 +1,7 @@
 /* Review tab: three-way comparison (human vs judge vs LF) + adjudication. */
 "use strict";
 (() => {
-  const { api, esc, toast } = window.PQA;
+  const { api, esc, toast } = window.ANOTA;
   const SEVS = ["neutral", "minor", "major", "critical"];
   const ETYPES = ["no_error","mistranslation","omission","addition","terminology",
                   "number_unit","negation_polarity","grammar","punctuation"];

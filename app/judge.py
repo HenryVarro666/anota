@@ -114,10 +114,10 @@ class OpenAIJudge:
 
 
 def get_judge(guideline_text=""):
-    if os.environ.get("PROPIOQA_JUDGE", "mock") == "openai":
-        return OpenAIJudge(os.environ.get("PROPIOQA_JUDGE_BASE_URL", "http://localhost:8000/v1"),
-                           os.environ.get("PROPIOQA_JUDGE_MODEL") or None,
-                           os.environ.get("PROPIOQA_JUDGE_API_KEY", "EMPTY"),
+    if os.environ.get("ANOTA_JUDGE", "mock") == "openai":
+        return OpenAIJudge(os.environ.get("ANOTA_JUDGE_BASE_URL", "http://localhost:8000/v1"),
+                           os.environ.get("ANOTA_JUDGE_MODEL") or None,
+                           os.environ.get("ANOTA_JUDGE_API_KEY", "EMPTY"),
                            guideline_text)
     return MockJudge()
 

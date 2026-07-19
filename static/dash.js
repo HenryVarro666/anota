@@ -1,7 +1,7 @@
 /* Ops dashboard: throughput, golden accuracy, agreement, error×arm matrix, routing builder. */
 "use strict";
 (() => {
-  const { api, esc, toast } = window.PQA;
+  const { api, esc, toast } = window.ANOTA;
   let pollId = null;
 
   window.stopDashPoll = () => { clearInterval(pollId); pollId = null; };
@@ -50,7 +50,7 @@
         </div></div>`;
     v.querySelector("#batches-table").onclick = e => {
       const btn = e.target.closest("[data-annotate]");
-      if (btn) window.PQA.annotateBatch(+btn.dataset.annotate);
+      if (btn) window.ANOTA.annotateBatch(+btn.dataset.annotate);
     };
     v.querySelector("#rt-build").onclick = async () => {
       const btn = v.querySelector("#rt-build");
