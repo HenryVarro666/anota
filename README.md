@@ -31,6 +31,21 @@ The one non-negotiable design rule: **batch policy is enforced server-side** —
 a golden-collection batch's claim response never even contains judge/LF fields
 (anchoring discipline), while routing batches carry them explicitly.
 
+## Importing real data
+
+Load a real corpus straight from the CLI — no demo flag, no manual DB setup:
+
+```bash
+.venv/bin/python run.py --import-file corpus.jsonl --profile aqb --lang zh-en \
+  --batch aqb-pilot --golden golden.jsonl --overlap 2
+```
+
+`--profile aqb` maps `source_zh`/`hypothesis_en`/`reference_en` fields (see
+`app/importer.py:PROFILES`); `--profile generic` (default) expects `source`/
+`translation|hypothesis`/`reference`. Re-running against the same file is safe —
+tasks with an `id` already in the DB are skipped, not duplicated, and the
+import summary reports how many were skipped.
+
 ## Real judge
 
 ```bash
@@ -42,8 +57,10 @@ the judge is a first-pass filter, never the final arbiter.
 
 ## 5-minute demo script
 
-1. **Annotate** (2 min): start as `chao`, label t001 with `0 Space` (clean),
-   t002 by hand — negation dropped, `g v→critical, 2, ⇧4, x note, Space`.
+1. **Annotate** (2 min): start as `chao`. Clean record on t001: `0 Space`
+   (adequacy/fluency auto-default to 5 on `0` — works now). Error record on t002
+   — negation dropped: `g` (negation) → `v` to critical → `2` adequacy → `⇧4`
+   fluency → `x`, type the note, `Esc` to leave the box → `Space`.
    Point out: no machine hints on screen, and why (anchoring).
 2. **Dashboard** (1 min): error×arm matrix — low-latency arm degrades to
    omission/negation errors; golden accuracy per annotator; κ panel.

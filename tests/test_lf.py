@@ -30,6 +30,16 @@ def test_number_zh_normalization():
     r = run_lfs("每天两次，每次五毫克。", "Twice daily, 5 mg each time.", "zh-en")
     assert get(r, "lf_number_mismatch")["label"] == OK  # 五->5, 两->2 both found
 
+def test_zh_compound_numerals():
+    r = run_lfs("每二十分钟测量一次。", "Check every 20 minutes.", "zh-en")
+    assert get(r, "lf_number_mismatch")["label"] == OK  # 二十->20
+    r2 = run_lfs("每次服用十五毫升。", "Take 15 ml each time.", "zh-en")
+    assert get(r2, "lf_number_mismatch")["label"] == OK  # 十五->15
+
+def test_zh_en_contraction_negation():
+    r = run_lfs("他不开车。", "He doesn't drive.", "zh-en")
+    assert get(r, "lf_negation_drop")["label"] == OK  # n't counts as negation counterpart
+
 def test_untranslated_fragment_en_es():
     r = run_lfs("Apply the ointment to the affected area every night.",
                 "Aplique the ointment to the affected area cada noche.", "en-es")

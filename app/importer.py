@@ -34,8 +34,12 @@ def import_jsonl(db, path, profile, batch_name, lang_profile="en-es",
     bid = db.execute(
         "INSERT INTO batches(name, show_suggestions, overlap, lang_profile) VALUES(?,?,?,?)",
         (batch_name, int(show_suggestions), overlap, lang_profile))
-    n = 0
+    n = skipped = 0
     for row in _read_jsonl(path):
+        task_id = str(row[p["id"]])
+        if db.one("SELECT 1 FROM tasks WHERE id=?", (task_id,)):
+            skipped += 1
+            continue
         src, hyp = row[p["source"]], _hyp(row, p["hypothesis"])
         meta = dict(row.get("metadata", {}))
         if "arm" in row:
@@ -46,11 +50,12 @@ def import_jsonl(db, path, profile, batch_name, lang_profile="en-es",
         db.execute(
             "INSERT INTO tasks(id,batch_id,source,hypothesis,reference,metadata,lf_flags) "
             "VALUES(?,?,?,?,?,?,?)",
-            (str(row[p["id"]]), bid, src, hyp, row.get(p["reference"]),
+            (task_id, bid, src, hyp, row.get(p["reference"]),
              json.dumps(meta, ensure_ascii=False), json.dumps(flags, ensure_ascii=False)))
         n += 1
-    db.audit(actor, "import", "batch", bid, {"path": str(path), "n": n, "profile": profile})
-    return {"batch_id": bid, "n": n}
+    db.audit(actor, "import", "batch", bid,
+             {"path": str(path), "n": n, "skipped": skipped, "profile": profile})
+    return {"batch_id": bid, "n": n, "skipped": skipped}
 
 
 def load_golden(db, path, actor="system"):
