@@ -64,3 +64,26 @@ def test_openai_judge_malformed_200_raises_unavailable(monkeypatch):
 def test_get_judge_default_mock(monkeypatch):
     monkeypatch.delenv("ANOTA_JUDGE", raising=False)
     assert get_judge().is_mock is True
+
+
+def test_aggregate_samples_majority_and_tie():
+    from app.judge import aggregate_samples
+    s = lambda types, sev, adq: {"error_types": types, "worst_severity": sev,
+                                 "adequacy": adq, "rationale": "r", "confidence": 0.8}
+    out = aggregate_samples([s(["omission"], "major", 2),
+                            s(["omission", "grammar"], "critical", 3),
+                            s(["omission"], "major", 2)])
+    assert out["error_types"] == ["omission"]          # grammar only 1/3 -> dropped
+    assert out["worst_severity"] == "major"            # 2/3 majority
+    assert out["adequacy"] == 2 and out["confidence"] == pytest.approx(2 / 3, abs=1e-3)
+    tie = aggregate_samples([s(["omission"], "major", 3), s(["omission"], "critical", 3)])
+    assert tie["worst_severity"] == "critical"         # tie -> stricter
+
+
+def test_aggregate_samples_clean_consensus():
+    from app.judge import aggregate_samples
+    s = lambda: {"error_types": ["no_error"], "worst_severity": "neutral",
+                 "adequacy": 5, "rationale": "r", "confidence": 0.9}
+    out = aggregate_samples([s(), s(), s()])
+    assert out["error_types"] == ["no_error"] and out["worst_severity"] == "neutral"
+    assert out["confidence"] == 1.0

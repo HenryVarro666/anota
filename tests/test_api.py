@@ -76,7 +76,8 @@ def test_stats_endpoints(client):
     assert any(s["annotator"] == "maria" for s in a)
     o = client.get("/api/stats/overview").json()
     assert o["n_tasks"] == 30 and o["judge"]["mode"] == "mock"
-    client.get("/api/stats/agreement").json()   # must not 500
+    ag = client.get("/api/stats/agreement").json()
+    assert ag["judge_golden"] is not None and ag["judge_golden"]["n"] == 6
 
 def test_routing_batch_exposes_suggestions(client):
     r = client.post("/api/routing/build", json={"top_n": 5, "signal": "judge_confidence"}).json()

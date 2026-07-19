@@ -224,12 +224,21 @@ duplicated. `--suggestions` marks the imported batch as a routing batch (hints v
 | `ANOTA_JUDGE_BASE_URL` | `http://localhost:8000/v1` | any OpenAI-compatible endpoint (vLLM, llama.cpp, commercial) |
 | `ANOTA_JUDGE_MODEL` | auto-detect | first model served if unset |
 | `ANOTA_JUDGE_API_KEY` | `EMPTY` | bearer token if the endpoint needs one |
+| `ANOTA_JUDGE_SAMPLES` | `1` | self-consistency: sample k verdicts at temperature 0.7 and majority-aggregate; confidence becomes the severity-agreement fraction across samples |
 
 ```bash
 ANOTA_JUDGE=openai ANOTA_JUDGE_BASE_URL=http://localhost:8000/v1 .venv/bin/python run.py --demo
 ```
 
 Judge failure never breaks annotation: the top-bar badge degrades and humans keep working.
+
+Field-tested against a self-hosted **Qwen3-14B** (vLLM, reasoning mode on): ~4 s/task
+sequential over the 30 demo tasks, and it caught **all 12 planted errors — including the
+three terminology swaps that are invisible to lint** (hipertensión→hipotensión-class), with
+accurate rationales. That contrast (lint-bound MockJudge vs semantic LLM judge) is exactly
+what the *Judge calibration* dashboard card measures: judge-vs-golden κ, per-error-type
+recall, and false alarms on clean goldens — **calibrate before you trust** the judge's
+confidence for routing.
 
 ## HTTP API
 
@@ -244,7 +253,7 @@ the same way.
 | `/batches` | GET | batches incl. `n_tasks`, policy, overlap |
 | `/review/queue` | GET | unreviewed latest annotations, disagreement-ranked, with judge + lint context |
 | `/review/{annotation_id}` | POST | `{verdict: approved\|overturned, case_note, replacement?}` |
-| `/stats/overview` · `/stats/matrix` · `/stats/annotators` · `/stats/agreement` | GET | dashboard aggregates (κ, golden accuracy, error×arm matrix with `sources` disclosure) |
+| `/stats/overview` · `/stats/matrix` · `/stats/annotators` · `/stats/agreement` | GET | dashboard aggregates (pairwise κ, judge×human κ, judge-vs-golden calibration incl. per-type recall, golden accuracy, error×arm matrix with `sources` disclosure) |
 | `/judge/run` | POST | `{batch_id}` → judge every task in the batch (`503` if unreachable) |
 | `/routing/build` | POST | `{top_n, signal: judge_confidence\|lf_conflict}` → new routing batch |
 | `/export` | POST | `{batch_id?, include_golden?}` → versioned snapshot |

@@ -36,6 +36,7 @@
         ${g.judge_human ? `<div style="margin-top:6px">judge × human (n=${g.judge_human.n}):
           κ<sub>sev</sub> <b>${g.judge_human.kappa_severity}</b> ·
           κ<sub>bin</sub> <b>${g.judge_human.kappa_binary}</b></div>` : ""}</div>
+      ${g.judge_golden ? judgeCalibration(g.judge_golden) : ""}
       <div class="card"><h3>Batches & routing</h3>
         <table id="batches-table"><tr><th>batch</th><th>tasks</th><th>overlap</th><th>suggestions</th><th>actions</th></tr>
         ${b.map(x => `<tr><td>${esc(x.name)}</td><td>${x.n_tasks}</td><td>${x.overlap}</td>
@@ -74,6 +75,20 @@
   };
 
   const stat = (n, l) => `<div class="card stat"><div class="num">${esc(n)}</div><div class="lbl">${l}</div></div>`;
+
+  function judgeCalibration(c) {
+    const rows = Object.entries(c.per_type).map(([t, v]) =>
+      `<tr><td>${esc(t)}</td><td>${v.detected}/${v.n}</td>
+       <td>${((v.detected / v.n) * 100).toFixed(0)}%</td></tr>`).join("");
+    return `<div class="card"><h3>Judge calibration — vs golden set</h3>
+      <div>n=${c.n} golden pairs · κ<sub>bin</sub> <b>${c.kappa_binary}</b> ·
+        κ<sub>sev</sub> <b>${c.kappa_severity}</b> ·
+        exact type match <b>${(c.exact_type_match * 100).toFixed(0)}%</b> ·
+        clean false alarms <b>${c.clean_false_alarms}/${c.clean_n}</b></div>
+      ${rows ? `<table style="margin-top:8px"><tr><th>error type</th><th>detected</th><th>recall</th></tr>${rows}</table>` : ""}
+      <div class="anchor-note">calibrate before you trust: judge confidence only routes work
+      once its agreement with human golden labels is known</div></div>`;
+  }
 
   function sparkline(xs) {
     if (!xs.length) return `<div class="anchor-note">no timed annotations yet</div>`;

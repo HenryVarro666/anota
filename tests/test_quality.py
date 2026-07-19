@@ -110,3 +110,29 @@ def test_pairwise_kappa_needs_min_shared():
     add_ann(db, "t1", "maria", ["omission"], "major")
     assert quality.pairwise_kappa(db, min_shared=3) == []
     assert quality.pairwise_kappa(db, min_shared=1)[0]["n"] == 1
+
+
+def test_judge_golden_calibration():
+    db = Database(":memory:"); seed(db)
+    db.execute("INSERT INTO tasks(id,batch_id,source,hypothesis) VALUES('t2',1,'s','h')")
+    db.execute("INSERT INTO tasks(id,batch_id,source,hypothesis) VALUES('t3',1,'s','h')")
+    for tid, ans in [("t1", {"error_types": ["omission"], "worst_severity": "major"}),
+                     ("t2", {"error_types": ["no_error"], "worst_severity": "neutral"}),
+                     ("t3", {"error_types": ["negation_polarity"], "worst_severity": "critical"})]:
+        db.execute("INSERT INTO golden_answers(task_id, answer) VALUES(?,?)", (tid, json.dumps(ans)))
+    for tid, v in [("t1", {"error_types": ["omission"], "worst_severity": "major"}),
+                   ("t2", {"error_types": ["addition"], "worst_severity": "minor"}),   # false alarm
+                   ("t3", {"error_types": ["no_error"], "worst_severity": "neutral"})]:  # miss
+        db.execute("INSERT INTO judge_results(task_id,verdict,confidence,model,is_mock) "
+                   "VALUES(?,?,0.9,'m',1)", (tid, json.dumps(v)))
+    c = quality.judge_golden_calibration(db)
+    assert c["n"] == 3
+    assert c["per_type"]["omission"] == {"n": 1, "detected": 1}
+    assert c["per_type"]["negation_polarity"] == {"n": 1, "detected": 0}
+    assert c["clean_n"] == 1 and c["clean_false_alarms"] == 1
+    assert c["exact_type_match"] == pytest.approx(1 / 3, abs=1e-3)
+
+
+def test_judge_golden_calibration_none_without_data():
+    db = Database(":memory:"); seed(db)
+    assert quality.judge_golden_calibration(db) is None
