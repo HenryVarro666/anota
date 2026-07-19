@@ -48,16 +48,22 @@
           <button id="ex-btn">Export snapshot</button>
         </div></div>`;
     v.querySelector("#rt-build").onclick = async () => {
+      const btn = v.querySelector("#rt-build");
+      btn.disabled = true;
       try {
         const r = await api("/routing/build",
           { top_n: +v.querySelector("#rt-n").value, signal: v.querySelector("#rt-signal").value });
         toast(`${r.name}: ${r.n} tasks — suggestions ON for this batch`);
         window.renderDashboard();
       } catch (e) { toast(e.message, true); }
+      finally { btn.disabled = false; }
     };
     v.querySelector("#ex-btn").onclick = async () => {
+      const btn = v.querySelector("#ex-btn");
+      btn.disabled = true;
       try { const r = await api("/export", {}); toast(`${r.version} → sha ${r.sha256.slice(0, 12)}…`); }
       catch (e) { toast(e.message, true); }
+      finally { btn.disabled = false; }
     };
     if (startPoll && !pollId) pollId = setInterval(() => window.renderDashboard(), 5000);
   };

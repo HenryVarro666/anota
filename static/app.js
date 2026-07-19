@@ -13,7 +13,7 @@ async function api(path, body) {
     { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body) });
   if (!r.ok) {
     let msg = r.status;
-    try { const j = await r.json(); msg = j.detail?.[0]?.msg || j.detail || msg; } catch {}
+    try { const j = await r.json(); msg = Array.isArray(j.detail) ? (j.detail[0]?.msg || msg) : (j.detail || msg); } catch {}
     throw new Error(msg);
   }
   return r.json();
