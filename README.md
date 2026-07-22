@@ -1,63 +1,77 @@
-# Anota Workbench
+<div align="center">
 
-**A self-hosted, keyboard-first annotation workbench for translation & interpretation
-quality assessment — with the quality-operations layer built into the data model.**
+# Anota&nbsp;Workbench
 
-FastAPI + SQLite + vanilla JS. One process, three runtime dependencies, no ORM, no build
-chain. Boots in seconds on a laptop; the same artifact deploys inside a compliance boundary.
+**Annotation *interfaces* are a commodity. Annotation *operations* are not.**
 
-> **Why it is built this way, how it compares to Label Studio / Argilla / Prodigy / Scale,
-> deployment economics, and the roadmap: [docs/DESIGN.md](docs/DESIGN.md).**
+Anota is a keyboard-first, self-hosted workbench for **translation & interpretation quality
+assessment** that bakes the hard part — blind golden sets, append-only audit trails, an LLM
+judge you must *calibrate before you trust*, and content-hashed citable exports — straight
+into the data model.
 
-All bundled demo data is synthetic (EN→ES medication instructions written for this project).
-No PHI anywhere. Demo-grade by design — scale limits are documented, not hidden (§Limitations).
+**One Python process · three dependencies · no build step · boots in seconds.**
 
-| Annotate (light) | Review & adjudication (dark) |
-|---|---|
-| ![Annotate](docs/screenshots/annotate-light.png) | ![Review](docs/screenshots/review-dark.png) |
+<br>
+
+![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688?style=flat-square&logo=fastapi&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-stdlib%20%C2%B7%20no%20ORM-003B57?style=flat-square&logo=sqlite&logoColor=white)
+![Tests](https://img.shields.io/badge/tests-83%20passing-brightgreen?style=flat-square)
+![No build step](https://img.shields.io/badge/frontend-no%20build%20step-ff69b4?style=flat-square)
+![Footprint](https://img.shields.io/badge/footprint-1%20process%20%C2%B7%203%20deps-1f6feb?style=flat-square)
+![LLM judge](https://img.shields.io/badge/LLM%20judge-mock%20or%20OpenAI--compatible-6f42c1?style=flat-square)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
+
+</div>
+
+---
+
+## Highlights
+
+- **🕵️ Blind by construction.** For golden-collection batches, judge/lint hints are *stripped
+  from the JSON on the wire* — not hidden with CSS. A test fails if a clean claim response ever
+  leaks a suggestion field. Anchoring bias can't sneak in through DevTools.
+- **⚖️ A judge you calibrate before you trust.** Synthetic perturbations with *known* truth
+  score the LLM judge's per-type recall and false-alarm rate against golden — zero human
+  labeling. Field-tested at **κ_bin 1.0 · κ_sev 0.85 · 4/4 recall · 0/5 false alarms** on a
+  self-hosted Qwen3-14B.
+- **🧾 Append-only, fully audited.** Corrections and undo create *new* rows (latest-wins);
+  every claim / submit / undo / lease-reap / review is an audit entry. No destructive write
+  path exists — anywhere.
+- **📐 Agreement math from scratch.** Hand-written Cohen's κ (plain + linear-weighted) pinned
+  to textbook values in tests (0.4 on the 2×2, −1.0 on an adjacent-category swap). No sklearn.
+- **📊 A domain analytic nobody else ships.** An *error-type × latency-arm* matrix that answers
+  the real question for simultaneous translation: *what does low latency cost you in dropped
+  negations and numbers?*
+- **⚡ Runs anywhere, instantly.** Two commands, port 8420, same artifact deploys inside a
+  compliance boundary. **83 tests, sub-second.**
+
+<div align="center">
+
+### Dashboard — quality operations at a glance
 
 ![Dashboard](docs/screenshots/dashboard-light.png)
 
----
+</div>
 
-## Table of contents
+<details>
+<summary><b>Table of contents</b></summary>
 
-1. [Core ideas](#core-ideas)
-2. [Quick start](#quick-start)
-3. [Docker](#docker)
+1. [Quick start](#quick-start) · [Docker](#docker)
+2. [Architecture at a glance](#architecture-at-a-glance)
+3. [Core ideas](#core-ideas)
 4. [The annotation loop, end to end](#the-annotation-loop-end-to-end)
 5. [Keyboard reference](#keyboard-reference)
 6. [Concepts & data model](#concepts--data-model)
-7. [Annotation schema & validation rules](#annotation-schema--validation-rules)
-8. [Importing your own data](#importing-your-own-data)
-9. [Configuration](#configuration)
-10. [HTTP API](#http-api)
-11. [Exports](#exports)
-12. [Project layout](#project-layout)
-13. [Development guide](#development-guide)
-14. [Limitations](#limitations)
-15. [Roadmap](#roadmap)
+7. [Annotation schema & validation](#annotation-schema--validation)
+8. [The judge, calibrated](#the-judge-calibrated)
+9. [Screens](#screens)
+10. Reference (collapsed): [Importing](#importing-your-own-data) · [Configuration](#configuration) · [HTTP API](#http-api) · [Exports](#exports) · [Project layout](#project-layout) · [Development](#development)
+11. [Limitations](#limitations) · [Roadmap](#roadmap)
+
+</details>
 
 ---
-
-## Core ideas
-
-Anota's thesis: *annotation interfaces are a commodity; annotation **operations** are not.*
-Five disciplines are enforced as system behavior rather than team convention:
-
-1. **Anchoring policy is server-side.** Whether annotators see machine hints is a property
-   of the *batch* (`show_suggestions`), enforced at the API boundary: a golden-collection
-   batch's claim response **does not contain** judge/lint fields at all — they are stripped
-   from the wire, not hidden by CSS. Routing batches carry them explicitly.
-2. **Golden sets are blind by schema.** Honeypot answers live in a server-only table; no
-   annotator-facing payload ever includes `is_golden` or the answer.
-3. **Labels are append-only.** Corrections and undo create new rows (latest-wins per
-   annotator); reviewer overrides layer on top; every state transition is audited.
-4. **The LLM judge is a first-pass filter, never the final arbiter.** Its verdicts route work
-   and rank review queues; humans adjudicate. If the judge endpoint is down, annotation is
-   untouched. A deterministic MockJudge keeps demos and CI runs reproducible offline.
-5. **Exports are citable.** Snapshots are canonical-JSON, content-hashed (sha256), and
-   versioned (`dataset@vN`) — identical data always hashes identically.
 
 ## Quick start
 
@@ -68,63 +82,176 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python run.py --demo        # → http://localhost:8420
 ```
 
-`--demo` boots a throwaway DB with 30 synthetic EN→ES tasks (12 planted errors across three
-latency arms), a 6-item golden set, a second annotator's seed labels, and pre-computed
-mock-judge verdicts — so every screen has data on first open.
+`--demo` boots a throwaway DB with **30 synthetic EN→ES tasks** (12 planted errors across
+three latency arms), a **6-item golden set**, a second annotator's seed labels, and
+pre-computed mock-judge verdicts — so every screen has data on first open.
 
-For a persistent database instead: `.venv/bin/python run.py --db anota.db`
+Persistent DB instead: `.venv/bin/python run.py --db anota.db`
 
-## Docker
+> All bundled demo data is synthetic (EN→ES medication instructions written for this project).
+> **No PHI anywhere** — demo-grade by design; scale limits are documented, not hidden
+> ([§Limitations](#limitations)).
+
+### Docker
 
 ```bash
 docker build -t anota .
-docker run -p 8420:8420 -v anota-data:/data anota     # persistent DB in the named volume
+docker run -p 8420:8420 -v anota-data:/data anota     # persistent DB in a named volume
 docker run -p 8420:8420 anota --demo                  # throwaway demo instance
 ```
 
-One container, no sidecar services — that absence is deliberate (see
-[docs/DESIGN.md §5](docs/DESIGN.md)). Any args after the image name are passed to `run.py`.
+One container, no sidecar services — that absence is deliberate
+([docs/DESIGN.md §5](docs/DESIGN.md)). Any args after the image name are passed to `run.py`.
+
+---
+
+## Architecture at a glance
+
+One FastAPI process over stdlib `sqlite3` (one connection, one lock, no ORM — [on
+purpose](docs/DESIGN.md)). Lint runs once at import; the judge subsystem feeds routing and
+calibration but never blocks human annotation.
+
+```mermaid
+flowchart LR
+  corpus["corpus.jsonl"] --> imp["importer.import_jsonl"]
+  imp -->|"run_lfs once at import"| tasks[("tasks<br>lf_flags")]
+  imp --> batches[("batches")]
+  goldf["golden.jsonl"] --> lg["importer.load_golden"]
+  lg --> golden[("golden_answers<br>is_golden")]
+
+  tasks --> claim["tasks.claim<br>lease 30 min"]
+  claim --> asg[("assignments")]
+  asg --> submit["tasks.submit / skip / undo"]
+  submit --> ann[("annotations<br>append-only")]
+
+  ann --> agg["quality.final_label<br>latest_annotations"]
+  agg --> stats["kappa · error×arm matrix<br>golden scoring"]
+
+  subgraph judgesub["Judge subsystem"]
+    runner["main._run_judge_batch<br>pooled 8 workers"]
+    judge["judge.get_judge<br>Mock or OpenAI"]
+    jr[("judge_results")]
+    probe["perturb.build_probe<br>synthetic hard-negatives"]
+    routebuild["main routing/build<br>low conf or LF conflict"]
+    runner --> judge --> jr
+    probe --> probebatch[("probe batch<br>golden truth")]
+    routebuild --> routebatch[("routing batch<br>show_suggestions=1")]
+  end
+
+  tasks --> runner
+  probebatch --> tasks
+  routebatch --> tasks
+  jr --> routebuild
+  jr --> stats
+  jr -->|"vs golden"| cal["quality.judge_golden_calibration"]
+  probebatch -->|"known truth"| cal
+
+  ann --> revq["main.review/queue<br>3-way disagreement"]
+  jr --> revq
+  revq --> review["main.review<br>approve or overturn"]
+  review --> reviews[("reviews")]
+  reviews --> agg
+
+  agg --> exp["export.export_snapshot<br>sha256 of content"]
+  ann --> exp
+  exp --> exports[("exports")]
+  exp --> file["dataset_vN.json"]
+```
+
+<details>
+<summary>Module &amp; table map (one process, 9 tables, 3 no-build JS files)</summary>
+
+```mermaid
+flowchart TB
+  subgraph browser["Browser · static/ · no build step"]
+    appjs["app.js<br>Annotate · exposes window.ANOTA"]
+    reviewjs["review.js<br>Review tab"]
+    dashjs["dash.js<br>Dashboard tab"]
+    reviewjs -.->|"window.ANOTA"| appjs
+    dashjs -.->|"window.ANOTA"| appjs
+  end
+
+  subgraph proc["One FastAPI process · app/main.py"]
+    routes["FastAPI routes<br>claim · review · stats<br>judge · probe · routing · export"]
+    subgraph mods["app modules"]
+      tasks["tasks.py"]
+      quality["quality.py"]
+      judge["judge.py"]
+      perturb["perturb.py"]
+      exportm["export.py"]
+      importer["importer.py"]
+      lf["lf.py"]
+      models["models.py"]
+      dbm["db.py<br>1 conn + 1 RLock · no ORM"]
+    end
+  end
+
+  subgraph sqlite["SQLite · 9 tables"]
+    t["batches · tasks · golden_answers<br>assignments · annotations · judge_results<br>reviews · audit_log · exports"]
+  end
+
+  appjs -->|"fetch /api/*"| routes
+  reviewjs --> routes
+  dashjs --> routes
+  routes --> tasks & quality & judge & perturb & exportm & models
+  tasks & quality & judge & perturb & exportm & importer --> dbm
+  perturb & importer --> lf
+  dbm --> sqlite
+```
+
+</details>
+
+---
+
+## Core ideas
+
+Anota's thesis: *annotation interfaces are a commodity; annotation **operations** are not.*
+Five disciplines are enforced as **system behavior**, not team convention:
+
+| # | Discipline | What makes it real |
+|---|---|---|
+| 1 | **Anchoring policy is server-side** | `show_suggestions` is a column on `batches`; a clean batch's claim response *does not contain* judge/lint fields at all — stripped from the wire, not hidden by CSS. |
+| 2 | **Golden sets are blind by schema** | Honeypot answers live in a server-only table; no annotator-facing payload ever includes `is_golden` or the answer. |
+| 3 | **Labels are append-only** | Corrections and undo create new rows (latest-wins); reviewer overrides layer on top; every transition is audited. |
+| 4 | **The judge is a first-pass filter** | Verdicts route work and rank review queues; humans adjudicate. If the judge is down, annotation is untouched. A deterministic `MockJudge` keeps demos/CI reproducible offline. |
+| 5 | **Exports are citable** | Snapshots are canonical-JSON, content-hashed (sha256), versioned (`dataset@vN`) — identical data always hashes identically. |
+
+Full reasoning for each decision: **[docs/DESIGN.md](docs/DESIGN.md)** (also covers how Anota
+compares to Label Studio / Argilla / Prodigy / Scale, deployment economics, and the roadmap).
+
+---
 
 ## The annotation loop, end to end
 
 The 5-minute path through the whole closed loop:
 
-1. **Annotate** — enter an annotator id, press **Start**. A clean record is two keystrokes
-   (`0` then `Space`; adequacy/fluency auto-default to 5 and stay overridable). An error
-   record: `g` (negation) → `v` until *critical* → `2` adequacy → `⇧4` fluency → `x`, type
-   the evidence note, `Esc`, `Space`. Note the screen shows **no machine hints** — this
-   batch collects golden labels (idea #1 above).
-2. **Dashboard** — the *error type × latency arm* matrix shows what the low-latency arm
-   costs in omission/negation errors; annotator table tracks golden accuracy and pace;
-   κ panels track inter-annotator and judge–human agreement.
-3. **Probe & calibrate** — *Build judge probe* creates synthetic errors with known truth;
-   *run judge* on it (pooled, live progress) and the calibration card fills in per-type
-   recall and false-alarm rates. Now the judge's confidence has earned meaning.
-4. **Route** — *Build routing batch* from lowest judge confidence, then click **annotate**
-   on the new batch row: claims now carry judge + lint suggestion chips (labeled MOCK when
-   the mock judge produced them).
-5. **Review** — the queue ranks human/judge/lint disagreement first. Open an item to see the
-   three-way comparison; **Approve** or **Overturn** with a case note — case notes are the
-   raw material for the next guideline version.
-6. **Export** — a content-hashed, versioned snapshot lands in `exports/`.
+| # | Step | What happens |
+|---|---|---|
+| 1 | **Annotate** | Enter an id, press **Start**. A clean record is two keystrokes (`0` then `Space`). This batch shows **no machine hints** — it collects golden labels (idea #1). |
+| 2 | **Dashboard** | The error-type × latency-arm matrix shows what the low-latency arm costs; annotator table tracks golden accuracy + pace; κ panels track inter-annotator and judge–human agreement. |
+| 3 | **Probe & calibrate** | *Build judge probe* → synthetic errors with known truth; *run judge* (pooled, live progress); the calibration card fills in per-type recall and false-alarm rates. |
+| 4 | **Route** | *Build routing batch* from lowest judge confidence, then **annotate** it — claims now carry judge + lint chips (labeled `MOCK` when the mock judge produced them). |
+| 5 | **Review** | The queue ranks human/judge/lint disagreement first. Open an item for the three-way comparison; **Approve** or **Overturn** with a case note — the raw material for the next guideline version. |
+| 6 | **Export** | A content-hashed, versioned snapshot lands in `exports/`. |
+
+---
 
 ## Keyboard reference
 
 Active on the Annotate tab (except in text fields; `Esc` leaves a text field).
 
-| Key | Action |
-|---|---|
-| `1–5` | adequacy rating |
-| `⇧1–5` | fluency rating |
-| `v` | cycle severity (neutral → minor → major → critical) |
-| `m o a t n g r p` | toggle error type (mistranslation, omission, addition, terminology, number_unit, negation_polarity, grammar, punctuation) |
-| `0` | no_error (exclusive; auto-sets severity neutral, ratings 5) |
-| `Space` | save & claim next |
-| `u` | undo last submit (reopens it; the previous row is kept — append-only) |
-| `s` | skip |
-| `c` / `x` | focus correction / note field |
-| `?` | guideline modal |
-| `Esc` | leave text field / close modal |
+| Key | Action | Key | Action |
+|---|---|---|---|
+| `1–5` | adequacy rating | `Space` | save & claim next |
+| `⇧1–5` | fluency rating | `u` | undo last submit (prior row kept — append-only) |
+| `v` | cycle severity (neutral → minor → major → critical) | `s` | skip |
+| `0` | no_error (exclusive; sets neutral + ratings 5) | `c` / `x` | focus correction / note field |
+| `m o a t n g r p` | toggle error type | `?` / `Esc` | guideline modal / leave field |
+
+`m o a t n g r p` = mistranslation, omission, addition, terminology, number_unit,
+negation_polarity, grammar, punctuation.
+
+---
 
 ## Concepts & data model
 
@@ -132,8 +259,8 @@ Nine SQLite tables; the ones that carry the design:
 
 | Table | Role | Design notes |
 |---|---|---|
-| `batches` | unit of policy | `show_suggestions` (anchoring policy), `overlap` (how many annotators per task), `guideline_version`, `lang_profile` |
-| `tasks` | source/hypothesis/reference + metadata | lint results embedded as `lf_flags`; `metadata.arm` powers the latency matrix |
+| `batches` | unit of policy | `show_suggestions` (anchoring policy), `overlap` (annotators per task), `guideline_version`, `lang_profile` |
+| `tasks` | source / hypothesis / reference + metadata | lint results embedded as `lf_flags`; `metadata.arm` powers the latency matrix |
 | `golden_answers` | honeypot truth | **server-only**; never serialized to annotator paths |
 | `assignments` | the mutable state machine | claim → 30-min lease → submitted/skipped; expired leases are reaped (audited) and the task returns to the pool |
 | `annotations` | labels | **append-only**; latest row per (task, annotator) wins |
@@ -142,44 +269,105 @@ Nine SQLite tables; the ones that carry the design:
 | `audit_log` | everything | append-only record of claim/submit/skip/undo/reap/review/import/export |
 | `exports` | snapshot registry | version, filters, sha256, path |
 
-**Distribution semantics:** an annotator never receives the same task twice after
-submitting or skipping it; a task is claimable while fewer than `overlap` other annotators
-hold or have submitted it. All multi-step writes run under one lock.
+The task lifecycle — the correctness-critical part of the backend, all under one lock:
 
-**Final label resolution** (used by exports, the matrix, and agreement stats): reviewer
-overturn wins; else a single annotator's latest row; else a strict-majority aggregate
-(per-label majority, median ratings rounded half-up, severity mode with ties going to the
-stricter category). Aggregates with no majority are flagged `unresolved` and quarantined
-from κ and matrix statistics rather than silently coerced.
+```mermaid
+stateDiagram-v2
+  [*] --> Open : importer creates task
+  Open --> Assigned : claim, lease 30 min
+  Assigned --> Assigned : re-claim renews lease
+  Assigned --> Submitted : submit appends annotation
+  Assigned --> Skipped : skip
+  Assigned --> Open : lease expiry reaps, DELETE assignment
+  Submitted --> Assigned : undo reopens, resets lease
+  Submitted --> [*] : aggregated to final_label
+  Skipped --> [*]
+  note right of Submitted
+    annotations are append-only
+    reap DELETEs only the assignment row
+  end note
+```
 
-## Annotation schema & validation rules
+**Distribution semantics:** an annotator never receives the same task twice after submitting or
+skipping it; a task is claimable while fewer than `overlap` other annotators hold or have
+submitted it. **Final label resolution** (used by exports, the matrix, agreement stats):
+reviewer overturn wins; else a single annotator's latest row; else a strict-majority aggregate.
+Aggregates with no majority are flagged `unresolved` and **quarantined** from κ and matrix
+statistics rather than silently coerced.
 
-- **Error types (9):** `no_error, mistranslation, omission, addition, terminology,
-  number_unit, negation_polarity, grammar, punctuation` — an MQM-derived set with the three
-  medical-critical categories (dosage numbers, negation, terminology) promoted to
-  first-class labels.
+---
+
+## Annotation schema & validation
+
+- **Error types (9):** `no_error, mistranslation, omission, addition, terminology, number_unit,
+  negation_polarity, grammar, punctuation` — an MQM-derived set, with the three medical-critical
+  categories (dosage numbers, negation, terminology) promoted to first-class labels.
 - **Severity:** `neutral / minor / major / critical` (weights 0/1/5/25, per MQM convention).
 - **Ratings:** adequacy and fluency, 1–5.
-- **Rules enforced server-side** (and mirrored client-side so annotators never round-trip
-  to learn them): `no_error` is exclusive and forces severity neutral; a real error can
-  never be severity neutral; `critical` requires a non-empty evidence note.
+- **Rules enforced server-side** (and mirrored client-side so annotators never round-trip to
+  learn them): `no_error` is exclusive and forces severity neutral; a real error can never be
+  severity neutral; `critical` requires a non-empty evidence note.
 - The guideline (`data/guideline.md`) renders in the `?` modal **and** is injected into the
   judge's system prompt — one rubric, single source of truth for humans and models.
 
-### Built-in lint (labeling functions)
-
-Four deterministic checks run once at import, per language profile (`en-es`, `zh-en`),
-attached to tasks as evidence-carrying flags — shown to reviewers and routing, hidden from
-clean-batch annotators:
+**Built-in lint (labeling functions)** — four deterministic checks run once at import, per
+language profile (`en-es`, `zh-en`), attached to tasks as evidence-carrying flags; shown to
+reviewers and routing, hidden from clean-batch annotators:
 
 | LF | Catches | Notes |
 |---|---|---|
 | `lf_negation_drop` | source negation with no target counterpart | handles English contractions (`don't`) |
-| `lf_number_mismatch` | dropped/changed numbers | language-scoped numeral lexicons: zh compound numerals (二十→20), es `once`=11, en `twice`=2 |
+| `lf_number_mismatch` | dropped/changed numbers | language-scoped numeral lexicons: zh compound 二十→20, es `once`=11, en `twice`=2 |
 | `lf_untranslated_fragment` | copied-through source spans / CJK residue | |
 | `lf_length_ratio` | truncation / over-generation | per-language bounds; abstains on short sources |
 
-## Importing your own data
+---
+
+## The judge, calibrated
+
+The judge is treated as an **uncalibrated instrument until proven otherwise**. *Build judge
+probe* creates a batch of **synthetic hard negatives with known truth** — clean demo
+translations programmatically perturbed (negation injected, first number ×10, a domain term
+swapped, a trailing clause dropped) plus unmodified controls. Because the injected error *is*
+the ground truth, probe items feed the judge-vs-golden calibration card with **no human
+labeling**: per-error-type recall, false-alarm rate on clean items, and κ against golden.
+
+Field-tested against a self-hosted **Qwen3-14B** (vLLM, reasoning on): a 15-task probe judged
+in **10 s** (pooled 8-wide; ~4 s/task sequential), and across demo golden + probe (n=21) it
+scored **κ_bin 1.0, κ_sev 0.85, 4/4 recall on every error type, 0/5 clean false alarms** —
+including terminology swaps invisible to lint.
+
+<div align="center">
+
+![Judge calibration](docs/screenshots/judge-calibration.png)
+
+</div>
+
+That contrast (lint-bound MockJudge vs semantic LLM judge) is the point of the card:
+**calibrate before you trust** the judge's confidence for routing. Judge failure never breaks
+annotation — the top-bar badge degrades and humans keep working. Runs are pooled (8 workers)
+and can run in the background with live `done/total` progress.
+
+---
+
+## Screens
+
+| Annotate (light) | Review & adjudication (dark) |
+|---|---|
+| ![Annotate](docs/screenshots/annotate-light.png) | ![Review](docs/screenshots/review-dark.png) |
+
+Keyboard-first annotation with the anchoring notice ("this batch collects golden labels"); and
+the three-way Human · Judge · LF-Lint comparison that ranks disagreement first for the reviewer.
+The UI follows system light/dark with an override cycle.
+
+---
+
+## Reference
+
+<details>
+<summary><b>Importing your own data</b></summary>
+
+<br>
 
 ```bash
 .venv/bin/python run.py --import-file corpus.jsonl --profile generic --lang en-es \
@@ -202,13 +390,18 @@ metadata is what populates the latency-arm matrix.)
 {"task_id": "t001", "answer": {"error_types": ["no_error"], "worst_severity": "neutral", "adequacy": 5}}
 ```
 
-**`aqb` profile** maps `source_zh` / `hypothesis_en` / `reference_en` plus top-level
-`arm`/`AL_ms` fields (see `app/importer.py:PROFILES` to add your own mapping).
+**`aqb` profile** maps `source_zh` / `hypothesis_en` / `reference_en` plus top-level `arm`/`AL_ms`
+fields (see `app/importer.py:PROFILES` to add your own mapping).
 
 Re-running an import is safe: tasks whose `id` already exists are skipped and counted, not
 duplicated. `--suggestions` marks the imported batch as a routing batch (hints visible).
 
-## Configuration
+</details>
+
+<details>
+<summary><b>Configuration</b> — CLI flags &amp; the LLM judge</summary>
+
+<br>
 
 **CLI (`run.py`):**
 
@@ -217,7 +410,7 @@ duplicated. `--suggestions` marks the imported batch as a routing batch (hints v
 | `--demo` | off | fresh temp DB + synthetic data |
 | `--db PATH` | `anota.db` | SQLite file |
 | `--port` / `--host` | `8420` / `127.0.0.1` | bind address (`0.0.0.0` in containers) |
-| `--import-file / --profile / --lang / --batch / --golden / --suggestions / --overlap` | — | see [Importing](#importing-your-own-data) |
+| `--import-file / --profile / --lang / --batch / --golden / --suggestions / --overlap` | — | see Importing |
 
 **Environment (LLM judge):**
 
@@ -233,35 +426,12 @@ duplicated. `--suggestions` marks the imported batch as a routing batch (hints v
 ANOTA_JUDGE=openai ANOTA_JUDGE_BASE_URL=http://localhost:8000/v1 .venv/bin/python run.py --demo
 ```
 
-Judge failure never breaks annotation: the top-bar badge degrades and humans keep working.
+</details>
 
-Judge runs are **pooled (8 workers)** and can run in the background: the dashboard's
-per-batch *run judge* button shows live `done/total` progress (`POST /api/judge/run`
-with `background: true`, poll `GET /api/judge/status`).
+<details>
+<summary><b>HTTP API</b> — all JSON under <code>/api</code>; the frontend is just a client</summary>
 
-### Probe: measure the judge before trusting it
-
-*Build judge probe* (dashboard) creates a batch of **synthetic hard negatives with known
-truth**: clean demo translations are programmatically perturbed — negation injected, first
-number ×10, a domain term swapped, a trailing clause dropped — plus unmodified clean
-controls. Because the injected error *is* the ground truth, probe items feed the
-judge-vs-golden calibration card without any human labeling: per-error-type recall,
-false-alarm rate on clean items, and κ against golden.
-
-Field-tested against a self-hosted **Qwen3-14B** (vLLM, reasoning mode on): 15-task probe
-judged in **10 s** (pooled; ~4 s/task when sequential), and across demo golden + probe
-(n=21) it scored **κ_bin 1.0, κ_sev 0.85, 4/4 recall on every error type, 0/5 clean false
-alarms** — including terminology swaps that are invisible to lint:
-
-![Judge calibration](docs/screenshots/judge-calibration.png)
-
-That contrast (lint-bound MockJudge vs semantic LLM judge) is the point of the card:
-**calibrate before you trust** the judge's confidence for routing.
-
-## HTTP API
-
-All JSON under `/api`. The frontend is just a client of this API — automation can drive it
-the same way.
+<br>
 
 | Endpoint | Method | Purpose |
 |---|---|---|
@@ -271,28 +441,38 @@ the same way.
 | `/batches` | GET | batches incl. `n_tasks`, policy, overlap |
 | `/review/queue` | GET | unreviewed latest annotations, disagreement-ranked, with judge + lint context |
 | `/review/{annotation_id}` | POST | `{verdict: approved\|overturned, case_note, replacement?}` |
-| `/stats/overview` · `/stats/matrix` · `/stats/annotators` · `/stats/agreement` | GET | dashboard aggregates (pairwise κ, judge×human κ, judge-vs-golden calibration incl. per-type recall, golden accuracy, error×arm matrix with `sources` disclosure) |
-| `/judge/run` | POST | `{batch_id, background?}` → judge every task, pooled 8-wide; sync returns `{n}`, background returns immediately (`503` if unreachable, `409` if already running) |
+| `/stats/overview` · `/stats/matrix` · `/stats/annotators` · `/stats/agreement` | GET | dashboard aggregates (pairwise κ, judge×human κ, judge-vs-golden calibration, golden accuracy, error×arm matrix with `sources` disclosure) |
+| `/judge/run` | POST | `{batch_id, background?}` → judge every task, pooled 8-wide; sync returns `{n}`, background returns immediately (`503` unreachable, `409` already running) |
 | `/judge/status` | GET | per-batch judge-run progress `{done, total, running, error}` |
 | `/probe/build` | POST | `{source_batch_id?, per_type?}` → synthetic hard-negative batch with golden truth auto-registered |
 | `/routing/build` | POST | `{top_n, signal: judge_confidence\|lf_conflict}` → new routing batch |
 | `/export` | POST | `{batch_id?, include_golden?}` → versioned snapshot |
 | `/guideline`, `/health` | GET | rubric text; server + judge status |
 
-## Exports
+</details>
+
+<details>
+<summary><b>Exports</b> — content-hashed, versioned, citable</summary>
+
+<br>
 
 `POST /api/export` writes `exports/dataset_vN.json`:
 
-- **content**: tasks (source/hypothesis/reference/metadata), resolved final labels
-  (with `unresolved` flags), every raw annotation row (append-only history included),
-  annotator list, guideline version, filters;
-- **integrity**: `sha256` over the canonical JSON of the content — export the same data
-  twice and the hash is identical, so downstream work cites `dataset@vN` + hash;
+- **content**: tasks (source/hypothesis/reference/metadata), resolved final labels (with
+  `unresolved` flags), every raw annotation row (append-only history included), annotator list,
+  guideline version, filters;
+- **integrity**: `sha256` over the canonical JSON of the content — export the same data twice and
+  the hash is identical, so downstream work cites `dataset@vN` + hash;
 - golden answers are included **only** when `include_golden: true` is requested.
 
 `app/export.py` also provides `export_golden_jsonl()` for round-tripping golden sets.
 
-## Project layout
+</details>
+
+<details>
+<summary><b>Project layout</b></summary>
+
+<br>
 
 ```
 run.py               entry point: server, demo seeding, CLI import
@@ -310,62 +490,73 @@ app/
 static/              no-build frontend: index.html + app.js (annotate) +
                      review.js + dash.js + style.css (Apple-style, light/dark)
 data/                synthetic demo corpus, golden set, seed labels, guideline.md
-tests/               74 tests: state machine, LFs, κ math, policy-leak checks,
+tests/               83 tests: state machine, LFs, κ math, policy-leak checks,
                      export determinism, full API flows
 docs/                DESIGN.md (rationale & industry analysis), screenshots,
                      make_screenshots.js, plans/ (development history)
 ```
 
-## Development guide
+</details>
+
+<details>
+<summary><b>Development</b></summary>
+
+<br>
 
 ```bash
-.venv/bin/python -m pytest -q        # 74 tests, sub-second
+.venv/bin/python -m pytest -q        # 83 tests, sub-second
+node --check static/app.js static/review.js static/dash.js   # no build step; syntax-check JS
 ```
 
 **Add an error type**: extend `ERROR_TYPES` in `app/models.py`, add a letter key in
-`static/app.js` (`ERRORS`), and describe it in `data/guideline.md`. Severity/validation
-rules apply automatically.
+`static/app.js` (`ERRORS`), describe it in `data/guideline.md`. Rules apply automatically.
 
-**Add a labeling function**: write it in `app/lf.py` returning
-`(ERROR|OK|ABSTAIN, evidence)`, register it in `run_lfs`, map it in `LF_TO_ERROR`, add
-positive/negative/abstain fixtures in `tests/test_lf.py`. Prefer ABSTAIN over guessing.
+**Add a labeling function**: write it in `app/lf.py` returning `(ERROR|OK|ABSTAIN, evidence)`,
+register in `run_lfs`, map in `LF_TO_ERROR`, add fixtures in `tests/test_lf.py`. Prefer ABSTAIN
+over guessing.
 
 **Add an import profile**: one dict in `app/importer.py:PROFILES`.
 
-**Swap the judge**: implement `.evaluate(task, lf_results) -> dict` with the verdict keys
-(see `app/judge.py`) — anything from a rules engine to a hosted model.
+**Swap the judge**: implement `.evaluate(task, lf_results) -> dict` with the verdict keys (see
+`app/judge.py`) — anything from a rules engine to a hosted model.
 
-**Add a perturbation**: one function in `app/perturb.py` (`hyp -> perturbed | None`)
-registered in `PERTURBATIONS` with its truth label — probe batches pick it up automatically.
+**Add a perturbation**: one function in `app/perturb.py` (`hyp -> perturbed | None`) registered
+in `PERTURBATIONS` with its truth label — probe batches pick it up automatically.
 
-**Regenerate README screenshots** (needs Chrome + a running `--demo` server):
+**Regenerate screenshots** (needs Chrome + a running `--demo` server):
 
 ```bash
 npm i puppeteer-core && node docs/make_screenshots.js
 ```
 
 Conventions: server-side validation is the source of truth (client mirrors it for UX);
-annotations/audit are never UPDATEd; anything annotator-facing must respect batch policy —
-there is a test that fails if a clean-batch claim response ever contains suggestion fields.
+annotations/audit are never UPDATEd; anything annotator-facing must respect batch policy — a
+test fails if a clean-batch claim response ever contains suggestion fields.
+
+</details>
+
+---
 
 ## Limitations
 
 Stated, not hidden:
 
-- SQLite + a single process lock: comfortable to ~10 concurrent annotators and
+- **SQLite + a single process lock:** comfortable to ~10 concurrent annotators and
   low-hundreds-of-thousands of records; some dashboard queries are N+1 (fine at this scale).
-- Identity is self-reported (`annotator id` box); put SSO in front of it via a reverse
+- **Identity is self-reported** (`annotator id` box); put SSO in front of it via a reverse
   proxy for anything real. Reviewer identity is a fixed `lead` pending RBAC.
-- Text-only today (audio rendition playback is the top roadmap item).
+- **Text-only today** (audio rendition playback is the top roadmap item).
 - 5-second dashboard polling, not SSE.
 - US-QWERTY assumption for `⇧1–5` fluency keys.
 
 ## Roadmap
 
-Near term: reverse-proxy SSO identity · pipx packaging · HF `datasets` export · ESA-style
-span marking · guideline-version drafting from case notes. Mid term: **audio rendition
-playback** · honeypot rotation & calibration batches · IAA drill-down · continuous
-uncertainty routing · xCOMET as a second automated signal. Long term: Postgres + SSE ·
-multi-project workspaces · LF plugin registry.
+**Near term** — reverse-proxy SSO identity · `pipx` packaging · HF `datasets` export ·
+ESA-style span marking · guideline-version drafting from case notes.
+
+**Mid term** — **audio rendition playback** · honeypot rotation & calibration batches · IAA
+drill-down · continuous uncertainty routing · xCOMET as a second automated signal.
+
+**Long term** — Postgres + SSE · multi-project workspaces · LF plugin registry.
 
 Full reasoning behind each item: [docs/DESIGN.md §6](docs/DESIGN.md).

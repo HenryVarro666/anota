@@ -182,7 +182,7 @@ requirement, it should not compete.
   from judge output; aggregate labels without consensus are quarantined (`unresolved`) rather
   than silently coerced — they never pollute κ or the matrix.
 - **Reproducibility**: MockJudge determinism; content-hashed exports; append-only history.
-- **74 tests** across the state machine, lint functions, agreement math, policy leaks
+- **83 tests** across the state machine, lint functions, agreement math, policy leaks
   (a test asserts clean-batch responses contain no suggestion keys), and export determinism.
 
 ---
