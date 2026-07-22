@@ -35,6 +35,9 @@ into the data model.
   score the LLM judge's per-type recall and false-alarm rate against golden — zero human
   labeling. Field-tested at **κ_bin 1.0 · κ_sev 0.85 · 4/4 recall · 0/5 false alarms** on a
   self-hosted Qwen3-14B.
+- **🔌 Provider-agnostic judge.** GPT, Gemini, or a self-hosted vLLM/Ollama — the judge speaks
+  the OpenAI Chat Completions protocol, so you swap models with **two env vars**; self-host and
+  the content never leaves your boundary.
 - **🧾 Append-only, fully audited.** Corrections and undo create *new* rows (latest-wins);
   every claim / submit / undo / lease-reap / review is an audit entry. No destructive write
   path exists — anywhere.
@@ -417,14 +420,37 @@ duplicated. `--suggestions` marks the imported batch as a routing batch (hints v
 | Variable | Default | Meaning |
 |---|---|---|
 | `ANOTA_JUDGE` | `mock` | `mock` (deterministic, offline) or `openai` |
-| `ANOTA_JUDGE_BASE_URL` | `http://localhost:8000/v1` | any OpenAI-compatible endpoint (vLLM, llama.cpp, commercial) |
-| `ANOTA_JUDGE_MODEL` | auto-detect | first model served if unset |
+| `ANOTA_JUDGE_BASE_URL` | `http://localhost:8000/v1` | any OpenAI-compatible endpoint — self-hosted vLLM / llama.cpp / Ollama, OpenAI, Gemini (compat) |
+| `ANOTA_JUDGE_MODEL` | auto-detect | first model served if unset (via `/models`); **set explicitly for hosted providers** |
 | `ANOTA_JUDGE_API_KEY` | `EMPTY` | bearer token if the endpoint needs one |
 | `ANOTA_JUDGE_SAMPLES` | `1` | self-consistency: sample k verdicts at temperature 0.7 and majority-aggregate; confidence becomes the severity-agreement fraction across samples |
 
+**Judge providers.** The judge is provider-agnostic *by protocol* — it talks to any endpoint
+that speaks the OpenAI Chat Completions API, so switching models is two env vars, no code change:
+
+| Provider | `ANOTA_JUDGE_BASE_URL` | `ANOTA_JUDGE_MODEL` (example) |
+|---|---|---|
+| Self-hosted vLLM / llama.cpp / Ollama | `http://localhost:8000/v1` | auto-detect (single model) |
+| **OpenAI GPT** | `https://api.openai.com/v1` | `gpt-4o` |
+| **Google Gemini** | `https://generativelanguage.googleapis.com/v1beta/openai` | `gemini-2.0-flash` |
+
 ```bash
+# Self-hosted (default) — content never leaves your machine
 ANOTA_JUDGE=openai ANOTA_JUDGE_BASE_URL=http://localhost:8000/v1 .venv/bin/python run.py --demo
+
+# OpenAI GPT
+ANOTA_JUDGE=openai ANOTA_JUDGE_BASE_URL=https://api.openai.com/v1 \
+  ANOTA_JUDGE_API_KEY=sk-... ANOTA_JUDGE_MODEL=gpt-4o .venv/bin/python run.py --demo
+
+# Google Gemini (via its OpenAI-compatible endpoint)
+ANOTA_JUDGE=openai ANOTA_JUDGE_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai \
+  ANOTA_JUDGE_API_KEY=$GEMINI_API_KEY ANOTA_JUDGE_MODEL=gemini-2.0-flash .venv/bin/python run.py --demo
 ```
+
+> **Any other provider** (native Gemini/Claude, Bedrock, Azure OpenAI, Together, Groq…): drop a
+> [LiteLLM](https://github.com/BerriAI/litellm) proxy in front — it exposes a unified
+> OpenAI-compatible `/v1` for 100+ models — and point `ANOTA_JUDGE_BASE_URL` at it. (Note: some
+> reasoning models such as o1/o3 reject the `temperature` parameter.)
 
 </details>
 
