@@ -77,6 +77,11 @@ Linux / macOS：
 真实评审运行替换最新结果视图之前，演示结果会持续标记为 mock。
 模型发现配置见 [Windows 指南](docs/local-windows.md)；数据集和 ASR 基准见[项目地图](docs/project-map.md)。
 
+RTX 5080 部署记录：[环境检查与可移植性约束](docs/5080-environment-and-portability-2026-10-18.md)
+和 [CPU/CUDA 真实音频验收](docs/5080-deployment-2026-10-18.md)。
+记录对应 2026-10-18 的源代码快照和 20 条 FLEURS 工程冒烟检查，
+未证明集群部署、生产容量或 GPU 加速效果。
+
 <a id="docker"></a>
 ### Docker
 
