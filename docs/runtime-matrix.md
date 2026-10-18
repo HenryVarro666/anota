@@ -19,8 +19,9 @@ repositories. `dots-tts-preference-alignment` training, `kokoro-aws-demo` servic
 deployment and `tts-inference-engine-bench` benchmarking remain separate projects.
 Their adapters into Anota have not been implemented or validated.
 
-Anota remains a CPU application. GPU runtimes live in a separate service behind
-the OpenAI-compatible HTTP adapter. No CUDA, Vulkan or ROCm import is added to the
+The Anota web process remains a CPU application. GPU text judges live in a separate
+service behind the OpenAI-compatible HTTP adapter; offline SpeechPrep ASR can run
+in an independent CPU/CUDA worker. No CUDA, Vulkan or ROCm import is added to the
 workbench. The same application code, synthetic dataset, rubric and request schema
 can be exercised against each endpoint; compatibility still requires a real run.
 
@@ -29,6 +30,14 @@ can be exercised against each endpoint; compatibility still requires a real run.
 | Windows / HX 370 / 890M | LM Studio, Vulkan, Qwen3-14B Q4_K_M | `evals/profiles/local-lmstudio.json` | Real two-pass pilot committed |
 | Lab / 2 × H100 | Independently deployed OpenAI-compatible servers | `evals/profiles/lab-h100.json` | Template only; no H100 measurement |
 | AWS | Private OpenAI-compatible model endpoint behind authenticated networking | `evals/profiles/aws-service.json` | Template only; no deployment or load test |
+
+For offline ASR, the [RTX 5080 preflight](5080-environment-and-portability-2026-10-18.md)
+and [deployment acceptance](5080-deployment-2026-10-18.md) (Chinese) record a separate
+2026-10-18 working-tree snapshot: 20 real FLEURS train clips, CPU/int8 and
+CUDA/float16 inference, CPU QC, cache resume and HTTP audio/queue checks.
+The snapshot is identified by its release package hash and source manifest, rather
+than a later `main` commit. This is an engineering smoke check, with no cluster,
+production-capacity, GPU-speedup or new SpeechRank quality claim.
 
 ## Lab design with spare capacity
 
@@ -125,8 +134,10 @@ real customer data separately from this public synthetic pilot.
 `constraints-runtime.txt` pins the observed CPU dependency versions. Docker applies
 them; the base image still uses a moving Python tag, so a release must also record
 or pin its image digest. CI is configured for Windows, Linux x86_64, Linux ARM64 and
-a Docker smoke test. **Only Windows tests were executed locally for this change**;
-there is no local Docker installation, and remote CI has not run before publication.
+a Docker smoke test. [PR #1 checks](https://github.com/HenryVarro666/anota/pull/1/checks)
+passed all three operating-system jobs and the actual CPU container lifecycle.
+Docker was not run on the local Windows machine; later releases must check the
+results attached to their own commit.
 Compatibility of optional figure dependencies is separate from the application.
 
 ## Container release boundary
