@@ -1,0 +1,2605 @@
+{
+  "schema_version": "speechrank-independent-audit-v2",
+  "started_at_utc": "2026-10-17T08:24:29.908404+00:00",
+  "audit_continued_by_model": "gpt-6.1-sol",
+  "study": "C:\\Users\\rog\\Desktop\\TTS\\anota\\evals\\runs\\2026-10-17-librispeech-ml-ranking-v2",
+  "audit_source_sha256": "3b73181e36e35c7ba4aedf8b26e609c10b71e008bcee0af8ee24d4661fb7b97c",
+  "heldout_and_test_gold_opened_at_utc": "2026-10-17T08:24:30.256829+00:00",
+  "selected_candidates": {
+    "legacy": "hgb-leaves-3-l2-1",
+    "confidence": "hgb-leaves-3-l2-10"
+  },
+  "headline_recomputed": {
+    "fresh_holdout:legacy:10": {
+      "selected_count": 91,
+      "target_audio_s": 358.187006,
+      "selected_audio_s": 357.924938,
+      "unused_budget_s": 0.262068,
+      "actual_audio_fraction": 0.09992683481101666,
+      "captured_errors": 116,
+      "captured_reference_units": 858,
+      "selected_wer": 0.1351981351981352,
+      "error_capture_rate": 0.14967741935483872,
+      "captured_error_clips": 50,
+      "error_clip_recall": 0.17064846416382254,
+      "residual_errors": 659,
+      "residual_reference_units": 8683,
+      "residual_wer": 0.07589542784751814,
+      "captured_asr_failure_errors": 0,
+      "qc_unavailable_selected_count": 0
+    },
+    "fresh_holdout:legacy:20": {
+      "selected_count": 149,
+      "target_audio_s": 716.374012,
+      "selected_audio_s": 708.714876,
+      "unused_budget_s": 7.659136,
+      "actual_audio_fraction": 0.19786169339830173,
+      "captured_errors": 223,
+      "captured_reference_units": 1763,
+      "selected_wer": 0.12648893930799773,
+      "error_capture_rate": 0.28774193548387095,
+      "captured_error_clips": 89,
+      "error_clip_recall": 0.3037542662116041,
+      "residual_errors": 552,
+      "residual_reference_units": 7778,
+      "residual_wer": 0.07096940087426074,
+      "captured_asr_failure_errors": 0,
+      "qc_unavailable_selected_count": 0
+    },
+    "fresh_holdout:confidence:10": {
+      "selected_count": 67,
+      "target_audio_s": 358.187006,
+      "selected_audio_s": 348.12,
+      "unused_budget_s": 10.067006,
+      "actual_audio_fraction": 0.09718945522150546,
+      "captured_errors": 222,
+      "captured_reference_units": 847,
+      "selected_wer": 0.26210153482880755,
+      "error_capture_rate": 0.2864516129032258,
+      "captured_error_clips": 58,
+      "error_clip_recall": 0.19795221843003413,
+      "residual_errors": 553,
+      "residual_reference_units": 8694,
+      "residual_wer": 0.06360708534621579,
+      "captured_asr_failure_errors": 0,
+      "qc_unavailable_selected_count": 0
+    },
+    "fresh_holdout:confidence:20": {
+      "selected_count": 124,
+      "target_audio_s": 716.374012,
+      "selected_audio_s": 698.220062,
+      "unused_budget_s": 18.15395,
+      "actual_audio_fraction": 0.1949317116238819,
+      "captured_errors": 358,
+      "captured_reference_units": 1772,
+      "selected_wer": 0.2020316027088036,
+      "error_capture_rate": 0.4619354838709677,
+      "captured_error_clips": 103,
+      "error_clip_recall": 0.3515358361774744,
+      "residual_errors": 417,
+      "residual_reference_units": 7769,
+      "residual_wer": 0.05367486162955335,
+      "captured_asr_failure_errors": 0,
+      "qc_unavailable_selected_count": 0
+    },
+    "previously_exposed_test:legacy:10": {
+      "selected_count": 985,
+      "target_audio_s": 3868.205074,
+      "selected_audio_s": 3868.130062,
+      "unused_budget_s": 0.075012,
+      "actual_audio_fraction": 0.09999806079567765,
+      "captured_errors": 1588,
+      "captured_reference_units": 9829,
+      "selected_wer": 0.1615627225557025,
+      "error_capture_rate": 0.17558602388323752,
+      "captured_error_clips": 605,
+      "error_clip_recall": 0.1824487334137515,
+      "residual_errors": 7456,
+      "residual_reference_units": 95090,
+      "residual_wer": 0.0784099274371648,
+      "captured_asr_failure_errors": 0,
+      "qc_unavailable_selected_count": 0
+    },
+    "previously_exposed_test:legacy:20": {
+      "selected_count": 1813,
+      "target_audio_s": 7736.410148,
+      "selected_audio_s": 7735.100372,
+      "unused_budget_s": 1.309776,
+      "actual_audio_fraction": 0.19996613993377269,
+      "captured_errors": 2670,
+      "captured_reference_units": 20007,
+      "selected_wer": 0.1334532913480282,
+      "error_capture_rate": 0.2952233524988943,
+      "captured_error_clips": 1034,
+      "error_clip_recall": 0.3118214716525935,
+      "residual_errors": 6374,
+      "residual_reference_units": 84912,
+      "residual_wer": 0.07506595063124176,
+      "captured_asr_failure_errors": 0,
+      "qc_unavailable_selected_count": 0
+    }
+  },
+  "scope": {
+    "scored_roles": [
+      "train",
+      "tune",
+      "holdout",
+      "test"
+    ],
+    "all_original_selected_audio_hashes": 7743,
+    "all_candidate_tune_objectives": 14,
+    "all_final_model_predictions_replayed": true,
+    "all_1000_random_plans_replayed": true,
+    "random_metric_seeds_recomputed": [
+      20261017,
+      20261018,
+      20261517,
+      20262016
+    ],
+    "all_baseline_and_ml_budgets_recomputed": [
+      5,
+      10,
+      20,
+      30,
+      50,
+      100
+    ]
+  },
+  "status": "passed",
+  "completed_at_utc": "2026-10-17T08:24:59.641387+00:00",
+  "elapsed_seconds": 29.733027300004323,
+  "checks": [
+    {
+      "check": "completed gate",
+      "passed": true
+    },
+    {
+      "check": "all_output_artifact_hashes_before_gold",
+      "passed": true,
+      "detail": {
+        "files": 100,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "status_excluded_from_pre_gold_seal",
+      "passed": true
+    },
+    {
+      "check": "all_pre_gold_sealed_artifact_hashes",
+      "passed": true,
+      "detail": {
+        "files": 85,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "frozen_study_protocol_config_source_snapshot_hashes",
+      "passed": true,
+      "detail": {
+        "files": 38,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "live_source_hashes",
+      "passed": true,
+      "detail": {
+        "files": 36,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "all_frozen_input_hashes",
+      "passed": true,
+      "detail": {
+        "files": 27,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "configuration_hash",
+      "passed": true
+    },
+    {
+      "check": "environment av",
+      "passed": true
+    },
+    {
+      "check": "environment ctranslate2",
+      "passed": true
+    },
+    {
+      "check": "environment faster-whisper",
+      "passed": true
+    },
+    {
+      "check": "environment joblib",
+      "passed": true
+    },
+    {
+      "check": "environment matplotlib",
+      "passed": true
+    },
+    {
+      "check": "environment numpy",
+      "passed": true
+    },
+    {
+      "check": "environment onnxruntime",
+      "passed": true
+    },
+    {
+      "check": "environment scikit-learn",
+      "passed": true
+    },
+    {
+      "check": "environment scipy",
+      "passed": true
+    },
+    {
+      "check": "environment soundfile",
+      "passed": true
+    },
+    {
+      "check": "environment threadpoolctl",
+      "passed": true
+    },
+    {
+      "check": "same_python_environment",
+      "passed": true
+    },
+    {
+      "check": "frozen_training_seal_heldout_completion_order",
+      "passed": true,
+      "detail": [
+        "2026-10-17T08:20:28.610087+00:00",
+        "2026-10-17T08:22:48.578919+00:00",
+        "2026-10-17T08:23:17.532974+00:00",
+        "2026-10-17T08:23:18.268670+00:00",
+        "2026-10-17T08:23:40.499894+00:00",
+        "2026-10-17T08:24:30.256829+00:00"
+      ]
+    },
+    {
+      "check": "labels_and_no_new_test_asr_declarations",
+      "passed": true
+    },
+    {
+      "check": "independent_full_assignment_reconstruction",
+      "passed": true
+    },
+    {
+      "check": "exact_selected_role_id_sets",
+      "passed": true
+    },
+    {
+      "check": "all_role_metadata_equals_prepared_sources",
+      "passed": true,
+      "detail": {
+        "mismatches": []
+      }
+    },
+    {
+      "check": "all_source_speaker_item_audio_isolation_including_unselected",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "all_selected_dev_and_test_audio_hashes",
+      "passed": true,
+      "detail": {
+        "count": 7743,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "completed_dev_asr_identity",
+      "passed": true
+    },
+    {
+      "check": "dev_asr_model_file_hashes",
+      "passed": true,
+      "detail": {
+        "files": 4,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "dev_asr_source_snapshot_hashes",
+      "passed": true,
+      "detail": {
+        "files": 14,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "independent test source snapshot complete resolved metadata equality",
+      "passed": true
+    },
+    {
+      "check": "prepared verification hashes",
+      "passed": true
+    },
+    {
+      "check": "independent input checked_files exact identities",
+      "passed": true
+    },
+    {
+      "check": "independent v1 checked_files exact identities",
+      "passed": true
+    },
+    {
+      "check": "train exact feature allowlists and numeric values",
+      "passed": true
+    },
+    {
+      "check": "train exact IDs",
+      "passed": true
+    },
+    {
+      "check": "train independent_normalization_SDI_and_source_identity",
+      "passed": true,
+      "detail": {
+        "items": 1290,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "train failure_tier_and_tie_hash",
+      "passed": true
+    },
+    {
+      "check": "tune exact feature allowlists and numeric values",
+      "passed": true
+    },
+    {
+      "check": "tune exact IDs",
+      "passed": true
+    },
+    {
+      "check": "tune independent_normalization_SDI_and_source_identity",
+      "passed": true,
+      "detail": {
+        "items": 414,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "tune failure_tier_and_tie_hash",
+      "passed": true
+    },
+    {
+      "check": "holdout exact feature allowlists and numeric values",
+      "passed": true
+    },
+    {
+      "check": "holdout exact IDs",
+      "passed": true
+    },
+    {
+      "check": "holdout independent_normalization_SDI_and_source_identity",
+      "passed": true,
+      "detail": {
+        "items": 480,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "holdout failure_tier_and_tie_hash",
+      "passed": true
+    },
+    {
+      "check": "test exact feature allowlists and numeric values",
+      "passed": true
+    },
+    {
+      "check": "test exact IDs",
+      "passed": true
+    },
+    {
+      "check": "test independent_normalization_SDI_and_source_identity",
+      "passed": true,
+      "detail": {
+        "items": 5559,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "test failure_tier_and_tie_hash",
+      "passed": true
+    },
+    {
+      "check": "complete_frozen_14_candidate_grid",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-0.1 group IDs",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-0.1 pooled order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-0.1 pooled all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-0.1 split:dev-clean order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-0.1 split:dev-clean all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-0.1 split:dev-other order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-0.1 split:dev-other all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune objective legacy poisson-alpha-0.1",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy poisson-alpha-0.1 model feature schema",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy poisson-alpha-0.1 actual estimator parameters",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy poisson-alpha-0.1 replay predictions",
+      "passed": true,
+      "detail": {
+        "items": 414,
+        "absolute_relative_tolerance": 1e-12
+      }
+    },
+    {
+      "check": "candidate train-only metadata legacy poisson-alpha-0.1",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-1 group IDs",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-1 pooled order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-1 pooled all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-1 split:dev-clean order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-1 split:dev-clean all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-1 split:dev-other order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-1 split:dev-other all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune objective legacy poisson-alpha-1",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy poisson-alpha-1 model feature schema",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy poisson-alpha-1 actual estimator parameters",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy poisson-alpha-1 replay predictions",
+      "passed": true,
+      "detail": {
+        "items": 414,
+        "absolute_relative_tolerance": 1e-12
+      }
+    },
+    {
+      "check": "candidate train-only metadata legacy poisson-alpha-1",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-10 group IDs",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-10 pooled order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-10 pooled all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-10 split:dev-clean order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-10 split:dev-clean all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-10 split:dev-other order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy poisson-alpha-10 split:dev-other all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune objective legacy poisson-alpha-10",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy poisson-alpha-10 model feature schema",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy poisson-alpha-10 actual estimator parameters",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy poisson-alpha-10 replay predictions",
+      "passed": true,
+      "detail": {
+        "items": 414,
+        "absolute_relative_tolerance": 1e-12
+      }
+    },
+    {
+      "check": "candidate train-only metadata legacy poisson-alpha-10",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-3-l2-1 group IDs",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-3-l2-1 pooled order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-3-l2-1 pooled all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-3-l2-1 split:dev-clean order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-3-l2-1 split:dev-clean all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-3-l2-1 split:dev-other order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-3-l2-1 split:dev-other all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune objective legacy hgb-leaves-3-l2-1",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy hgb-leaves-3-l2-1 model feature schema",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy hgb-leaves-3-l2-1 actual estimator parameters",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy hgb-leaves-3-l2-1 replay predictions",
+      "passed": true,
+      "detail": {
+        "items": 414,
+        "absolute_relative_tolerance": 1e-12
+      }
+    },
+    {
+      "check": "candidate train-only metadata legacy hgb-leaves-3-l2-1",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-3-l2-10 group IDs",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-3-l2-10 pooled order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-3-l2-10 pooled all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-3-l2-10 split:dev-clean order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-3-l2-10 split:dev-clean all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-3-l2-10 split:dev-other order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-3-l2-10 split:dev-other all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune objective legacy hgb-leaves-3-l2-10",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy hgb-leaves-3-l2-10 model feature schema",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy hgb-leaves-3-l2-10 actual estimator parameters",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy hgb-leaves-3-l2-10 replay predictions",
+      "passed": true,
+      "detail": {
+        "items": 414,
+        "absolute_relative_tolerance": 1e-12
+      }
+    },
+    {
+      "check": "candidate train-only metadata legacy hgb-leaves-3-l2-10",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-7-l2-1 group IDs",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-7-l2-1 pooled order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-7-l2-1 pooled all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-7-l2-1 split:dev-clean order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-7-l2-1 split:dev-clean all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-7-l2-1 split:dev-other order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-7-l2-1 split:dev-other all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune objective legacy hgb-leaves-7-l2-1",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy hgb-leaves-7-l2-1 model feature schema",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy hgb-leaves-7-l2-1 actual estimator parameters",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy hgb-leaves-7-l2-1 replay predictions",
+      "passed": true,
+      "detail": {
+        "items": 414,
+        "absolute_relative_tolerance": 1e-12
+      }
+    },
+    {
+      "check": "candidate train-only metadata legacy hgb-leaves-7-l2-1",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-7-l2-10 group IDs",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-7-l2-10 pooled order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-7-l2-10 pooled all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-7-l2-10 split:dev-clean order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-7-l2-10 split:dev-clean all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-7-l2-10 split:dev-other order",
+      "passed": true
+    },
+    {
+      "check": "tune legacy hgb-leaves-7-l2-10 split:dev-other all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune objective legacy hgb-leaves-7-l2-10",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy hgb-leaves-7-l2-10 model feature schema",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy hgb-leaves-7-l2-10 actual estimator parameters",
+      "passed": true
+    },
+    {
+      "check": "candidate legacy hgb-leaves-7-l2-10 replay predictions",
+      "passed": true,
+      "detail": {
+        "items": 414,
+        "absolute_relative_tolerance": 1e-12
+      }
+    },
+    {
+      "check": "candidate train-only metadata legacy hgb-leaves-7-l2-10",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-0.1 group IDs",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-0.1 pooled order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-0.1 pooled all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-0.1 split:dev-clean order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-0.1 split:dev-clean all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-0.1 split:dev-other order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-0.1 split:dev-other all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune objective confidence poisson-alpha-0.1",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence poisson-alpha-0.1 model feature schema",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence poisson-alpha-0.1 actual estimator parameters",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence poisson-alpha-0.1 replay predictions",
+      "passed": true,
+      "detail": {
+        "items": 414,
+        "absolute_relative_tolerance": 1e-12
+      }
+    },
+    {
+      "check": "candidate train-only metadata confidence poisson-alpha-0.1",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-1 group IDs",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-1 pooled order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-1 pooled all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-1 split:dev-clean order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-1 split:dev-clean all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-1 split:dev-other order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-1 split:dev-other all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune objective confidence poisson-alpha-1",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence poisson-alpha-1 model feature schema",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence poisson-alpha-1 actual estimator parameters",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence poisson-alpha-1 replay predictions",
+      "passed": true,
+      "detail": {
+        "items": 414,
+        "absolute_relative_tolerance": 1e-12
+      }
+    },
+    {
+      "check": "candidate train-only metadata confidence poisson-alpha-1",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-10 group IDs",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-10 pooled order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-10 pooled all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-10 split:dev-clean order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-10 split:dev-clean all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-10 split:dev-other order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence poisson-alpha-10 split:dev-other all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune objective confidence poisson-alpha-10",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence poisson-alpha-10 model feature schema",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence poisson-alpha-10 actual estimator parameters",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence poisson-alpha-10 replay predictions",
+      "passed": true,
+      "detail": {
+        "items": 414,
+        "absolute_relative_tolerance": 1e-12
+      }
+    },
+    {
+      "check": "candidate train-only metadata confidence poisson-alpha-10",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-3-l2-1 group IDs",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-3-l2-1 pooled order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-3-l2-1 pooled all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-3-l2-1 split:dev-clean order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-3-l2-1 split:dev-clean all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-3-l2-1 split:dev-other order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-3-l2-1 split:dev-other all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune objective confidence hgb-leaves-3-l2-1",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence hgb-leaves-3-l2-1 model feature schema",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence hgb-leaves-3-l2-1 actual estimator parameters",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence hgb-leaves-3-l2-1 replay predictions",
+      "passed": true,
+      "detail": {
+        "items": 414,
+        "absolute_relative_tolerance": 1e-12
+      }
+    },
+    {
+      "check": "candidate train-only metadata confidence hgb-leaves-3-l2-1",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-3-l2-10 group IDs",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-3-l2-10 pooled order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-3-l2-10 pooled all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-3-l2-10 split:dev-clean order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-3-l2-10 split:dev-clean all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-3-l2-10 split:dev-other order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-3-l2-10 split:dev-other all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune objective confidence hgb-leaves-3-l2-10",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence hgb-leaves-3-l2-10 model feature schema",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence hgb-leaves-3-l2-10 actual estimator parameters",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence hgb-leaves-3-l2-10 replay predictions",
+      "passed": true,
+      "detail": {
+        "items": 414,
+        "absolute_relative_tolerance": 1e-12
+      }
+    },
+    {
+      "check": "candidate train-only metadata confidence hgb-leaves-3-l2-10",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-7-l2-1 group IDs",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-7-l2-1 pooled order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-7-l2-1 pooled all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-7-l2-1 split:dev-clean order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-7-l2-1 split:dev-clean all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-7-l2-1 split:dev-other order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-7-l2-1 split:dev-other all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune objective confidence hgb-leaves-7-l2-1",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence hgb-leaves-7-l2-1 model feature schema",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence hgb-leaves-7-l2-1 actual estimator parameters",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence hgb-leaves-7-l2-1 replay predictions",
+      "passed": true,
+      "detail": {
+        "items": 414,
+        "absolute_relative_tolerance": 1e-12
+      }
+    },
+    {
+      "check": "candidate train-only metadata confidence hgb-leaves-7-l2-1",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-7-l2-10 group IDs",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-7-l2-10 pooled order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-7-l2-10 pooled all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-7-l2-10 split:dev-clean order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-7-l2-10 split:dev-clean all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-7-l2-10 split:dev-other order",
+      "passed": true
+    },
+    {
+      "check": "tune confidence hgb-leaves-7-l2-10 split:dev-other all budgets",
+      "passed": true
+    },
+    {
+      "check": "tune objective confidence hgb-leaves-7-l2-10",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence hgb-leaves-7-l2-10 model feature schema",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence hgb-leaves-7-l2-10 actual estimator parameters",
+      "passed": true
+    },
+    {
+      "check": "candidate confidence hgb-leaves-7-l2-10 replay predictions",
+      "passed": true,
+      "detail": {
+        "items": 414,
+        "absolute_relative_tolerance": 1e-12
+      }
+    },
+    {
+      "check": "candidate train-only metadata confidence hgb-leaves-7-l2-10",
+      "passed": true
+    },
+    {
+      "check": "tune-only deterministic selected winner legacy",
+      "passed": true
+    },
+    {
+      "check": "final refit parameters and input counts legacy",
+      "passed": true
+    },
+    {
+      "check": "tune-only deterministic selected winner confidence",
+      "passed": true
+    },
+    {
+      "check": "final refit parameters and input counts confidence",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout available arms",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout legacy model feature schema",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout legacy actual estimator parameters",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout legacy replay predictions",
+      "passed": true,
+      "detail": {
+        "items": 480,
+        "absolute_relative_tolerance": 1e-12
+      }
+    },
+    {
+      "check": "fresh_holdout legacy group IDs",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout legacy pooled order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout legacy pooled all budgets",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout legacy split:dev-clean order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout legacy split:dev-clean all budgets",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout legacy split:dev-other order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout legacy split:dev-other all budgets",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled legacy metrics 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled legacy metrics 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled legacy metrics 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled legacy metrics 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled legacy metrics 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled legacy metrics 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean legacy metrics 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean legacy metrics 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean legacy metrics 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean legacy metrics 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean legacy metrics 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean legacy metrics 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other legacy metrics 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other legacy metrics 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other legacy metrics 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other legacy metrics 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other legacy metrics 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other legacy metrics 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout confidence model feature schema",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout confidence actual estimator parameters",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout confidence replay predictions",
+      "passed": true,
+      "detail": {
+        "items": 480,
+        "absolute_relative_tolerance": 1e-12
+      }
+    },
+    {
+      "check": "fresh_holdout confidence group IDs",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout confidence pooled order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout confidence pooled all budgets",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout confidence split:dev-clean order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout confidence split:dev-clean all budgets",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout confidence split:dev-other order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout confidence split:dev-other all budgets",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled confidence metrics 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled confidence metrics 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled confidence metrics 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled confidence metrics 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled confidence metrics 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled confidence metrics 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean confidence metrics 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean confidence metrics 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean confidence metrics 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean confidence metrics 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean confidence metrics 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean confidence metrics 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other confidence metrics 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other confidence metrics 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other confidence metrics 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other confidence metrics 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other confidence metrics 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other confidence metrics 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout random trial unique complete grid",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled qc full order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled qc budget 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled qc budget 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled qc budget 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled qc budget 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled qc budget 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled qc budget 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled dsp_only full order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled dsp_only budget 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled dsp_only budget 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled dsp_only budget 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled dsp_only budget 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled dsp_only budget 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled dsp_only budget 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled coverage_only full order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled coverage_only budget 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled coverage_only budget 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled coverage_only budget 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled coverage_only budget 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled coverage_only budget 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled coverage_only budget 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled shortest full order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled shortest budget 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled shortest budget 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled shortest budget 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled shortest budget 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled shortest budget 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled shortest budget 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled longest full order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled longest budget 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled longest budget 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled longest budget 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled longest budget 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled longest budget 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled longest budget 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled all planned random seeds",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled all 1000 random order hashes and budgets",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "fresh_holdout pooled four random seed metric replays",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "fresh_holdout pooled random aggregation 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled random aggregation 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled random aggregation 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled random aggregation 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled random aggregation 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout pooled random aggregation 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean qc full order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean qc budget 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean qc budget 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean qc budget 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean qc budget 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean qc budget 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean qc budget 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean dsp_only full order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean dsp_only budget 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean dsp_only budget 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean dsp_only budget 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean dsp_only budget 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean dsp_only budget 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean dsp_only budget 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean coverage_only full order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean coverage_only budget 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean coverage_only budget 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean coverage_only budget 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean coverage_only budget 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean coverage_only budget 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean coverage_only budget 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean shortest full order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean shortest budget 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean shortest budget 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean shortest budget 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean shortest budget 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean shortest budget 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean shortest budget 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean longest full order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean longest budget 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean longest budget 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean longest budget 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean longest budget 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean longest budget 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean longest budget 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean all planned random seeds",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean all 1000 random order hashes and budgets",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "fresh_holdout split:dev-clean four random seed metric replays",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "fresh_holdout split:dev-clean random aggregation 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean random aggregation 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean random aggregation 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean random aggregation 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean random aggregation 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-clean random aggregation 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other qc full order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other qc budget 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other qc budget 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other qc budget 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other qc budget 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other qc budget 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other qc budget 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other dsp_only full order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other dsp_only budget 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other dsp_only budget 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other dsp_only budget 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other dsp_only budget 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other dsp_only budget 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other dsp_only budget 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other coverage_only full order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other coverage_only budget 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other coverage_only budget 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other coverage_only budget 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other coverage_only budget 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other coverage_only budget 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other coverage_only budget 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other shortest full order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other shortest budget 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other shortest budget 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other shortest budget 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other shortest budget 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other shortest budget 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other shortest budget 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other longest full order",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other longest budget 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other longest budget 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other longest budget 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other longest budget 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other longest budget 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other longest budget 100",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other all planned random seeds",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other all 1000 random order hashes and budgets",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "fresh_holdout split:dev-other four random seed metric replays",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "fresh_holdout split:dev-other random aggregation 5",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other random aggregation 10",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other random aggregation 20",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other random aggregation 30",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other random aggregation 50",
+      "passed": true
+    },
+    {
+      "check": "fresh_holdout split:dev-other random aggregation 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test available arms",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test legacy model feature schema",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test legacy actual estimator parameters",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test legacy replay predictions",
+      "passed": true,
+      "detail": {
+        "items": 5559,
+        "absolute_relative_tolerance": 1e-12
+      }
+    },
+    {
+      "check": "previously_exposed_test legacy group IDs",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test legacy pooled order",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test legacy pooled all budgets",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test legacy split:test-clean order",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test legacy split:test-clean all budgets",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test legacy split:test-other order",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test legacy split:test-other all budgets",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled legacy metrics 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled legacy metrics 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled legacy metrics 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled legacy metrics 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled legacy metrics 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled legacy metrics 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean legacy metrics 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean legacy metrics 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean legacy metrics 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean legacy metrics 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean legacy metrics 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean legacy metrics 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other legacy metrics 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other legacy metrics 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other legacy metrics 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other legacy metrics 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other legacy metrics 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other legacy metrics 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test random trial unique complete grid",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled qc full order",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled qc budget 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled qc budget 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled qc budget 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled qc budget 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled qc budget 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled qc budget 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled dsp_only full order",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled dsp_only budget 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled dsp_only budget 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled dsp_only budget 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled dsp_only budget 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled dsp_only budget 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled dsp_only budget 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled coverage_only full order",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled coverage_only budget 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled coverage_only budget 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled coverage_only budget 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled coverage_only budget 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled coverage_only budget 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled coverage_only budget 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled shortest full order",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled shortest budget 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled shortest budget 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled shortest budget 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled shortest budget 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled shortest budget 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled shortest budget 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled longest full order",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled longest budget 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled longest budget 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled longest budget 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled longest budget 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled longest budget 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled longest budget 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled all planned random seeds",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled all 1000 random order hashes and budgets",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "previously_exposed_test pooled four random seed metric replays",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "previously_exposed_test pooled random aggregation 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled random aggregation 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled random aggregation 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled random aggregation 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled random aggregation 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test pooled random aggregation 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean qc full order",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean qc budget 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean qc budget 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean qc budget 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean qc budget 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean qc budget 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean qc budget 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean dsp_only full order",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean dsp_only budget 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean dsp_only budget 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean dsp_only budget 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean dsp_only budget 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean dsp_only budget 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean dsp_only budget 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean coverage_only full order",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean coverage_only budget 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean coverage_only budget 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean coverage_only budget 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean coverage_only budget 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean coverage_only budget 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean coverage_only budget 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean shortest full order",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean shortest budget 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean shortest budget 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean shortest budget 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean shortest budget 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean shortest budget 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean shortest budget 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean longest full order",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean longest budget 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean longest budget 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean longest budget 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean longest budget 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean longest budget 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean longest budget 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean all planned random seeds",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean all 1000 random order hashes and budgets",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "previously_exposed_test split:test-clean four random seed metric replays",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "previously_exposed_test split:test-clean random aggregation 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean random aggregation 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean random aggregation 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean random aggregation 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean random aggregation 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-clean random aggregation 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other qc full order",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other qc budget 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other qc budget 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other qc budget 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other qc budget 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other qc budget 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other qc budget 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other dsp_only full order",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other dsp_only budget 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other dsp_only budget 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other dsp_only budget 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other dsp_only budget 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other dsp_only budget 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other dsp_only budget 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other coverage_only full order",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other coverage_only budget 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other coverage_only budget 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other coverage_only budget 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other coverage_only budget 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other coverage_only budget 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other coverage_only budget 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other shortest full order",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other shortest budget 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other shortest budget 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other shortest budget 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other shortest budget 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other shortest budget 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other shortest budget 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other longest full order",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other longest budget 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other longest budget 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other longest budget 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other longest budget 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other longest budget 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other longest budget 100",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other all planned random seeds",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other all 1000 random order hashes and budgets",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "previously_exposed_test split:test-other four random seed metric replays",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "previously_exposed_test split:test-other random aggregation 5",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other random aggregation 10",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other random aggregation 20",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other random aggregation 30",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other random aggregation 50",
+      "passed": true
+    },
+    {
+      "check": "previously_exposed_test split:test-other random aggregation 100",
+      "passed": true
+    },
+    {
+      "check": "all_test_baseline_random_and_totals_exactly_equal_v1",
+      "passed": true
+    },
+    {
+      "check": "artifacts_still_unchanged_after_audit",
+      "passed": true,
+      "detail": {
+        "files": 100,
+        "mismatches": []
+      }
+    }
+  ]
+}

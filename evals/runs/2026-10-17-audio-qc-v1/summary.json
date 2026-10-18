@@ -1,0 +1,704 @@
+{
+  "schema_version": "audio-qc-experiment-v1",
+  "parent_recordings": 20,
+  "planned_cases": 66,
+  "recorded_cases": 66,
+  "conditions": {
+    "original": {
+      "planned_cases": 20,
+      "recorded_cases": 20,
+      "missing_cases": 0,
+      "statuses": {
+        "complete": 20
+      },
+      "expectations": {
+        "observational": 20
+      },
+      "eligible_controlled_cases": 0,
+      "issue_count_by_code": {
+        "low_energy": 22,
+        "low_level": 10,
+        "speech_without_transcript": 1,
+        "transcript_without_speech": 5
+      },
+      "flagged_item_count_by_code": {
+        "low_energy": 13,
+        "low_level": 10,
+        "speech_without_transcript": 1,
+        "transcript_without_speech": 3
+      },
+      "items_with_any_issue": 16,
+      "vad_ok": 20,
+      "audio_seconds": 200.36,
+      "empty_cache": {
+        "calls": 20,
+        "sum_ms": 1709.4017,
+        "p50_ms": 82.34305,
+        "p95_ms": 126.487745
+      },
+      "cache_replay": {
+        "calls": 20,
+        "sum_ms": 324.6723,
+        "p50_ms": 16.1873,
+        "p95_ms": 18.614530000000002
+      },
+      "empty_cache_successful": {
+        "calls": 20,
+        "sum_ms": 1709.4017,
+        "p50_ms": 82.34305,
+        "p95_ms": 126.487745
+      },
+      "empty_cache_failed": {
+        "calls": 0,
+        "sum_ms": 0,
+        "p50_ms": null,
+        "p95_ms": null
+      },
+      "cache_replay_successful": {
+        "calls": 20,
+        "sum_ms": 324.6723,
+        "p50_ms": 16.1873,
+        "p95_ms": 18.614530000000002
+      },
+      "cache_replay_failed": {
+        "calls": 0,
+        "sum_ms": 0,
+        "p50_ms": null,
+        "p95_ms": null
+      },
+      "cache_semantically_equal": 20,
+      "cache_entry_unchanged": 20,
+      "cache_replay_failures": 0
+    },
+    "transcript_removed": {
+      "planned_cases": 20,
+      "recorded_cases": 20,
+      "missing_cases": 0,
+      "statuses": {
+        "complete": 20
+      },
+      "expectations": {
+        "passed": 20
+      },
+      "eligible_controlled_cases": 20,
+      "issue_count_by_code": {
+        "low_energy": 22,
+        "low_level": 10,
+        "speech_without_transcript": 51
+      },
+      "flagged_item_count_by_code": {
+        "low_energy": 13,
+        "low_level": 10,
+        "speech_without_transcript": 20
+      },
+      "items_with_any_issue": 20,
+      "vad_ok": 20,
+      "audio_seconds": 200.36,
+      "empty_cache": {
+        "calls": 20,
+        "sum_ms": 1654.2178000000001,
+        "p50_ms": 80.20295,
+        "p95_ms": 108.48639500000002
+      },
+      "cache_replay": {
+        "calls": 20,
+        "sum_ms": 350.7835,
+        "p50_ms": 15.2422,
+        "p95_ms": 19.344735000000036
+      },
+      "empty_cache_successful": {
+        "calls": 20,
+        "sum_ms": 1654.2178000000001,
+        "p50_ms": 80.20295,
+        "p95_ms": 108.48639500000002
+      },
+      "empty_cache_failed": {
+        "calls": 0,
+        "sum_ms": 0,
+        "p50_ms": null,
+        "p95_ms": null
+      },
+      "cache_replay_successful": {
+        "calls": 20,
+        "sum_ms": 350.7835,
+        "p50_ms": 15.2422,
+        "p95_ms": 19.344735000000036
+      },
+      "cache_replay_failed": {
+        "calls": 0,
+        "sum_ms": 0,
+        "p50_ms": null,
+        "p95_ms": null
+      },
+      "cache_semantically_equal": 20,
+      "cache_entry_unchanged": 20,
+      "cache_replay_failures": 0
+    },
+    "audio_silenced": {
+      "planned_cases": 20,
+      "recorded_cases": 20,
+      "missing_cases": 0,
+      "statuses": {
+        "complete": 20
+      },
+      "expectations": {
+        "passed": 20
+      },
+      "eligible_controlled_cases": 20,
+      "issue_count_by_code": {
+        "low_energy": 20,
+        "low_level": 20,
+        "transcript_without_speech": 48
+      },
+      "flagged_item_count_by_code": {
+        "low_energy": 20,
+        "low_level": 20,
+        "transcript_without_speech": 20
+      },
+      "items_with_any_issue": 20,
+      "vad_ok": 20,
+      "audio_seconds": 200.36,
+      "empty_cache": {
+        "calls": 20,
+        "sum_ms": 1999.0672,
+        "p50_ms": 96.9724,
+        "p95_ms": 123.402925
+      },
+      "cache_replay": {
+        "calls": 20,
+        "sum_ms": 314.5352,
+        "p50_ms": 14.46745,
+        "p95_ms": 18.09636000000002
+      },
+      "empty_cache_successful": {
+        "calls": 20,
+        "sum_ms": 1999.0672,
+        "p50_ms": 96.9724,
+        "p95_ms": 123.402925
+      },
+      "empty_cache_failed": {
+        "calls": 0,
+        "sum_ms": 0,
+        "p50_ms": null,
+        "p95_ms": null
+      },
+      "cache_replay_successful": {
+        "calls": 20,
+        "sum_ms": 314.5352,
+        "p50_ms": 14.46745,
+        "p95_ms": 18.09636000000002
+      },
+      "cache_replay_failed": {
+        "calls": 0,
+        "sum_ms": 0,
+        "p50_ms": null,
+        "p95_ms": null
+      },
+      "cache_semantically_equal": 20,
+      "cache_entry_unchanged": 20,
+      "cache_replay_failures": 0
+    },
+    "normal_tone": {
+      "planned_cases": 1,
+      "recorded_cases": 1,
+      "missing_cases": 0,
+      "statuses": {
+        "complete": 1
+      },
+      "expectations": {
+        "passed": 1
+      },
+      "eligible_controlled_cases": 0,
+      "issue_count_by_code": {},
+      "flagged_item_count_by_code": {},
+      "items_with_any_issue": 0,
+      "vad_ok": 1,
+      "audio_seconds": 3.0,
+      "empty_cache": {
+        "calls": 1,
+        "sum_ms": 898.4201,
+        "p50_ms": 898.4201,
+        "p95_ms": 898.4201
+      },
+      "cache_replay": {
+        "calls": 1,
+        "sum_ms": 12.5037,
+        "p50_ms": 12.5037,
+        "p95_ms": 12.5037
+      },
+      "empty_cache_successful": {
+        "calls": 1,
+        "sum_ms": 898.4201,
+        "p50_ms": 898.4201,
+        "p95_ms": 898.4201
+      },
+      "empty_cache_failed": {
+        "calls": 0,
+        "sum_ms": 0,
+        "p50_ms": null,
+        "p95_ms": null
+      },
+      "cache_replay_successful": {
+        "calls": 1,
+        "sum_ms": 12.5037,
+        "p50_ms": 12.5037,
+        "p95_ms": 12.5037
+      },
+      "cache_replay_failed": {
+        "calls": 0,
+        "sum_ms": 0,
+        "p50_ms": null,
+        "p95_ms": null
+      },
+      "cache_semantically_equal": 1,
+      "cache_entry_unchanged": 1,
+      "cache_replay_failures": 0
+    },
+    "silence": {
+      "planned_cases": 1,
+      "recorded_cases": 1,
+      "missing_cases": 0,
+      "statuses": {
+        "complete": 1
+      },
+      "expectations": {
+        "passed": 1
+      },
+      "eligible_controlled_cases": 0,
+      "issue_count_by_code": {
+        "low_energy": 1,
+        "low_level": 1
+      },
+      "flagged_item_count_by_code": {
+        "low_energy": 1,
+        "low_level": 1
+      },
+      "items_with_any_issue": 1,
+      "vad_ok": 1,
+      "audio_seconds": 3.0,
+      "empty_cache": {
+        "calls": 1,
+        "sum_ms": 44.5294,
+        "p50_ms": 44.5294,
+        "p95_ms": 44.5294
+      },
+      "cache_replay": {
+        "calls": 1,
+        "sum_ms": 8.5211,
+        "p50_ms": 8.5211,
+        "p95_ms": 8.5211
+      },
+      "empty_cache_successful": {
+        "calls": 1,
+        "sum_ms": 44.5294,
+        "p50_ms": 44.5294,
+        "p95_ms": 44.5294
+      },
+      "empty_cache_failed": {
+        "calls": 0,
+        "sum_ms": 0,
+        "p50_ms": null,
+        "p95_ms": null
+      },
+      "cache_replay_successful": {
+        "calls": 1,
+        "sum_ms": 8.5211,
+        "p50_ms": 8.5211,
+        "p95_ms": 8.5211
+      },
+      "cache_replay_failed": {
+        "calls": 0,
+        "sum_ms": 0,
+        "p50_ms": null,
+        "p95_ms": null
+      },
+      "cache_semantically_equal": 1,
+      "cache_entry_unchanged": 1,
+      "cache_replay_failures": 0
+    },
+    "quiet_tone": {
+      "planned_cases": 1,
+      "recorded_cases": 1,
+      "missing_cases": 0,
+      "statuses": {
+        "complete": 1
+      },
+      "expectations": {
+        "passed": 1
+      },
+      "eligible_controlled_cases": 0,
+      "issue_count_by_code": {
+        "low_energy": 1,
+        "low_level": 1
+      },
+      "flagged_item_count_by_code": {
+        "low_energy": 1,
+        "low_level": 1
+      },
+      "items_with_any_issue": 1,
+      "vad_ok": 1,
+      "audio_seconds": 3.0,
+      "empty_cache": {
+        "calls": 1,
+        "sum_ms": 52.9423,
+        "p50_ms": 52.9423,
+        "p95_ms": 52.9423
+      },
+      "cache_replay": {
+        "calls": 1,
+        "sum_ms": 12.2859,
+        "p50_ms": 12.2859,
+        "p95_ms": 12.2859
+      },
+      "empty_cache_successful": {
+        "calls": 1,
+        "sum_ms": 52.9423,
+        "p50_ms": 52.9423,
+        "p95_ms": 52.9423
+      },
+      "empty_cache_failed": {
+        "calls": 0,
+        "sum_ms": 0,
+        "p50_ms": null,
+        "p95_ms": null
+      },
+      "cache_replay_successful": {
+        "calls": 1,
+        "sum_ms": 12.2859,
+        "p50_ms": 12.2859,
+        "p95_ms": 12.2859
+      },
+      "cache_replay_failed": {
+        "calls": 0,
+        "sum_ms": 0,
+        "p50_ms": null,
+        "p95_ms": null
+      },
+      "cache_semantically_equal": 1,
+      "cache_entry_unchanged": 1,
+      "cache_replay_failures": 0
+    },
+    "near_clipping": {
+      "planned_cases": 1,
+      "recorded_cases": 1,
+      "missing_cases": 0,
+      "statuses": {
+        "complete": 1
+      },
+      "expectations": {
+        "passed": 1
+      },
+      "eligible_controlled_cases": 0,
+      "issue_count_by_code": {
+        "near_clipping": 1
+      },
+      "flagged_item_count_by_code": {
+        "near_clipping": 1
+      },
+      "items_with_any_issue": 1,
+      "vad_ok": 1,
+      "audio_seconds": 3.0,
+      "empty_cache": {
+        "calls": 1,
+        "sum_ms": 69.0707,
+        "p50_ms": 69.0707,
+        "p95_ms": 69.0707
+      },
+      "cache_replay": {
+        "calls": 1,
+        "sum_ms": 12.9215,
+        "p50_ms": 12.9215,
+        "p95_ms": 12.9215
+      },
+      "empty_cache_successful": {
+        "calls": 1,
+        "sum_ms": 69.0707,
+        "p50_ms": 69.0707,
+        "p95_ms": 69.0707
+      },
+      "empty_cache_failed": {
+        "calls": 0,
+        "sum_ms": 0,
+        "p50_ms": null,
+        "p95_ms": null
+      },
+      "cache_replay_successful": {
+        "calls": 1,
+        "sum_ms": 12.9215,
+        "p50_ms": 12.9215,
+        "p95_ms": 12.9215
+      },
+      "cache_replay_failed": {
+        "calls": 0,
+        "sum_ms": 0,
+        "p50_ms": null,
+        "p95_ms": null
+      },
+      "cache_semantically_equal": 1,
+      "cache_entry_unchanged": 1,
+      "cache_replay_failures": 0
+    },
+    "dc_offset": {
+      "planned_cases": 1,
+      "recorded_cases": 1,
+      "missing_cases": 0,
+      "statuses": {
+        "complete": 1
+      },
+      "expectations": {
+        "passed": 1
+      },
+      "eligible_controlled_cases": 0,
+      "issue_count_by_code": {
+        "dc_offset": 1
+      },
+      "flagged_item_count_by_code": {
+        "dc_offset": 1
+      },
+      "items_with_any_issue": 1,
+      "vad_ok": 1,
+      "audio_seconds": 3.0,
+      "empty_cache": {
+        "calls": 1,
+        "sum_ms": 67.7126,
+        "p50_ms": 67.7126,
+        "p95_ms": 67.7126
+      },
+      "cache_replay": {
+        "calls": 1,
+        "sum_ms": 14.5437,
+        "p50_ms": 14.5437,
+        "p95_ms": 14.5437
+      },
+      "empty_cache_successful": {
+        "calls": 1,
+        "sum_ms": 67.7126,
+        "p50_ms": 67.7126,
+        "p95_ms": 67.7126
+      },
+      "empty_cache_failed": {
+        "calls": 0,
+        "sum_ms": 0,
+        "p50_ms": null,
+        "p95_ms": null
+      },
+      "cache_replay_successful": {
+        "calls": 1,
+        "sum_ms": 14.5437,
+        "p50_ms": 14.5437,
+        "p95_ms": 14.5437
+      },
+      "cache_replay_failed": {
+        "calls": 0,
+        "sum_ms": 0,
+        "p50_ms": null,
+        "p95_ms": null
+      },
+      "cache_semantically_equal": 1,
+      "cache_entry_unchanged": 1,
+      "cache_replay_failures": 0
+    },
+    "antiphase": {
+      "planned_cases": 1,
+      "recorded_cases": 1,
+      "missing_cases": 0,
+      "statuses": {
+        "complete": 1
+      },
+      "expectations": {
+        "passed": 1
+      },
+      "eligible_controlled_cases": 0,
+      "issue_count_by_code": {},
+      "flagged_item_count_by_code": {},
+      "items_with_any_issue": 0,
+      "vad_ok": 1,
+      "audio_seconds": 3.0,
+      "empty_cache": {
+        "calls": 1,
+        "sum_ms": 85.8832,
+        "p50_ms": 85.8832,
+        "p95_ms": 85.8832
+      },
+      "cache_replay": {
+        "calls": 1,
+        "sum_ms": 14.7661,
+        "p50_ms": 14.7661,
+        "p95_ms": 14.7661
+      },
+      "empty_cache_successful": {
+        "calls": 1,
+        "sum_ms": 85.8832,
+        "p50_ms": 85.8832,
+        "p95_ms": 85.8832
+      },
+      "empty_cache_failed": {
+        "calls": 0,
+        "sum_ms": 0,
+        "p50_ms": null,
+        "p95_ms": null
+      },
+      "cache_replay_successful": {
+        "calls": 1,
+        "sum_ms": 14.7661,
+        "p50_ms": 14.7661,
+        "p95_ms": 14.7661
+      },
+      "cache_replay_failed": {
+        "calls": 0,
+        "sum_ms": 0,
+        "p50_ms": null,
+        "p95_ms": null
+      },
+      "cache_semantically_equal": 1,
+      "cache_entry_unchanged": 1,
+      "cache_replay_failures": 0
+    }
+  },
+  "engineering_checks": {
+    "analysis_failures": 0,
+    "partial_reports": 0,
+    "assertion_failures": 0,
+    "cache_mismatches": 0,
+    "cache_replay_failures": 0
+  },
+  "human_adjudication": "pending",
+  "human_efficiency_trial": "pending",
+  "percentile_method": "linear interpolation, position=(n-1)*q",
+  "limitations": [
+    "Engineering checks only: natural-audio issue flags have not been human adjudicated.",
+    "Controlled variants share parent recordings and are not independent samples.",
+    "Synthetic signals are not natural speech; these checks do not estimate VAD quality.",
+    "No reference text was read by the detector or this experiment.",
+    "No human time saving, semantic accuracy, natural-error recall or false-alarm rate was measured.",
+    "Empty-cache timing includes file I/O, hashing, DSP, VAD, serialization and first-use model setup.",
+    "Cache replay timing is recorded separately and is not model inference speed."
+  ],
+  "started_at_utc": "2026-10-17T06:35:04.304927+00:00",
+  "finished_at_utc": "2026-10-17T06:35:14.674993+00:00",
+  "input_manifest_sha256": "23d32e84a1cc1f30ec1927cccfd87b17d04220751ea3708b1257e694ca9da5e1",
+  "manifest_unchanged": true,
+  "source_audio_integrity": [
+    {
+      "parent_item_id": "fleurs-en_us-train-10004088536354799741",
+      "before_sha256": "515af915b2734270ff2974f0f6ed1eab83157819d793ed423f53bf20b86e3869",
+      "after_sha256": "515af915b2734270ff2974f0f6ed1eab83157819d793ed423f53bf20b86e3869",
+      "unchanged": true
+    },
+    {
+      "parent_item_id": "fleurs-en_us-train-10012216926115652402",
+      "before_sha256": "c67c5e894850b571d1dec3e59d9aae3a456e845697a2d9b85674d75b0f4de809",
+      "after_sha256": "c67c5e894850b571d1dec3e59d9aae3a456e845697a2d9b85674d75b0f4de809",
+      "unchanged": true
+    },
+    {
+      "parent_item_id": "fleurs-en_us-train-10035729252730569448",
+      "before_sha256": "6f04b86ce2a7460bf4b3c75e5e7aa1cf6e66d9cbb3cd0611a08a0c8026b8ef15",
+      "after_sha256": "6f04b86ce2a7460bf4b3c75e5e7aa1cf6e66d9cbb3cd0611a08a0c8026b8ef15",
+      "unchanged": true
+    },
+    {
+      "parent_item_id": "fleurs-en_us-train-10038239648789136007",
+      "before_sha256": "46ff15b9e0a23c131547a4a08e853beb6f6feec00ac7ede57f39d8f8b8dccecd",
+      "after_sha256": "46ff15b9e0a23c131547a4a08e853beb6f6feec00ac7ede57f39d8f8b8dccecd",
+      "unchanged": true
+    },
+    {
+      "parent_item_id": "fleurs-en_us-train-10038782309165056980",
+      "before_sha256": "3c3daa8b571e666c0df008465c0edf929052565b252634e8beb4745c3c59e49b",
+      "after_sha256": "3c3daa8b571e666c0df008465c0edf929052565b252634e8beb4745c3c59e49b",
+      "unchanged": true
+    },
+    {
+      "parent_item_id": "fleurs-en_us-train-10041973057502883658",
+      "before_sha256": "158ed49cd84ee4eadf40aefb80a0fbca9e5737bb05dc0459c16203383cfe9397",
+      "after_sha256": "158ed49cd84ee4eadf40aefb80a0fbca9e5737bb05dc0459c16203383cfe9397",
+      "unchanged": true
+    },
+    {
+      "parent_item_id": "fleurs-en_us-train-10045215346264155892",
+      "before_sha256": "1553ad78fe0a8d6e59b68e9b1601fa1330cb05708cadd2e3f6f8a1adc24b9565",
+      "after_sha256": "1553ad78fe0a8d6e59b68e9b1601fa1330cb05708cadd2e3f6f8a1adc24b9565",
+      "unchanged": true
+    },
+    {
+      "parent_item_id": "fleurs-en_us-train-10045464480702227987",
+      "before_sha256": "8440c124a9d951fe009b131e51ad929a9cd3ab4e4cbe80ff862da57121bf6377",
+      "after_sha256": "8440c124a9d951fe009b131e51ad929a9cd3ab4e4cbe80ff862da57121bf6377",
+      "unchanged": true
+    },
+    {
+      "parent_item_id": "fleurs-en_us-train-10048972069970749159",
+      "before_sha256": "b1af91bff2f7dc49477a51306bc1f39946434ac188736b92a3a86d725614dc76",
+      "after_sha256": "b1af91bff2f7dc49477a51306bc1f39946434ac188736b92a3a86d725614dc76",
+      "unchanged": true
+    },
+    {
+      "parent_item_id": "fleurs-en_us-train-100511566475978219",
+      "before_sha256": "beb2c8daee8b39408574a27f711e09855e065c01a5e901fec46b1aaccf99d56f",
+      "after_sha256": "beb2c8daee8b39408574a27f711e09855e065c01a5e901fec46b1aaccf99d56f",
+      "unchanged": true
+    },
+    {
+      "parent_item_id": "fleurs-cmn_hans_cn-train-10009480476880474721",
+      "before_sha256": "445c1afef03f26dd4076cdb5ceaeb39aa1831c3a4afc64c882ab7cced56ea200",
+      "after_sha256": "445c1afef03f26dd4076cdb5ceaeb39aa1831c3a4afc64c882ab7cced56ea200",
+      "unchanged": true
+    },
+    {
+      "parent_item_id": "fleurs-cmn_hans_cn-train-1001224369867554169",
+      "before_sha256": "715f56d160d2388fb29af35d371e6a9b7634671d2aa34157ddf478495f67587f",
+      "after_sha256": "715f56d160d2388fb29af35d371e6a9b7634671d2aa34157ddf478495f67587f",
+      "unchanged": true
+    },
+    {
+      "parent_item_id": "fleurs-cmn_hans_cn-train-10014836972030239635",
+      "before_sha256": "b182f7ad511f8a03b950c29beb4d66a05f73e9e2e3a4620fb2ed25e7edc60e3c",
+      "after_sha256": "b182f7ad511f8a03b950c29beb4d66a05f73e9e2e3a4620fb2ed25e7edc60e3c",
+      "unchanged": true
+    },
+    {
+      "parent_item_id": "fleurs-cmn_hans_cn-train-10019075627729033481",
+      "before_sha256": "f202574a82029e45740e043948d746c921dfa1bc95488289b4b2332408c967b7",
+      "after_sha256": "f202574a82029e45740e043948d746c921dfa1bc95488289b4b2332408c967b7",
+      "unchanged": true
+    },
+    {
+      "parent_item_id": "fleurs-cmn_hans_cn-train-10019467836354684394",
+      "before_sha256": "e44963f19c5cf5e3249e4a86c8b38d3bffd3961579ee6fab0e21fedab4170ec6",
+      "after_sha256": "e44963f19c5cf5e3249e4a86c8b38d3bffd3961579ee6fab0e21fedab4170ec6",
+      "unchanged": true
+    },
+    {
+      "parent_item_id": "fleurs-cmn_hans_cn-train-1002494957607521242",
+      "before_sha256": "3926a97e6f50098bab66475c2aeef29b0529c3105a2207959c4e97cad7f07cd6",
+      "after_sha256": "3926a97e6f50098bab66475c2aeef29b0529c3105a2207959c4e97cad7f07cd6",
+      "unchanged": true
+    },
+    {
+      "parent_item_id": "fleurs-cmn_hans_cn-train-10026220710742852578",
+      "before_sha256": "c6ae9500cd05cf4ea243cbb49e479bdaa8c77d996208c12996ab9d179160a5ae",
+      "after_sha256": "c6ae9500cd05cf4ea243cbb49e479bdaa8c77d996208c12996ab9d179160a5ae",
+      "unchanged": true
+    },
+    {
+      "parent_item_id": "fleurs-cmn_hans_cn-train-10039541732656594002",
+      "before_sha256": "41b43ba51e6d7f9a21ad37e2a9dcfe7d1a25b74866d12e43372a3b4ea6fbe65e",
+      "after_sha256": "41b43ba51e6d7f9a21ad37e2a9dcfe7d1a25b74866d12e43372a3b4ea6fbe65e",
+      "unchanged": true
+    },
+    {
+      "parent_item_id": "fleurs-cmn_hans_cn-train-10040921331728444869",
+      "before_sha256": "389182dd5b90610b0128bdeabbf953d4a3f417ad19ea7a2e5ac7e01ce7b26c50",
+      "after_sha256": "389182dd5b90610b0128bdeabbf953d4a3f417ad19ea7a2e5ac7e01ce7b26c50",
+      "unchanged": true
+    },
+    {
+      "parent_item_id": "fleurs-cmn_hans_cn-train-10043214142941432545",
+      "before_sha256": "26741c8c8d951c8cb2ad6f77f5d1f3a2056c3e6b5f3b0c178e72e0e892131578",
+      "after_sha256": "26741c8c8d951c8cb2ad6f77f5d1f3a2056c3e6b5f3b0c178e72e0e892131578",
+      "unchanged": true
+    }
+  ],
+  "implementation_source_unchanged": true
+}

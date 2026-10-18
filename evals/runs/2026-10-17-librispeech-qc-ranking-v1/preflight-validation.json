@@ -1,0 +1,33 @@
+{
+  "recorded_at_utc": "2026-10-17T07:20:09.442167+00:00",
+  "full_suite": {
+    "command": ".venv/Scripts/python.exe -m pytest -q",
+    "passed": 291,
+    "seconds": 39.5,
+    "exit_code": 0
+  },
+  "lint": {
+    "command": ".venv/Scripts/python.exe -m ruff check scripts/evaluate_qc_ranking.py scripts/qc_ranking_metrics.py tests/test_qc_ranking_runner.py tests/test_qc_ranking_metrics.py",
+    "result": "All checks passed",
+    "exit_code": 0
+  },
+  "whitespace": {
+    "command": "git diff --check",
+    "exit_code": 0
+  },
+  "pre_freeze_review_fixes": [
+    "Strict ranking config filtered from analysis config",
+    "ASR terminal and per-row model/config identity",
+    "Source audio / timing microsecond representation",
+    "All method and random selections sealed before gold",
+    "Completed full-cohort gate and source/environment/model hash checks"
+  ],
+  "test_contract_update": "An earlier full suite had 290 passed / 1 failed because the expected metrics object lacked the newly required selected_wer, captured_reference_units and unused_budget_s fields. Updated that synthetic contract assertion before freeze, then reran all 291 tests successfully.",
+  "full_followup": {
+    "pid": 40656,
+    "status_file": "runtime/audio-qc-ranking-v1/full-followup-status.json",
+    "automation_id": "librispeech-qc",
+    "purpose": "Report meaningful completion/failure after already-authorized full continuation; silent while unchanged"
+  },
+  "new_asr_calls": 0
+}

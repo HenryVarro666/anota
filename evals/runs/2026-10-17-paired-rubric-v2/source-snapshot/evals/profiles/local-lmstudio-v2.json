@@ -1,0 +1,26 @@
+{
+  "name": "local-lmstudio-qwen3-14b-rubric-v2",
+  "base_url": "http://127.0.0.1:1234/v1",
+  "model": "anota-qwen3-14b-q4km",
+  "model_artifact": {
+    "repository": "Qwen/Qwen3-14B-GGUF",
+    "quantization": "Q4_K_M"
+  },
+  "request": {
+    "timeout_seconds": 120,
+    "max_tokens": 256,
+    "structured_output": true,
+    "prompt_suffix": "Apply the rubric using a separate meaning, category, and consequence check.\nCompare every proposition: actor, action, polarity, object, quantity/unit, time/duration, and condition/exception. A fluent, plausible sentence can still omit or replace information. Check domain entities and professional roles precisely.\nUse the smallest sufficient set of specific categories for distinct discrepancies. Do not add mistranslation for the same discrepancy already covered by omission, addition, number_unit, negation_polarity, or terminology. Use mistranslation for other meaning changes. Add grammar only for a separate real grammatical fault; a Spanish negative imperative is not inherently ungrammatical.\nDetermine severity from consequences, not the category name. Minor preserves meaning. Major changes meaning, an instruction, or an administrative outcome without an explicit clinical action risk. Critical changes an explicit clinical action, medication/dose, contraindication, or a condition governing whether a clinical action is performed. A changed number or term is not automatically critical. A meaningful missing qualifier is not merely a fluency issue. Do not infer unstated clinical facts.\nReturn one short rationale quoting the decisive source and target evidence, or identifying the missing span. /no_think"
+  },
+  "execution": {
+    "concurrency": 1,
+    "repeats": 2,
+    "order_seed": 20261017
+  },
+  "load_contract": {
+    "context_tokens": 4096,
+    "gpu_offload": "max",
+    "parallel_slots": 1
+  },
+  "purpose": "One frozen prompt/rubric clarification candidate; same weights/runtime as baseline; no post-holdout tuning"
+}

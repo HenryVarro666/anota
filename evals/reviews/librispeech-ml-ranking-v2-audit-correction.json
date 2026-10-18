@@ -1,0 +1,8 @@
+{
+  "reason": "Initial external audit mistakenly required both feature arms on test rows. Pre-registered previously exposed test has legacy arm only; changed external assertion to enforce exactly legacy on test and both arms on dev roles. Frozen study artifacts unchanged.",
+  "initial_audit_file": "librispeech-ml-ranking-v2-audit-initial-script-schema-failure.json",
+  "initial_audit_sha256": "4fbf8406bf4264473a43690baabf1f18a47a7fba6eba259c722597ca443a41cf",
+  "initial_audit_source_sha256": "b264ee50d3a4a2db25cdfd6c72c93a32f27abd0ea11295c4c0ec45d36129de53",
+  "corrected_audit_source_sha256": "3b73181e36e35c7ba4aedf8b26e609c10b71e008bcee0af8ee24d4661fb7b97c",
+  "audit_continued_by_model": "gpt-6.1-sol"
+}

@@ -1,0 +1,86 @@
+{
+  "checked_at_utc": "2026-10-17T07:06:08.328469+00:00",
+  "current_workspace_windows_tests": {
+    "started_at_utc": "2026-10-17T06:53:40.383494+00:00",
+    "finished_at_utc": "2026-10-17T06:54:38.268175+00:00",
+    "returncode": 0,
+    "counts": {
+      "tests": 230,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "app_hashes_at_start": {
+      "app\\__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "app\\comparison.py": "4b3aa07368749d6d57da6706edb0fe3541178b5295fd90944ef28d5bdb87697a",
+      "app\\db.py": "2b58e593b7a76a8bc3c87adf9996c51609bdd7e2bb55d93c10c16b3df6d6b001",
+      "app\\evaluation.py": "9f97d1850e5b49dd564b865c0c18e1e58f92d6036c34b8264444567980228262",
+      "app\\export.py": "2251395a13b3f69f582526b2a31d86b83fe57a76619acd44455ceef858205114",
+      "app\\importer.py": "8c315a18f2ebcd267974180dc8f2814f0b193890f657e5d9654a64d8766623b5",
+      "app\\judge.py": "02aedbf725f7380a738fe4d65d8084599251ea5e87a2e5917ac2c6a29dc4e059",
+      "app\\lf.py": "7773c1050ed888b04f5c78e632555e3188fac8e29279f8aa2a09b7e687cb6225",
+      "app\\main.py": "f73377adcadaddda3d002fef9e08a76267d032358b0da23964375177becdd181",
+      "app\\models.py": "eec56d4bb1b886a1121f6354db24322f931219ad2880a67d5959cdbe5b6ba8ef",
+      "app\\perturb.py": "3adf7bacd7b9471d6e6e32d0fe17dfcb145570572bb64277e7bcfa46d783b5aa",
+      "app\\quality.py": "05c19189e5aff39700302daf1f916bed9c9b9e2ac38e21045dcb54111c3cc591",
+      "app\\severity_study.py": "fe6c486af402d634e2e04c7c8ff99c068c2b50a784714fa737233eb6e3dc07f9",
+      "app\\speech.py": "2e49599d406b37e6f197634313647fa29ae38ecb70fc4fbb341bbbd1c45511e2",
+      "app\\tasks.py": "3d206213e9b7bbdd0473770d1efd1238c0dec790d2e107e32533981f18e70233"
+    },
+    "app_changed_during_tests": [],
+    "scope": "Windows current shared workspace, including speech updates. Separate from the 173 pre-inference tests of the frozen evaluation checkout. No inference replay and no GPU performance claim."
+  },
+  "pre_inference_windows_tests": {
+    "tests": 173,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "test_log": "validation/severity-v3-tests.log",
+  "test_junit": "validation/severity-v3-tests.xml",
+  "frozen_snapshots_unchanged_at_completion": true,
+  "live_workspace_drift": {
+    "changed_live_paths": [
+      "app/models.py"
+    ],
+    "frozen_snapshots_intact": true,
+    "judge_constants_and_annotation_schema_ast_unchanged": true,
+    "scope": "Live app/models.py gained separate speech-review fields while inference was running. Preserve those edits. Running Python modules were already imported; all actual request payloads are checked against the frozen protocol.",
+    "live_sha256": {
+      "app/models.py": "eec56d4bb1b886a1121f6354db24322f931219ad2880a67d5959cdbe5b6ba8ef"
+    }
+  },
+  "prior_artifact_hashes_verified": 46,
+  "recovery": {
+    "import_support": {
+      "path": "app/lf.py",
+      "git_commit": "6ceae1bed96b6a792ae57ad99b06a0764aff3485",
+      "sha256": "18e9133472c18eea79a06f2eb3138a8db9ef387b5b2ab4e999fa2ca4c720b8f0",
+      "scope": "Unchanged Git dependency for judge.py import; LF_TO_ERROR is used by MockJudge, not the real OpenAIJudge path. Not retrospectively added to the frozen input manifest."
+    },
+    "completed_resume_exit": 0,
+    "original_attempt_count": 110,
+    "completed_resume_raw_unchanged": true,
+    "changed_identity_rejected": true,
+    "concurrent_writer_rejected": true,
+    "corrupt_order_rejected": true,
+    "scope": "All recovery probes use an ignored run copy plus reconstructed frozen checkout; live workspace and original evidence untouched; no inference replay."
+  },
+  "reviewer_packet": {
+    "items": 28,
+    "opaque_ids": true,
+    "gold": false,
+    "model_outputs": false,
+    "split_indicators": false,
+    "rubric_bytes_match": true,
+    "human_review_completed": false
+  },
+  "timing_scope": "Interactive desktop; user confirmed concurrent computation (validation/user-load-context.json); workload type and start/end unrecorded. Substantial later-pass latency drift. Single post-drift CPU/RAM observation is not a time series or causal attribution. Keep all requests; no performance-isolation claim.",
+  "not_executed": [
+    "H100 experiment",
+    "AWS deployment/load/failover",
+    "Docker smoke",
+    "Linux CI",
+    "ARM64 CI"
+  ]
+}

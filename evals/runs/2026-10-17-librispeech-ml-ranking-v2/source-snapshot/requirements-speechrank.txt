@@ -1,0 +1,3 @@
+# Optional offline experiment tooling; annotation server has no ML dependency.
+-r requirements-audioqc-eval.txt
+scikit-learn==1.9.1

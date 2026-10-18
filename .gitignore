@@ -5,3 +5,11 @@ __pycache__/
 exports/
 .pytest_cache/
 node_modules/
+runtime/
+.env
+.env.*
+!.env.example
+models/
+*.gguf
+*.safetensors
+evals/runs/**/.writer-lock

@@ -1,0 +1,6 @@
+# Independent offline DSP + bundled Silero VAD. No ASR model download or LLM.
+numpy>=1.24,<3
+soundfile>=0.13,<1
+faster-whisper>=1.2.1,<2
+# Verified decoder API used for independent-channel 16 kHz VAD resampling.
+av==16.1.0

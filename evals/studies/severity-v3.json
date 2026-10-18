@@ -1,0 +1,25 @@
+{
+  "version": "severity-v3",
+  "holdout": "evals/data/severity_holdout_v3.jsonl",
+  "disputed": "evals/data/severity_disputed_v3.jsonl",
+  "regression": "evals/data/severity_regression_v3.jsonl",
+  "prior_datasets": ["evals/data/translation_probe_v1.jsonl", "evals/data/holdout_v2.jsonl"],
+  "arms": {
+    "baseline": {"profile": "evals/profiles/local-lmstudio.json", "guideline": "data/guideline.md"},
+    "candidate": {"profile": "evals/profiles/local-lmstudio.json", "guideline": "data/guidelines/severity-v3.md"}
+  },
+  "repeats": 2,
+  "order_seed": 202610173,
+  "prior_runs": ["evals/runs/2026-10-17-lmstudio-qwen3-14b-q4km", "evals/runs/2026-10-17-paired-rubric-v2"],
+  "gates": {
+    "candidate_validity": 1.0,
+    "candidate_critical_recall": 1.0,
+    "candidate_condition_recall": 1.0,
+    "binary_no_worse": true,
+    "severity_no_worse": true,
+    "clean_false_alarm_no_worse": true,
+    "noncritical_false_critical_no_worse": true,
+    "p95_ratio_max": 1.5
+  },
+  "limits": "Pilot gates apply separately to both primary passes. No automatic default change. Disputed cases never enter primary scoring. Same-agent synthetic labels, not independent expert truth. H100/AWS untested."
+}
