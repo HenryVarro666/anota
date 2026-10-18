@@ -1,0 +1,17 @@
+{
+  "description": "Selected user-provided utility reuse; original project license file was not found. This records provenance and does not assert a third-party license.",
+  "files": [
+    {
+      "vendored": "asr_whisper.py",
+      "source": "C:/Users/rog/Documents/Propio/data_preprocess/utils/asr_whisper.py",
+      "source_sha256": "4c004b0ebf0bc1f0a5de424854a768e5b959efdbfae919a208b6e794ffe29724",
+      "changes": "Added segment timestamps, explicit CPU threads, and configurable previous-text conditioning. Accepts pinned local model snapshot paths through the existing model_size argument."
+    },
+    {
+      "vendored": "audio_io.py",
+      "source": "C:/Users/rog/Documents/Propio/data_preprocess/utils/audio_io.py",
+      "source_sha256": "dd5801c888c6491ac1cf9f9908b68d01397ecd255770f5d665f6b57edcc6b2bd",
+      "changes": "Extracted only wav_info() and its imports; WAV metadata function unchanged."
+    }
+  ]
+}

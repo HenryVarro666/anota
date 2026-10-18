@@ -1,0 +1,197 @@
+{
+  "analysis_id": "969e7202a649223eed33aad7092bf97333d35d95a09eeac9d3c8e78ace3f0e5d",
+  "analyzer_version": "0.1.0",
+  "audio_sha256": "643f8a8dc8bd9c19225afffad2becfec5426180b3749cb208abdf1a6c8354efc",
+  "channels": 1,
+  "config": {
+    "coverage_merge_gap_s": 0.25,
+    "coverage_min_issue_s": 0.3,
+    "coverage_tolerance_s": 0.15,
+    "dc_offset_threshold": 0.03,
+    "frame_ms": 20,
+    "low_energy_dbfs": -50.0,
+    "low_energy_min_s": 1.0,
+    "low_level_dbfs": -35.0,
+    "max_channels": 8,
+    "max_duration_s": 1800.0,
+    "max_samples": 100000000,
+    "near_clip_amplitude": 0.999,
+    "near_clip_ratio": 0.01,
+    "vad_min_silence_ms": 150,
+    "vad_min_speech_ms": 250,
+    "vad_speech_pad_ms": 30,
+    "vad_threshold": 0.5,
+    "waveform_bins": 16
+  },
+  "coverage": {
+    "basis": "segments",
+    "covered_s": 0.0,
+    "speech_s": 0.0,
+    "status": "ok",
+    "text_outside_s": 1.0,
+    "uncovered_ratio": null,
+    "uncovered_s": 0.0
+  },
+  "detectors": [
+    {
+      "model_sha256": null,
+      "name": "speechqc-dsp",
+      "version": "0.1.0"
+    },
+    {
+      "model_sha256": null,
+      "name": "soundfile",
+      "version": "0.14.0"
+    },
+    {
+      "model_sha256": null,
+      "name": "numpy",
+      "version": "2.5.4"
+    },
+    {
+      "model_sha256": "4cbf549b8326f60f80f2536d9eefeb450a9abe83365a098031c89719f1be17d2",
+      "name": "faster-whisper-silero",
+      "version": "1.2.1"
+    },
+    {
+      "model_sha256": null,
+      "name": "onnxruntime",
+      "version": "1.31.0"
+    },
+    {
+      "model_sha256": null,
+      "name": "pyav",
+      "version": "16.1.0"
+    }
+  ],
+  "duration_s": 1.0,
+  "issues": [
+    {
+      "code": "low_energy",
+      "end": 1.0,
+      "evidence": {
+        "rms_dbfs": null,
+        "threshold_dbfs": -50.0
+      },
+      "id": "84087a39a15ff297ffc6fc54586fca6c1761eae1e4af0a150b88402916cf1e57",
+      "message": "Sustained low acoustic energy; this does not establish absence of speech.",
+      "priority": "low",
+      "start": 0.0
+    },
+    {
+      "code": "low_level",
+      "end": 1.0,
+      "evidence": {
+        "rms_dbfs": null,
+        "threshold_dbfs": -35.0
+      },
+      "id": "b6894909b7091ec9c6bc4432681fcfde3c8173a34dd5d5115593d2a3fe01cf01",
+      "message": "Overall recording level is low; check audibility.",
+      "priority": "low",
+      "start": 0.0
+    },
+    {
+      "code": "transcript_without_speech",
+      "end": 1.0,
+      "evidence": {
+        "basis": "segments",
+        "text_outside_s": 1.0,
+        "tolerance_s": 0.15
+      },
+      "id": "2e4dd216987bfb52f817e114ad45b3c80742ae8abf384a09b68a38e8c59e87cc",
+      "message": "Timed transcript lies outside detected speech. Listen to verify.",
+      "priority": "medium",
+      "start": 0.0
+    }
+  ],
+  "metrics": {
+    "dc_offset": 0.0,
+    "low_energy_ratio": 1.0,
+    "near_full_scale_ratio": 0.0,
+    "peak_dbfs": null,
+    "rms_dbfs": null
+  },
+  "sample_rate": 16000,
+  "schema_version": "speechqc-v1",
+  "status": "complete",
+  "transcript_sha256": "274e5be989393976b78e53e2e2c5893ccca930bca07b7208c35b015d07202aed",
+  "vad": {
+    "error": null,
+    "intervals": [],
+    "status": "ok"
+  },
+  "warnings": [
+    "Heuristic review hints only. Temporal coverage does not establish transcript correctness.",
+    "Coverage uses segment spans; omissions inside a segment may be hidden."
+  ],
+  "waveform": {
+    "channels": 1,
+    "duration_s": 1.0,
+    "peaks": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ]
+    ]
+  }
+}
