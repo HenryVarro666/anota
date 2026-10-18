@@ -1,0 +1,14 @@
+{
+  "name": "lab-h100-reference",
+  "base_url_env": "ANOTA_EVAL_BASE_URL",
+  "model_env": "ANOTA_EVAL_MODEL",
+  "model_artifact": {"repository": "Qwen/Qwen3-14B", "precision": "BF16; verify actual server configuration"},
+  "request": {
+    "timeout_seconds": 120,
+    "max_tokens": 256,
+    "structured_output": true,
+    "prompt_suffix": "Keep the rationale to one short sentence. /no_think"
+  },
+  "execution": {"concurrency": 1, "repeats": 2, "order_seed": 20261017},
+  "purpose": "Unexecuted endpoint template; two independent GPU replicas are separate runs, not tensor-parallel by default"
+}

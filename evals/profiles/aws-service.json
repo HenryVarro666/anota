@@ -1,0 +1,14 @@
+{
+  "name": "aws-service-validation",
+  "base_url_env": "ANOTA_EVAL_BASE_URL",
+  "model_env": "ANOTA_EVAL_MODEL",
+  "model_artifact": {"revision": "record the exact deployed revision in --metadata"},
+  "request": {
+    "timeout_seconds": 120,
+    "max_tokens": 256,
+    "structured_output": true,
+    "prompt_suffix": "Keep the rationale to one short sentence. /no_think"
+  },
+  "execution": {"concurrency": 1, "repeats": 2, "order_seed": 20261017},
+  "purpose": "Unexecuted OpenAI-compatible endpoint template; validate service contract before load testing"
+}

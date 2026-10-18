@@ -22,12 +22,11 @@ def test_mock_clean_is_no_error():
     assert v["error_types"] == ["no_error"] and v["worst_severity"] == "neutral"
     assert v["confidence"] > 0.8
 
-def test_parse_judge_json_extracts_and_clamps():
+def test_parse_judge_json_rejects_unknown_labels_and_out_of_range_scores():
     content = 'Reasoning first. {"rationale":"x","error_types":["omission","bogus"],' \
               '"worst_severity":"major","adequacy":9,"confidence":1.4}'
-    v = parse_judge_json(content)
-    assert v["error_types"] == ["omission"]      # unknown types dropped
-    assert v["adequacy"] == 5 and v["confidence"] == 1.0
+    with pytest.raises(JudgeUnavailable):
+        parse_judge_json(content)
 
 def test_parse_judge_json_garbage_raises():
     with pytest.raises(JudgeUnavailable):
