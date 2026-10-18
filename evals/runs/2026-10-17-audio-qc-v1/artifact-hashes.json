@@ -1,0 +1,19 @@
+{
+  "config.json": "2b55a2e83d4b2e5e278b8550200558508c99dfbd318834846539a645c6b469d3",
+  "human-audit-template.csv": "22bf7591745ff443e007b7d967232a99be4e54ca4602b07be4f749445c43d670",
+  "observations.jsonl": "6a0420e4c29e9bae11c40ade719aff7fb999dc03cad67a4f0e8c675312aac478",
+  "post-run-validation.json": "0821592d344ea8bf31954c3b76da1e463927476dd74ab64116fdf507ce3b8e64",
+  "protocol.json": "75be56cf2017492ce85e81306231b4dbd798ffdb628429fd9a45ac11483215c9",
+  "RESULTS.md": "43f86d48cfc323acfa6c54bbb3906294debedf17831d081f2fc8dd1482edda69",
+  "source-snapshot/docs/audio-qc-v1.md": "6317c5a5a648e47f2d89b98fe60a46f4736faec876cfa78f59ff29d11296e6ad",
+  "source-snapshot/requirements-audioqc.txt": "575634b38fd24a787169b0b8fe4849794a176351b3ffc9c37416fa1ec31296de",
+  "source-snapshot/scripts/evaluate_audio_qc.py": "fe86f9ee0836136212919b6d8ba2a2f022604db0c5f1516293f093df89623418",
+  "source-snapshot/speechqc/__init__.py": "10ef77484f56e8633bf1333b76838819e0d55184dbf755832b2bff7170b5118f",
+  "source-snapshot/speechqc/__main__.py": "f3d790039cf87e49eaa4a211eef6d7b55a00ef933cb2cf624caaa9f15bc0f4cb",
+  "source-snapshot/speechqc/analysis.py": "d335b50100822f0a29ae704744d0484881514a761693fa61cb4d304b333d2fb2",
+  "source-snapshot/speechqc/cache.py": "dafef4f3db93c276c18310729427b377286b6f7200e11b03af5979fe1a5a77af",
+  "source-snapshot/speechqc/schema.py": "4f2c50fce8fcbaa871053e2d2cbd06c3761c0962163f8d5850dd8cca3fe3f734",
+  "source-snapshot/speechqc/vad.py": "4b92615dd5e52e302cd83abe2b5efcd95811994e4b59f6fc5aa4250100190113",
+  "source-snapshot/tests/test_audio_qc_experiment.py": "364dadcb2a14256a2893a16c786deee7111595bb767dd4fb011cbc913e5c5832",
+  "summary.json": "0efcdcc6c8cb3e1399cfc265e26c9e31f4ed85583086cf585bb25f6686a41efa"
+}

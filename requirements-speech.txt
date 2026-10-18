@@ -1,0 +1,7 @@
+# Optional offline speech pipeline; keep separate from the annotation server.
+faster-whisper>=1.2.1,<2
+# PyAV 19 removed av.open(metadata_errors=...), still used by faster-whisper 1.2.1.
+# Pin the decoder version verified by the real-audio smoke run.
+av==16.1.0
+huggingface-hub>=0.34,<3
+soundfile>=0.13,<1

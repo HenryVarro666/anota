@@ -17,7 +17,9 @@ if __name__ == "__main__":
     ap.add_argument("--host", default="127.0.0.1",
                      help="bind address (use 0.0.0.0 inside containers)")
     ap.add_argument("--db", default="anota.db")
+    ap.add_argument("--export-dir", help="directory for versioned dataset snapshots")
     ap.add_argument("--import-file", help="JSONL file to import as a new batch")
+    ap.add_argument("--speech-manifest", help="real ASR results JSONL to import as speech tasks")
     ap.add_argument("--profile", choices=["generic", "aqb"], default="generic",
                      help="field-mapping profile for --import-file (default: generic)")
     ap.add_argument("--lang", choices=["en-es", "zh-en"], default="en-es",
@@ -31,7 +33,13 @@ if __name__ == "__main__":
     a = ap.parse_args()
     db_path = (os.path.join(tempfile.mkdtemp(prefix="anota_demo_"), "demo.db")
                if a.demo else a.db)
-    app = create_app(db_path=db_path, demo=a.demo)
+    app = create_app(db_path=db_path, demo=a.demo, export_dir=a.export_dir)
+    if a.speech_manifest:
+        from app.speech import import_speech_manifest
+        res = import_speech_manifest(app.state.db, a.speech_manifest,
+                                     a.batch or Path(a.speech_manifest).stem, actor="cli",
+                                     show_suggestions=True if a.suggestions else None)
+        print(f"Speech import: {res}")
     if a.import_file:
         batch_name = a.batch or Path(a.import_file).stem
         res = importer.import_jsonl(app.state.db, a.import_file, a.profile, batch_name,

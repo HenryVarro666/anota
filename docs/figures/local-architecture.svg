@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="960" viewBox="0 0 1600 960" role="img" aria-labelledby="title desc"><title id="title">ANOTA WORKBENCH</title><desc id="desc">Local model suggestions. Human decisions. Reproducible datasets.</desc><defs><linearGradient id="paper" x2="1" y2="1"><stop stop-color="#F7F9FC"/><stop offset="1" stop-color="#EFF3F7"/></linearGradient></defs><rect width="1600" height="960" fill="url(#paper)"/><g font-family="Segoe UI, Inter, Arial, sans-serif">
+<rect x="0" y="0" width="1600" height="9" rx="0" fill="#007F78" stroke="none"/>
+<text x="64" y="66" font-size="20" fill="#172837" font-weight="700" letter-spacing="2">ANOTA WORKBENCH</text>
+<text x="1536" y="66" font-size="18" fill="#536272" font-weight="400"></text>
+<text x="1536" y="66" text-anchor="end" font-size="16" fill="#007F78" font-weight="600" letter-spacing="1">ANNOTATION SYSTEM / LOCAL EDITION</text>
+<text x="60" y="167" font-size="72" fill="#142638" font-weight="650">Quality, with a trace.</text>
+<text x="64" y="221" font-size="27" fill="#344C5F" font-weight="400">Local model suggestions. Human decisions. Reproducible datasets.</text>
+<text x="64" y="262" font-size="20" fill="#697988" font-weight="400">A compact workbench for translation and interpretation QA.</text>
+<rect x="64" y="323" width="344" height="272" rx="20" fill="#FFFFFF" stroke="#DCE4EB"/>
+<rect x="88" y="349" width="44" height="5" rx="2" fill="#007F78" stroke="none"/>
+<text x="88" y="393" font-size="17" fill="#007F78" font-weight="700" letter-spacing="1.4">01 / INGEST</text>
+<text x="88" y="441" font-size="28" fill="#172C3C" font-weight="650">Synthetic tasks</text>
+<text x="88" y="485" font-size="18" fill="#5C6D7B" font-weight="400">JSONL + language profiles</text>
+<text x="88" y="517" font-size="18" fill="#5C6D7B" font-weight="400">Batch-level visibility policy</text>
+<text x="88" y="549" font-size="18" fill="#5C6D7B" font-weight="400">Golden answers stay hidden</text>
+<path d="M416 458h16m-6-6 6 6-6 6" fill="none" stroke="#007F78" stroke-width="2"/>
+<rect x="440" y="323" width="344" height="272" rx="20" fill="#FFFFFF" stroke="#DCE4EB"/>
+<rect x="464" y="349" width="44" height="5" rx="2" fill="#007F78" stroke="none"/>
+<text x="464" y="393" font-size="17" fill="#007F78" font-weight="700" letter-spacing="1.4">02 / ASSIST</text>
+<text x="464" y="441" font-size="28" fill="#172C3C" font-weight="650">Local model judge</text>
+<text x="464" y="485" font-size="18" fill="#5C6D7B" font-weight="400">LM Studio or Ollama</text>
+<text x="464" y="517" font-size="18" fill="#5C6D7B" font-weight="400">Explicit model + bounded workers</text>
+<text x="464" y="549" font-size="18" fill="#5C6D7B" font-weight="400">Invalid verdicts are rejected</text>
+<path d="M792 458h16m-6-6 6 6-6 6" fill="none" stroke="#007F78" stroke-width="2"/>
+<rect x="816" y="323" width="344" height="272" rx="20" fill="#FFFFFF" stroke="#DCE4EB"/>
+<rect x="840" y="349" width="44" height="5" rx="2" fill="#007F78" stroke="none"/>
+<text x="840" y="393" font-size="17" fill="#007F78" font-weight="700" letter-spacing="1.4">03 / REVIEW</text>
+<text x="840" y="441" font-size="28" fill="#172C3C" font-weight="650">Human decisions</text>
+<text x="840" y="485" font-size="18" fill="#5C6D7B" font-weight="400">Blind annotation in clean batches</text>
+<text x="840" y="517" font-size="18" fill="#5C6D7B" font-weight="400">Disagreement-driven review</text>
+<text x="840" y="549" font-size="18" fill="#5C6D7B" font-weight="400">Append-only decision history</text>
+<path d="M1168 458h16m-6-6 6 6-6 6" fill="none" stroke="#007F78" stroke-width="2"/>
+<rect x="1192" y="323" width="344" height="272" rx="20" fill="#FFFFFF" stroke="#DCE4EB"/>
+<rect x="1216" y="349" width="44" height="5" rx="2" fill="#007F78" stroke="none"/>
+<text x="1216" y="393" font-size="17" fill="#007F78" font-weight="700" letter-spacing="1.4">04 / EXPORT</text>
+<text x="1216" y="441" font-size="28" fill="#172C3C" font-weight="650">Dataset snapshots</text>
+<text x="1216" y="485" font-size="18" fill="#5C6D7B" font-weight="400">Filtered, versioned exports</text>
+<text x="1216" y="517" font-size="18" fill="#5C6D7B" font-weight="400">Canonical content hash</text>
+<text x="1216" y="549" font-size="18" fill="#5C6D7B" font-weight="400">Traceable annotation lineage</text>
+<rect x="64" y="635" width="470" height="211" rx="18" fill="#DDF3EA" stroke="none"/>
+<text x="88" y="675" font-size="15" fill="#007F78" font-weight="700" letter-spacing="1.2">OFFLINE DEMO</text>
+<text x="88" y="722" font-size="24" fill="#193346" font-weight="650">Ready without a GPU</text>
+<text x="88" y="765" font-size="18" fill="#536777" font-weight="400">30 synthetic tasks + a mock judge.</text>
+<text x="88" y="795" font-size="18" fill="#536777" font-weight="400">Use probes to check the full workflow.</text>
+<rect x="565" y="635" width="470" height="211" rx="18" fill="#E8EDF3" stroke="none"/>
+<text x="589" y="675" font-size="15" fill="#007F78" font-weight="700" letter-spacing="1.2">LOCAL INFERENCE</text>
+<text x="589" y="722" font-size="24" fill="#193346" font-weight="650">Measured local pilot</text>
+<text x="589" y="765" font-size="18" fill="#536777" font-weight="400">One request at a time in the local profile.</text>
+<text x="589" y="795" font-size="18" fill="#536777" font-weight="400">See the reproducible Qwen pilot above.</text>
+<rect x="1066" y="635" width="470" height="211" rx="18" fill="#E8EDF3" stroke="none"/>
+<text x="1090" y="675" font-size="15" fill="#007F78" font-weight="700" letter-spacing="1.2">FAILURE CONTRACT</text>
+<text x="1090" y="722" font-size="24" fill="#193346" font-weight="650">Unavailable never means clean</text>
+<text x="1090" y="765" font-size="18" fill="#536777" font-weight="400">Malformed model output cannot become no_error.</text>
+<text x="1090" y="795" font-size="18" fill="#536777" font-weight="400">Human annotation stays available.</text>
+<path d="M64 888h1472" stroke="#CED9E3"/>
+<text x="64" y="923" font-size="17" fill="#647788" font-weight="400">IMPLEMENTED ARCHITECTURE  /  Measured results reported separately; synthetic data only.</text>
+</g></svg>

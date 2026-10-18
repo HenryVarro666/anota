@@ -3,6 +3,8 @@
 refers to dataset@vN, never to 'the latest file'."""
 import hashlib
 import json
+import os
+import tempfile
 from pathlib import Path
 
 from .quality import final_label
@@ -13,12 +15,25 @@ def canonical_json(obj):
 
 
 def build_snapshot(db, filters=None, include_golden=False):
+    # One coherent view: a concurrent submit/undo cannot put a new final into an
+    # export whose annotation history was read before that correction existed.
+    with db.lock:
+        return _build_snapshot(db, filters, include_golden)
+
+
+def _build_snapshot(db, filters=None, include_golden=False):
     filters = filters or {}
     tasks = db.query("SELECT * FROM tasks ORDER BY rowid")
     if filters.get("batch_id"):
         tasks = [t for t in tasks if t["batch_id"] == filters["batch_id"]]
     items, annotators = [], set()
     for t in tasks:
+        if t["task_type"] == "speech":
+            from .speech import snapshot_item
+            item = snapshot_item(db, t)
+            annotators.update(a["annotator"] for a in item["annotations"])
+            items.append(item)
+            continue
         anns = db.query("SELECT * FROM annotations WHERE task_id=? ORDER BY id", (t["id"],))
         item = {"task": {"id": t["id"], "source": t["source"], "hypothesis": t["hypothesis"],
                          "reference": t["reference"], "metadata": json.loads(t["metadata"])},
@@ -45,18 +60,32 @@ def build_snapshot(db, filters=None, include_golden=False):
 
 
 def export_snapshot(db, out_dir, filters=None, include_golden=False, actor="system"):
-    snap = build_snapshot(db, filters, include_golden)
-    digest = hashlib.sha256(canonical_json(snap).encode("utf-8")).hexdigest()
-    version = f"v{db.one('SELECT COUNT(*) n FROM exports')['n'] + 1}"
-    out = Path(out_dir)
-    out.mkdir(parents=True, exist_ok=True)
-    path = out / f"dataset_{version}.json"
-    path.write_text(json.dumps({"version": version, "sha256": digest, **snap},
-                               ensure_ascii=False, indent=2), encoding="utf-8")
-    db.execute("INSERT INTO exports(version, filters, sha256, path) VALUES(?,?,?,?)",
-               (version, json.dumps(filters or {}), digest, str(path)))
-    db.audit(actor, "export", "export", version, {"sha256": digest, "path": str(path)})
-    return {"version": version, "path": str(path), "sha256": digest}
+    # The application shares one Database instance. Keep version allocation,
+    # publication and audit in the same critical section as the snapshot reads.
+    with db.lock:
+        snap = _build_snapshot(db, filters, include_golden)
+        digest = hashlib.sha256(canonical_json(snap).encode("utf-8")).hexdigest()
+        version = f"v{db.one('SELECT COUNT(*) n FROM exports')['n'] + 1}"
+        out = Path(out_dir)
+        out.mkdir(parents=True, exist_ok=True)
+        path = out / f"dataset_{version}.json"
+        fd, temporary = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=out)
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as stream:
+                json.dump({"version": version, "sha256": digest, **snap}, stream,
+                          ensure_ascii=False, indent=2)
+                stream.flush()
+                os.fsync(stream.fileno())
+            os.replace(temporary, path)
+        finally:
+            Path(temporary).unlink(missing_ok=True)
+        with db.conn:
+            db.conn.execute("INSERT INTO exports(version, filters, sha256, path) VALUES(?,?,?,?)",
+                            (version, json.dumps(filters or {}), digest, str(path)))
+            db.conn.execute("INSERT INTO audit_log(actor,action,entity_type,entity_id,payload) "
+                            "VALUES(?,'export','export',?,?)",
+                            (actor, version, json.dumps({"sha256": digest, "path": str(path)})))
+        return {"version": version, "path": str(path), "sha256": digest}
 
 
 def export_golden_jsonl(db, out_path):

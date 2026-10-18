@@ -1,0 +1,60 @@
+{
+  "recorded_at_utc": "2026-10-17T05:17:52.183939+00:00",
+  "platform": "Windows x86_64 / Python 3.12.10",
+  "tests": {
+    "command": "python -m pytest -q",
+    "passed": 126,
+    "failed": 0,
+    "duration_seconds": 8.73,
+    "warning": "Starlette TestClient httpx integration is deprecated; no failure"
+  },
+  "static_checks": {
+    "ruff_fatal_rules": "passed",
+    "pip_check": "passed"
+  },
+  "resume_check": {
+    "completed_copy_appended_no_attempts": true,
+    "changed_profile_rejected": true,
+    "original_run_untouched": true
+  },
+  "http_api_smoke": {
+    "health": {
+      "status": "ok",
+      "judge": {
+        "mode": "openai",
+        "reachable": true
+      }
+    },
+    "run_response": {
+      "n": 1,
+      "model": "anota-qwen3-14b-q4km",
+      "is_mock": false
+    },
+    "elapsed_seconds": 9.093639700004132,
+    "stored_model": "anota-qwen3-14b-q4km",
+    "stored_verdict": {
+      "error_types": [
+        "no_error"
+      ],
+      "worst_severity": "neutral",
+      "adequacy": 5,
+      "rationale": "The hypothesis is an accurate translation of the source text."
+    },
+    "note": "API integration smoke; excluded from frozen benchmark"
+  },
+  "runtime_versions": {
+    "fastapi": "0.143.3",
+    "uvicorn": "0.54.0",
+    "httpx": "0.28.1",
+    "pydantic": "2.14.1",
+    "starlette": "1.8.0"
+  },
+  "not_executed": [
+    "Linux CI",
+    "ARM64 CI",
+    "Docker build",
+    "H100 inference",
+    "AWS deployment"
+  ],
+  "timing_environment": "Normal Windows desktop; lightweight editing and regression checks ran alongside inference. Host load, power and thermals were not controlled."
+}

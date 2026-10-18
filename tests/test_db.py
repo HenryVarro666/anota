@@ -5,7 +5,8 @@ def test_init_creates_all_tables():
     names = {r["name"] for r in db.query(
         "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")}
     assert names == {"batches", "tasks", "golden_answers", "assignments", "annotations",
-                     "judge_results", "reviews", "audit_log", "exports"}
+                     "judge_results", "reviews", "audit_log", "exports", "schema_migrations",
+                     "audio_assets", "speech_tasks", "speech_annotations"}
 
 def test_audit_appends_row():
     db = Database(":memory:")

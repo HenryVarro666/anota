@@ -1,20 +1,23 @@
 """API layer. The one non-negotiable: batch policy is enforced HERE, server-side —
 a clean-batch claim response never even contains the suggestion fields."""
 import json
+import os
 import threading
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from typing import Literal
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from . import export as exportmod
-from . import importer, perturb, quality
+from . import importer, perturb, quality, speech
 from . import tasks as taskmod
 from .db import Database
 from .judge import JudgeUnavailable, get_judge, judge_health
-from .models import SEVERITIES, AnnotationPayload, SubmitRequest
+from .models import SEVERITIES, AnnotationPayload, SpeechSubmitRequest, SubmitRequest
 
 APP_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,6 +25,8 @@ APP_DIR = Path(__file__).resolve().parent.parent
 class ClaimRequest(BaseModel):
     annotator: str
     batch_id: int | None = None
+    speech_sort: Literal["ml", "qc", "fifo"] = "ml"
+    task_id: str | None = None
 
 
 class SkipRequest(BaseModel):
@@ -62,6 +67,10 @@ class ExportRequest(BaseModel):
 
 
 def create_app(db_path=":memory:", demo=False, data_dir=None, export_dir=None):
+    judge_workers = int(os.environ.get("ANOTA_JUDGE_WORKERS", "8"))
+    if not 1 <= judge_workers <= 64:
+        raise ValueError("ANOTA_JUDGE_WORKERS must be between 1 and 64")
+    get_judge()  # Validate configuration before starting any background batch.
     app = FastAPI(title="Anota Workbench")
     db = Database(db_path)
     app.state.db = db
@@ -75,6 +84,13 @@ def create_app(db_path=":memory:", demo=False, data_dir=None, export_dir=None):
         """Strip or attach machine signals according to batch policy."""
         if payload is None:
             return None
+        if payload.get("task_type") == "speech":
+            # The speech whitelist exposes waveform in both conditions and QC
+            # evidence only when hints are enabled. Keep policy defense here too.
+            payload.pop("lf_flags", None)
+            if not payload["batch"]["show_suggestions"]:
+                payload["speech"].pop("audio_analysis", None)
+            return payload
         if payload["batch"]["show_suggestions"]:
             jr = db.one("SELECT verdict, confidence, model, is_mock FROM judge_results "
                         "WHERE task_id=? ORDER BY id DESC LIMIT 1", (payload["task_id"],))
@@ -87,12 +103,22 @@ def create_app(db_path=":memory:", demo=False, data_dir=None, export_dir=None):
 
     @app.post("/api/claim")
     def api_claim(req: ClaimRequest):
-        c = taskmod.claim(db, req.annotator, req.batch_id)
+        try:
+            c = taskmod.claim(db, req.annotator, req.batch_id, req.speech_sort, req.task_id)
+        except ValueError as exc:
+            raise HTTPException(409, str(exc)) from exc
         if c is None:
             bid = req.batch_id or (db.one("SELECT id FROM batches ORDER BY id LIMIT 1") or {}).get("id", 0)
             return {"task": None, "progress": taskmod.progress(db, req.annotator, bid) if bid else {"done": 0, "total": 0}}
         prog = taskmod.progress(db, req.annotator, c["batch_id"])
         return {"task": with_policy(c), "progress": prog}
+
+    @app.get("/api/speech/review/queue")
+    def api_speech_review_queue(annotator: str = Query(min_length=1), batch_id: int | None = None,
+                               sort: Literal["ml", "qc", "fifo"] = "ml",
+                               limit: int = Query(default=200, ge=1, le=1000)):
+        from .speech_queue import review_queue
+        return review_queue(db, annotator, batch_id, sort, limit)
 
     @app.post("/api/submit")
     def api_submit(req: SubmitRequest):
@@ -103,6 +129,26 @@ def create_app(db_path=":memory:", demo=False, data_dir=None, export_dir=None):
         except ValueError as e:
             raise HTTPException(409, str(e))
         return {"annotation_id": ann_id}
+
+    @app.post("/api/speech/submit")
+    def api_speech_submit(req: SpeechSubmitRequest):
+        try:
+            ann_id = speech.submit_speech(db, req.annotator, req.assignment_id, req)
+        except LookupError as e:
+            raise HTTPException(404, str(e))
+        except ValueError as e:
+            raise HTTPException(409, str(e))
+        return {"annotation_id": ann_id}
+
+    @app.get("/api/audio/{audio_id}")
+    def api_audio(audio_id: str):
+        try:
+            asset = speech.audio_asset(db, audio_id)
+        except (LookupError, OSError) as e:
+            raise HTTPException(404, str(e))
+        except ValueError as e:
+            raise HTTPException(409, str(e))
+        return FileResponse(asset["path"])
 
     @app.post("/api/skip")
     def api_skip(req: SkipRequest):
@@ -187,7 +233,9 @@ def create_app(db_path=":memory:", demo=False, data_dir=None, export_dir=None):
         recent = [r["elapsed_ms"] for r in db.query(
             "SELECT elapsed_ms FROM annotations WHERE elapsed_ms>0 ORDER BY id DESC LIMIT 30")]
         return {"n_tasks": db.one("SELECT COUNT(*) n FROM tasks")["n"],
-                "n_annotations": db.one("SELECT COUNT(*) n FROM annotations")["n"],
+                "n_annotations": db.one("SELECT COUNT(*) n FROM annotations")["n"] +
+                                 db.one("SELECT COUNT(*) n FROM speech_annotations")["n"],
+                "n_speech_annotations": db.one("SELECT COUNT(*) n FROM speech_annotations")["n"],
                 "n_batches": db.one("SELECT COUNT(*) n FROM batches")["n"],
                 "recent_elapsed_ms": list(reversed(recent)),
                 "judge": judge_health(get_judge(guideline))}
@@ -208,19 +256,17 @@ def create_app(db_path=":memory:", demo=False, data_dir=None, export_dir=None):
 
     app.state.judge_runs = {}
     progress_lock = threading.Lock()
+    judge_slots = threading.BoundedSemaphore(judge_workers)
 
     def _run_judge_batch(batch_id):
         """Pooled judge evaluation over one batch; progress in app.state.judge_runs."""
         st = app.state.judge_runs[batch_id]
-        j = get_judge(guideline)
-        rows = db.query("SELECT * FROM tasks WHERE batch_id=?", (batch_id,))
-        with progress_lock:
-            st.update(total=len(rows), done=0, error=None,
-                      model=j.model, is_mock=j.is_mock)
+        j = None
 
         def one(t):
             try:
-                v = j.evaluate(t, json.loads(t["lf_flags"]))
+                with judge_slots:
+                    v = j.evaluate(t, json.loads(t["lf_flags"]))
             except JudgeUnavailable as e:
                 with progress_lock:
                     st["error"] = str(e)
@@ -234,28 +280,45 @@ def create_app(db_path=":memory:", demo=False, data_dir=None, export_dir=None):
             with progress_lock:
                 st["done"] += 1
 
-        with ThreadPoolExecutor(max_workers=8) as ex:
-            list(ex.map(one, rows))
-        with progress_lock:
-            st["running"] = False
-            st["model"] = j.model
+        try:
+            j = get_judge(guideline)
+            rows = db.query("SELECT * FROM tasks WHERE batch_id=? AND task_type='translation'", (batch_id,))
+            if not rows:
+                raise ValueError("no translation tasks in batch; speech tasks use listening review")
+            with progress_lock:
+                st.update(total=len(rows), done=0, error=None,
+                          model=j.model, is_mock=j.is_mock)
+            with ThreadPoolExecutor(max_workers=judge_workers) as ex:
+                list(ex.map(one, rows))
+        except Exception as exc:  # noqa: BLE001 - always release the batch-running guard
+            # A backend or storage bug must not leave the batch permanently busy.
+            with progress_lock:
+                st["error"] = f"judge batch failed: {type(exc).__name__}"
+        finally:
+            with progress_lock:
+                st["running"] = False
+                if j is not None:
+                    st["model"] = j.model
         db.audit("system", "judge_run", "batch", batch_id,
-                 {"n": st["done"], "model": j.model, "error": st["error"]})
+                 {"n": st["done"], "model": st["model"], "error": st["error"]})
 
     @app.post("/api/judge/run")
     def api_judge_run(req: JudgeRunRequest):
-        st = app.state.judge_runs.get(req.batch_id)
-        if st and st.get("running"):
-            raise HTTPException(409, "a judge run is already in progress for this batch")
-        app.state.judge_runs[req.batch_id] = {"running": True, "done": 0, "total": 0,
-                                              "error": None, "model": None, "is_mock": True}
+        if not db.one("SELECT 1 FROM tasks WHERE batch_id=? AND task_type='translation'", (req.batch_id,)):
+            raise HTTPException(409, "no translation tasks in batch; use listening review for speech")
+        with progress_lock:
+            st = app.state.judge_runs.get(req.batch_id)
+            if st and st.get("running"):
+                raise HTTPException(409, "a judge run is already in progress for this batch")
+            app.state.judge_runs[req.batch_id] = {"running": True, "done": 0, "total": 0,
+                                                  "error": None, "model": None, "is_mock": True}
         if req.background:
             threading.Thread(target=_run_judge_batch, args=(req.batch_id,),
                              daemon=True).start()
             return {"started": True, "batch_id": req.batch_id}
         _run_judge_batch(req.batch_id)
         st = app.state.judge_runs[req.batch_id]
-        if st["error"] and st["done"] < st["total"]:
+        if st["error"]:
             raise HTTPException(503, f"judge unavailable: {st['error']} "
                                      f"({st['done']}/{st['total']} completed)")
         return {"n": st["done"], "model": st["model"], "is_mock": st["is_mock"]}
@@ -271,6 +334,8 @@ def create_app(db_path=":memory:", demo=False, data_dir=None, export_dir=None):
             "AND name NOT LIKE 'routing-%' ORDER BY id LIMIT 1") or {}).get("id")
         if source is None:
             raise HTTPException(409, "no source batch available")
+        if not db.one("SELECT 1 FROM tasks WHERE batch_id=? AND task_type='translation'", (source,)):
+            raise HTTPException(409, "probe generation requires a translation batch")
         try:
             return perturb.build_probe(db, source, per_type=req.per_type)
         except LookupError as e:
@@ -286,10 +351,10 @@ def create_app(db_path=":memory:", demo=False, data_dir=None, export_dir=None):
                     SELECT t.id, t.batch_id FROM tasks t JOIN (
                       SELECT task_id, confidence, MAX(id) FROM judge_results GROUP BY task_id
                     ) j ON j.task_id = t.id
-                    WHERE t.id NOT LIKE '%::%'
+                    WHERE t.id NOT LIKE '%::%' AND t.task_type='translation'
                     ORDER BY j.confidence ASC LIMIT ?""", (req.top_n,))
             elif req.signal == "lf_conflict":
-                cands = [t for t in db.query("SELECT * FROM tasks WHERE id NOT LIKE '%::%'")
+                cands = [t for t in db.query("SELECT * FROM tasks WHERE id NOT LIKE '%::%' AND task_type='translation'")
                          if any(f["label"] == "ERROR" for f in json.loads(t["lf_flags"]))]
                 cands.sort(key=lambda t: -sum(1 for f in json.loads(t["lf_flags"])
                                               if f["label"] == "ERROR"))
@@ -324,7 +389,16 @@ def create_app(db_path=":memory:", demo=False, data_dir=None, export_dir=None):
     @app.post("/api/export")
     def api_export(req: ExportRequest):
         filters = {"batch_id": req.batch_id} if req.batch_id else {}
-        return exportmod.export_snapshot(db, app.state.export_dir, filters, req.include_golden)
+        result = exportmod.export_snapshot(db, app.state.export_dir, filters, req.include_golden)
+        return {**result, "download_url": f"/api/exports/{result['version']}"}
+
+    @app.get("/api/exports/{version}")
+    def api_export_download(version: str):
+        row = db.one("SELECT path FROM exports WHERE version=?", (version,))
+        if not row or not Path(row["path"]).is_file():
+            raise HTTPException(404, "export not found")
+        return FileResponse(row["path"], media_type="application/json",
+                            filename=Path(row["path"]).name)
 
     @app.get("/api/guideline")
     def api_guideline():

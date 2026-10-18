@@ -2,7 +2,9 @@
 if it is down, annotation continues untouched. MockJudge keeps demos honest & offline."""
 import hashlib
 import json
+import math
 import os
+import time
 
 import httpx
 
@@ -43,6 +45,8 @@ class MockJudge:
 
 
 def parse_judge_json(content):
+    if not isinstance(content, str):
+        raise JudgeUnavailable("judge returned non-text content")
     decoder = json.JSONDecoder()
     raw = None
     for i, ch in enumerate(content):
@@ -57,14 +61,28 @@ def parse_judge_json(content):
             break
     if raw is None:
         raise JudgeUnavailable("judge returned no JSON")
-    errs = [e for e in raw.get("error_types", []) if e in ERROR_TYPES] or ["no_error"]
+    errs = raw.get("error_types")
+    if (not isinstance(errs, list) or not errs
+            or any(not isinstance(e, str) or e not in ERROR_TYPES for e in errs)
+            or len(set(errs)) != len(errs)):
+        raise JudgeUnavailable("judge returned invalid error_types")
     sev = raw.get("worst_severity")
     if sev not in SEVERITIES:
-        sev = "neutral" if errs == ["no_error"] else "major"
+        raise JudgeUnavailable("judge returned invalid severity")
+    if ("no_error" in errs and errs != ["no_error"]
+            or (errs == ["no_error"]) != (sev == "neutral")):
+        raise JudgeUnavailable("judge returned contradictory labels")
+    adequacy, confidence = raw.get("adequacy"), raw.get("confidence")
+    if type(adequacy) is not int or not 1 <= adequacy <= 5:
+        raise JudgeUnavailable("judge adequacy must be an integer from 1 to 5")
+    if (type(confidence) not in (int, float) or not 0 <= confidence <= 1
+            or not math.isfinite(confidence)):
+        raise JudgeUnavailable("judge confidence must be a finite number from 0 to 1")
+    if not isinstance(raw.get("rationale"), str):
+        raise JudgeUnavailable("judge rationale must be text")
     return {"error_types": errs, "worst_severity": sev,
-            "adequacy": min(5, max(1, int(raw.get("adequacy", 3)))),
-            "rationale": str(raw.get("rationale", ""))[:2000],
-            "confidence": min(1.0, max(0.0, float(raw.get("confidence", 0.7))))}
+            "adequacy": adequacy, "rationale": raw["rationale"][:2000],
+            "confidence": confidence}
 
 
 SYSTEM_TEMPLATE = """You are a strict medical-translation QA judge. Apply this rubric verbatim:
@@ -74,6 +92,18 @@ SYSTEM_TEMPLATE = """You are a strict medical-translation QA judge. Apply this r
 Judge the HYPOTHESIS against the SOURCE. Reason first, then output ONLY one JSON object:
 {{"rationale": "<short>", "error_types": [<subset of {etypes}>],
 "worst_severity": "<one of {sevs}>", "adequacy": <1-5>, "confidence": <0.0-1.0>}}"""
+
+VERDICT_SCHEMA = {
+    "type": "object", "additionalProperties": False,
+    "properties": {
+        "rationale": {"type": "string"},
+        "error_types": {"type": "array", "items": {"type": "string", "enum": ERROR_TYPES}, "minItems": 1},
+        "worst_severity": {"type": "string", "enum": SEVERITIES},
+        "adequacy": {"type": "integer", "minimum": 1, "maximum": 5},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    },
+    "required": ["rationale", "error_types", "worst_severity", "adequacy", "confidence"],
+}
 
 
 def aggregate_samples(samples):
@@ -109,39 +139,75 @@ class OpenAIJudge:
     is_mock = False
 
     def __init__(self, base_url, model=None, api_key="EMPTY", guideline_text="",
-                 timeout=30.0, n_samples=1):
+                 timeout=30.0, n_samples=1, max_tokens=512, structured_output=False,
+                 prompt_suffix="", observer=None):
         self.base_url = base_url.rstrip("/")
         self.model = model
         self.api_key = api_key
         self.guideline_text = guideline_text
-        self.timeout = timeout
-        self.n_samples = max(1, int(n_samples))
+        self.timeout = float(timeout)
+        self.n_samples = int(n_samples)
+        self.max_tokens = int(max_tokens)
+        self.structured_output = structured_output
+        self.prompt_suffix = prompt_suffix
+        self.observer = observer  # Optional experiment sink; production does not log content.
+        if not math.isfinite(self.timeout) or self.timeout <= 0:
+            raise ValueError("judge timeout must be finite and greater than zero")
+        if self.n_samples <= 0:
+            raise ValueError("judge sample count must be greater than zero")
+        if not 32 <= self.max_tokens <= 8192:
+            raise ValueError("judge max_tokens must be between 32 and 8192")
 
     def _resolve_model(self):
         if self.model:
             return self.model
         r = httpx.get(f"{self.base_url}/models",
                       headers={"Authorization": f"Bearer {self.api_key}"}, timeout=self.timeout)
-        self.model = r.json()["data"][0]["id"]
+        r.raise_for_status()
+        models = r.json()["data"]
+        if not isinstance(models, list) or len(models) != 1:
+            raise JudgeUnavailable("set ANOTA_JUDGE_MODEL explicitly when the server lists zero or multiple models")
+        self.model = models[0]["id"]
+        if not isinstance(self.model, str) or not self.model:
+            raise JudgeUnavailable("server returned an invalid model id")
         return self.model
 
     def _evaluate_once(self, task, temperature):
         system = SYSTEM_TEMPLATE.format(guideline=self.guideline_text,
                                         etypes=ERROR_TYPES, sevs=SEVERITIES)
         user = f"SOURCE:\n{task['source']}\n\nHYPOTHESIS:\n{task['hypothesis']}"
+        if self.prompt_suffix:
+            user += "\n\n" + self.prompt_suffix
+        trace = {"task_id": task.get("id"), "request": None, "response": None,
+                 "http_status": None, "error": None}
+        started = time.perf_counter()
         try:
             model = self._resolve_model()
+            payload = {"model": model, "temperature": temperature, "max_tokens": self.max_tokens,
+                       "messages": [{"role": "system", "content": system},
+                                    {"role": "user", "content": user}]}
+            if self.structured_output:
+                payload["response_format"] = {"type": "json_schema", "json_schema": {
+                    "name": "translation_verdict", "strict": True, "schema": VERDICT_SCHEMA}}
+            trace["request"] = payload
             r = httpx.post(f"{self.base_url}/chat/completions",
                            headers={"Authorization": f"Bearer {self.api_key}"},
-                           json={"model": model, "temperature": temperature,
-                                 "messages": [{"role": "system", "content": system},
-                                              {"role": "user", "content": user}]},
+                           json=payload,
                            timeout=self.timeout)
+            trace["http_status"] = getattr(r, "status_code", None)
             r.raise_for_status()
-            content = r.json()["choices"][0]["message"]["content"]
-        except (httpx.HTTPError, ValueError, KeyError, IndexError) as e:
+            trace["response"] = r.json()
+            choice = trace["response"]["choices"][0]
+            if choice.get("finish_reason") == "length":
+                raise JudgeUnavailable("judge response reached its token limit")
+            return parse_judge_json(choice["message"]["content"])
+        except (httpx.HTTPError, ValueError, KeyError, IndexError, TypeError, JudgeUnavailable) as e:
+            trace["error"] = type(e).__name__ + ": " + str(e)
             raise JudgeUnavailable(str(e)) from e
-        return parse_judge_json(content)
+        finally:
+            trace["elapsed_seconds"] = time.perf_counter() - started
+            if self.observer is not None:
+                self.observer(trace)
 
     def evaluate(self, task, lf_results):
         if self.n_samples == 1:
@@ -156,6 +222,10 @@ def get_judge(guideline_text=""):
                            os.environ.get("ANOTA_JUDGE_MODEL") or None,
                            os.environ.get("ANOTA_JUDGE_API_KEY", "EMPTY"),
                            guideline_text,
+                           timeout=os.environ.get("ANOTA_JUDGE_TIMEOUT", "30"),
+                           max_tokens=os.environ.get("ANOTA_JUDGE_MAX_TOKENS", "512"),
+                           structured_output=os.environ.get("ANOTA_JUDGE_JSON_SCHEMA", "0") == "1",
+                           prompt_suffix=os.environ.get("ANOTA_JUDGE_PROMPT_SUFFIX", ""),
                            n_samples=os.environ.get("ANOTA_JUDGE_SAMPLES", "1"))
     return MockJudge()
 
@@ -164,7 +234,9 @@ def judge_health(j):
     if j.is_mock:
         return {"mode": "mock", "reachable": True}
     try:
-        httpx.get(f"{j.base_url}/models", timeout=2.0)
+        response = httpx.get(f"{j.base_url}/models", timeout=2.0,
+                             headers={"Authorization": f"Bearer {j.api_key}"})
+        response.raise_for_status()
         return {"mode": "openai", "reachable": True}
     except httpx.HTTPError:
         return {"mode": "openai", "reachable": False}

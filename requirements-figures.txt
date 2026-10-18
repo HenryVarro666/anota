@@ -1,0 +1,3 @@
+# Optional: application and evaluation runner do not import these.
+matplotlib==3.11.2
+resvg-py==0.5.0

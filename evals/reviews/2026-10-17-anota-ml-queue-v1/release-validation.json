@@ -1,0 +1,55 @@
+{
+  "status": "passed",
+  "at_utc": "2026-10-17T08:38:24.228231+00:00",
+  "pytest": {
+    "command": ".venv/Scripts/python.exe -m pytest -q",
+    "passed": 462,
+    "seconds": 35.33
+  },
+  "focused_tests_passed": 98,
+  "new_code_ruff": "passed",
+  "frontend_node_check": "passed",
+  "git_diff_check": "passed",
+  "http_report_sha256": "c536b879e2ba9a529419b9e46525a1930e7f9711fed19026fe7c73ea15cdca17",
+  "http_source_hashes_current": true,
+  "frozen_source_files_unchanged": 36,
+  "frozen_output_files_unchanged": 100,
+  "browser": {
+    "url": "http://127.0.0.1:8423/?batch=1",
+    "database": "isolated automated verification data",
+    "checks": [
+      "ML confidence and legacy labels",
+      "QC switch changes order",
+      "blind batch Original order without evidence",
+      "Resume current task opens waveform",
+      "Play selection starts audio"
+    ],
+    "screenshot": "queue.png",
+    "screenshot_sha256": "46c7199060abdf473a38e6496ea8a8928c40a84e72b2da2d8f4da9d22333735f",
+    "human_submissions": 0
+  },
+  "local_service": {
+    "url": "http://127.0.0.1:8422",
+    "status": "updated and HTTP 200 verified",
+    "batch_1_effective_sort": "qc",
+    "reason": "unsupported_language in mixed English/Chinese smoke batch",
+    "backup": "runtime\\audio-qc-v1\\release\\review.pre-ml-queue-2026-10-17.db",
+    "before_counts": {
+      "tasks": 20,
+      "speech_tasks": 20,
+      "annotations": 0,
+      "speech_annotations": 0,
+      "assignments": 2
+    },
+    "after_counts": {
+      "tasks": 20,
+      "speech_tasks": 20,
+      "annotations": 0,
+      "speech_annotations": 0,
+      "assignments": 0
+    },
+    "task_and_annotation_counts_preserved": true,
+    "assignment_note": "Existing expired leases reaped by the normal queue lifecycle; no labels removed",
+    "lease_expired_audit_count": 2
+  }
+}

@@ -1,0 +1,7 @@
+# Optional inference only; the annotation server can run without ML dependencies.
+# Versions match the reviewed model cards and the verified deployment runtime.
+numpy==2.5.4
+scipy==1.18.1
+scikit-learn==1.9.1
+joblib==1.6.0
+threadpoolctl==3.7.0

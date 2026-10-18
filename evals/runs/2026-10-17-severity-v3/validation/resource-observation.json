@@ -1,0 +1,9 @@
+{
+  "observed_at": "2026-10-17T06:41:19.4310003Z",
+  "cpu_total_percent": 69,
+  "free_ram_kb": 15026644,
+  "visible_ram_kb": 50111852,
+  "inference_process_working_set_bytes": 9304080384,
+  "gpu_utilization": "Not established by this single counter observation.",
+  "scope": "One observation collected after latency drift, not a time series or proof of cause. Process inventories are omitted from public evidence. No workload was stopped or changed."
+}

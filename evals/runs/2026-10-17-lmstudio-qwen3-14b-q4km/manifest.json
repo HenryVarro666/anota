@@ -1,0 +1,69 @@
+{
+  "identity": {
+    "dataset_sha256": "8500c93c2b39ae68cc3389b2f06a8b5936b6add9822ceeef4679d10c75147d93",
+    "profile": {
+      "name": "local-lmstudio-qwen3-14b-q4km",
+      "base_url": "http://127.0.0.1:1234/v1",
+      "model": "anota-qwen3-14b-q4km",
+      "model_artifact": {
+        "repository": "Qwen/Qwen3-14B-GGUF",
+        "quantization": "Q4_K_M"
+      },
+      "request": {
+        "timeout_seconds": 120,
+        "max_tokens": 256,
+        "structured_output": true,
+        "prompt_suffix": "Keep the rationale to one short sentence. /no_think"
+      },
+      "execution": {
+        "concurrency": 1,
+        "repeats": 2,
+        "order_seed": 20261017
+      },
+      "load_contract": {
+        "context_tokens": 4096,
+        "gpu_offload": "max",
+        "parallel_slots": 1
+      },
+      "purpose": "Synthetic pilot with conservative concurrency; not a production capacity claim"
+    },
+    "model": "anota-qwen3-14b-q4km",
+    "endpoint": "http://127.0.0.1:1234/v1",
+    "guideline_sha256": "043e9209236ef90d10968ca2048a8eb65c0b8b075c74bb43e850b70f47c8c0fb",
+    "judge_code_sha256": "02aedbf725f7380a738fe4d65d8084599251ea5e87a2e5917ac2c6a29dc4e059",
+    "runner_code_sha256": "a5ca25c3eebc61476540f3a032c275127188bd23bc9d313f53b39f2143dd5f4e",
+    "metrics_code_sha256": "9f97d1850e5b49dd564b865c0c18e1e58f92d6036c34b8264444567980228262",
+    "provenance": {
+      "model_file": "Qwen3-14B-Q4_K_M.gguf",
+      "model_bytes": 9001752960,
+      "model_sha256": "500a8806e85ee9c83f3ae08420295592451379b4f8cf2d0f41c15dffeb6b81f0",
+      "huggingface_revision": "530227a7d994db8eca5ab5ced2fb692b614357fd",
+      "huggingface_lfs_sha256": "500a8806e85ee9c83f3ae08420295592451379b4f8cf2d0f41c15dffeb6b81f0",
+      "hash_matches_hub": true,
+      "lmstudio_version": "0.4.21+2",
+      "runtime": "llama.cpp-win-x86_64-vulkan-avx2",
+      "runtime_version": "2.60.0",
+      "gpu": "AMD Radeon(TM) 890M Graphics",
+      "vulkan_version": "1.4.357",
+      "driver": "26.8.1 (LLPC)",
+      "cpu": "AMD Ryzen AI 9 HX 370",
+      "total_ram_gb_user_reported": 96,
+      "gpu_reservation_gb_user_reported": 48,
+      "context_length": 4096,
+      "gpu_offload_requested": "max",
+      "parallel_slots": 1,
+      "load_time_seconds_cli": 12.61,
+      "temperature": 0,
+      "prefix_cache": "server default; warm repeated prompts may benefit",
+      "application_tests": "123 passed on Windows Python 3.12.10",
+      "hardware_claim": "Vulkan selected and full offload requested; no power or thermal telemetry"
+    }
+  },
+  "started_at_utc": "2026-10-17T05:07:29.245919+00:00",
+  "python": "3.12.10",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "automatic_retries": 0,
+  "warmups": 1,
+  "status": "complete",
+  "finished_at_utc": "2026-10-17T05:14:53.974243+00:00"
+}

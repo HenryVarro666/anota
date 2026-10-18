@@ -1,0 +1,63 @@
+name: CPU tests
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r requirements.txt -c constraints-runtime.txt pytest==9.1.1
+      - run: python -m pytest -q
+      - name: Verify original local evaluation evidence
+        run: python scripts/verify_evaluation.py --run evals/runs/2026-10-17-lmstudio-qwen3-14b-q4km
+      - name: Verify second-round paired evaluation evidence
+        run: python scripts/verify_comparison.py --run evals/runs/2026-10-17-paired-rubric-v2
+      - name: Verify third-round severity evaluation evidence
+        run: python scripts/verify_severity_study.py --run evals/runs/2026-10-17-severity-v3
+      - name: Verify all frozen research artifact manifests
+        run: python scripts/verify_research_artifacts.py
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: docker build -t anota-ci .
+      - name: Exercise the packaged speech review lifecycle without research files or ML dependencies
+        run: docker run --rm -i --entrypoint python anota-ci - --require-cpu-only < scripts/verify_release_image.py
+      - name: Package only the five reviewed model bundle files
+        run: python scripts/package_speechrank_models.py "$RUNNER_TEMP/anota-speechrank"
+      - name: Verify a mounted bundle falls back safely without optional ML dependencies
+        run: |
+          docker run --rm -i --entrypoint python \
+            --mount "type=bind,source=$RUNNER_TEMP/anota-speechrank,target=/opt/speechrank,readonly" \
+            anota-ci - --require-cpu-only --ranking-bundle /opt/speechrank < scripts/verify_release_image.py
+      - name: Start the same CPU application image used for deployment
+        run: docker run -d --name anota-ci -p 127.0.0.1:8420:8420 anota-ci --demo
+      - name: Check application readiness
+        shell: python
+        run: |
+          import json, time, urllib.request
+          for attempt in range(50):
+              try:
+                  with urllib.request.urlopen('http://127.0.0.1:8420/api/health', timeout=2) as r:
+                      assert r.status == 200
+                      assert json.load(r)['judge']['mode'] == 'mock'
+                  break
+              except (OSError, AssertionError):
+                  if attempt == 49:
+                      raise
+                  time.sleep(0.2)
+      - if: always()
+        run: docker logs anota-ci
+      - if: always()
+        run: docker rm -f anota-ci
