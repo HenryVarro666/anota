@@ -1,0 +1,227 @@
+{
+  "schema_version": "audio-qc-integration-validation-v1",
+  "recorded_at_utc": "2026-10-17T06:41:14.108280+00:00",
+  "environment": {
+    "platform": "Windows",
+    "python": "3.12.10"
+  },
+  "baseline": {
+    "pytest_passed": 173,
+    "seconds": 17.21
+  },
+  "checks": [
+    {
+      "command": ".venv/Scripts/python.exe -m pytest -q",
+      "exit_code": 0,
+      "passed": 230,
+      "seconds": 30.21
+    },
+    {
+      "command": ".venv/Scripts/python.exe -m pytest -q tests/test_audio_qc_experiment.py",
+      "exit_code": 0,
+      "passed": 10,
+      "seconds": 0.27,
+      "scope": "Final evaluator compatibility change"
+    },
+    {
+      "command": "node --check static/speech.js",
+      "exit_code": 0
+    },
+    {
+      "command": "node --check static/app.js",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "frozen_artifacts_verified": 17,
+  "release": {
+    "manifest": "runtime/audio-qc-v1/release/asr-qc.jsonl",
+    "manifest_sha256": "bd5cf24cd4db40ad1faeaefe3ece8085022950ce147bb0ba6344c68c269c9c81",
+    "reports_complete": 20,
+    "signal_results_equal_to_frozen_originals": 20,
+    "reports_byte_equal": false,
+    "representation_difference": "max_duration_s is 1800.0 in CLI config vs 1800 in experiment config; resulting analysis_id differs; all other fields equal",
+    "report_comparisons": [
+      {
+        "item_id": "fleurs-en_us-train-10004088536354799741",
+        "release_analysis_id": "47789fa9fcda7c4e7a2fb826e8acc959beac8234b41c9f2cd2083569a78345d4",
+        "measured_analysis_id": "4232217e7e01d33c09a39ccca4abfcc3d81bedb99f34ee020c1d4b49d6b267eb",
+        "equal_except_id_and_numeric_config_representation": true
+      },
+      {
+        "item_id": "fleurs-en_us-train-10012216926115652402",
+        "release_analysis_id": "9957118429c6d8e191b4eef43400f14cb183cf5ff864547597a91c094984e406",
+        "measured_analysis_id": "8fe4cd39c20bc3f7546ad556845331b4c3c485c856c611c7b2b3377e9e2a38a9",
+        "equal_except_id_and_numeric_config_representation": true
+      },
+      {
+        "item_id": "fleurs-en_us-train-10035729252730569448",
+        "release_analysis_id": "03bb00a064a8e98afc3ec56b8a8459abd271a55341fff52955528d60518400be",
+        "measured_analysis_id": "a2cc53693347e465a80aaf1d1974fba4d642ae1d9874e79d2a3b4c48fc20f509",
+        "equal_except_id_and_numeric_config_representation": true
+      },
+      {
+        "item_id": "fleurs-en_us-train-10038239648789136007",
+        "release_analysis_id": "9a98379cf44afd3787c2a262cb0d157554f6907d27fe9b9559a05d2afcdf07f4",
+        "measured_analysis_id": "365d3d1e12d1545cb57458360615035be43e69d26765cbd662b3dc29b030ee39",
+        "equal_except_id_and_numeric_config_representation": true
+      },
+      {
+        "item_id": "fleurs-en_us-train-10038782309165056980",
+        "release_analysis_id": "72b379ea52717e0c5a2ba64b3487534e7ffcd84998d7044db710070c73de19ff",
+        "measured_analysis_id": "f02e6dbd5f8144631091c732346a79f90250c58040eac744e1aa960640e01e3e",
+        "equal_except_id_and_numeric_config_representation": true
+      },
+      {
+        "item_id": "fleurs-en_us-train-10041973057502883658",
+        "release_analysis_id": "719dc723af7ee208fa77616124958cfc73c75307144aefba1b7f88978c4b816f",
+        "measured_analysis_id": "f89f4a9ba621f3fb84ec9adfc7cbaf1a6a5ed76d53402416f9da93d6f009e7a8",
+        "equal_except_id_and_numeric_config_representation": true
+      },
+      {
+        "item_id": "fleurs-en_us-train-10045215346264155892",
+        "release_analysis_id": "cb3a287bea7d6b8488f1b69340d8902697598fe964f0da2d54acf011bb47050f",
+        "measured_analysis_id": "c9f030803d3d3f165d1c642832aa5ab52b68956026a4cc173e3fa7ff6059b5b1",
+        "equal_except_id_and_numeric_config_representation": true
+      },
+      {
+        "item_id": "fleurs-en_us-train-10045464480702227987",
+        "release_analysis_id": "8101d496b8777eb3cae3a8245ab34e06866546850d045064ef8918c58c8b0c38",
+        "measured_analysis_id": "7ba10004a805fdab0ae913211bbe8bb28d9bad20f75b0b19a03ef1e186793ff8",
+        "equal_except_id_and_numeric_config_representation": true
+      },
+      {
+        "item_id": "fleurs-en_us-train-10048972069970749159",
+        "release_analysis_id": "67c13f781133d0361a6fdebc1d5685b0ce7fb11bc4e635d3b07128e9cb457406",
+        "measured_analysis_id": "ed8825f001f9affb8b32eeca4a72cee39828b2ff0a20788add0baa1c3e72a3b1",
+        "equal_except_id_and_numeric_config_representation": true
+      },
+      {
+        "item_id": "fleurs-en_us-train-100511566475978219",
+        "release_analysis_id": "6a1cf40444914200546f92c2ddd1e5b95e537896c281c33ebcde3ab0f2032f03",
+        "measured_analysis_id": "2631f2af8d93aa18ff562c6758e7214b444d0398f8c94ba35b8052d97cfc02f2",
+        "equal_except_id_and_numeric_config_representation": true
+      },
+      {
+        "item_id": "fleurs-cmn_hans_cn-train-10009480476880474721",
+        "release_analysis_id": "2a20d66443d78bd4a2552ab7a741eb6c87ef0ce1e938d8ba04339e0f2284d7e5",
+        "measured_analysis_id": "7b1c579058d5cb5ebdcb8a7f8051df1cedb3524a976e16d4d102ed7bbcba7d95",
+        "equal_except_id_and_numeric_config_representation": true
+      },
+      {
+        "item_id": "fleurs-cmn_hans_cn-train-1001224369867554169",
+        "release_analysis_id": "437fb2dece350e43972f2cdf11b47d3ec74dceb90dbeb09d4155a944f0a05620",
+        "measured_analysis_id": "adecb29010e49edb625cc414830eedf3f33d05a6e8419312f8a5ae9ea2defd66",
+        "equal_except_id_and_numeric_config_representation": true
+      },
+      {
+        "item_id": "fleurs-cmn_hans_cn-train-10014836972030239635",
+        "release_analysis_id": "c3392d2c68ce6838616477efb2cf5fe0dd38f93c81d3e637b5c17d7aa6817ba4",
+        "measured_analysis_id": "6eb2d37915cd75ecf313aaadfc23d0f03c0f7e739ce531f8857d72f2adfbaf0e",
+        "equal_except_id_and_numeric_config_representation": true
+      },
+      {
+        "item_id": "fleurs-cmn_hans_cn-train-10019075627729033481",
+        "release_analysis_id": "769ed4dd931d336566ad4909f7d7e6ed38b446e3f7a727af8e6402ac3b1194ec",
+        "measured_analysis_id": "81a4a8c3162f59b4edf1718027b7e6d93a1d1f2c2d6f6e34d8d8dc2c244f6284",
+        "equal_except_id_and_numeric_config_representation": true
+      },
+      {
+        "item_id": "fleurs-cmn_hans_cn-train-10019467836354684394",
+        "release_analysis_id": "89ac1f88191f4171c2447d08dff871c004c4c62bea5ddf799bc015b25692d56f",
+        "measured_analysis_id": "aba413dc85b8c438e739883920c38be567267bb987b6b946b80f4c0cd415de11",
+        "equal_except_id_and_numeric_config_representation": true
+      },
+      {
+        "item_id": "fleurs-cmn_hans_cn-train-1002494957607521242",
+        "release_analysis_id": "9eb1aa0ef420d58b67ee3d35930473f521f2c79fce389b834b37d2d3d9284069",
+        "measured_analysis_id": "0e7ad84a4685915c13514108edfb895dc19acd4146d763e86b218d573ebd9961",
+        "equal_except_id_and_numeric_config_representation": true
+      },
+      {
+        "item_id": "fleurs-cmn_hans_cn-train-10026220710742852578",
+        "release_analysis_id": "3abf4cdd8fbd468c46b021fbbf538309cadc82dd98b9c1e68c572c50906697ec",
+        "measured_analysis_id": "87c9df5dbe466b8681082fc22fad730022df6d979f4444e39048060288f1ab37",
+        "equal_except_id_and_numeric_config_representation": true
+      },
+      {
+        "item_id": "fleurs-cmn_hans_cn-train-10039541732656594002",
+        "release_analysis_id": "aa11ded18351bd34522679ea68433c204436d32b3c43d2b9ef50d40dd45643e3",
+        "measured_analysis_id": "0acafa8a0fd86c31b999876a44fb0ddbb30491daf2ed2c15761b1ae8a6a15449",
+        "equal_except_id_and_numeric_config_representation": true
+      },
+      {
+        "item_id": "fleurs-cmn_hans_cn-train-10040921331728444869",
+        "release_analysis_id": "6870d74f4d08c42458145dcf20fcc4cb9bdfd465580ba15703a8cbe1fe8e24cc",
+        "measured_analysis_id": "099f6e772d833b219198930e8cbef6b64fc176846d08f40354f0857ff01c5a6c",
+        "equal_except_id_and_numeric_config_representation": true
+      },
+      {
+        "item_id": "fleurs-cmn_hans_cn-train-10043214142941432545",
+        "release_analysis_id": "8fa8c819b242e0ed2ca8f8c49ca8ca88d0e139e1af7104c7d52d2f69d157d495",
+        "measured_analysis_id": "9621a29f9843af42d9e2f635f2a1f334c8634f1b6d605b6b0c28b25c31ad5240",
+        "equal_except_id_and_numeric_config_representation": true
+      }
+    ],
+    "imported_tasks": 20,
+    "invalid_rows": 0,
+    "failed_rows": 0,
+    "annotations_at_handoff": 0,
+    "url": "http://127.0.0.1:8422/?batch=1",
+    "db": "runtime/audio-qc-v1/release/review.db"
+  },
+  "browser_checks": [
+    "Bounded 0.5-1.0 second selection stops at 1.0 second",
+    "Loop selection continues inside range until paused",
+    "Alt+P pauses playback",
+    "Dragging waveform updates range",
+    "Mark uncertain and note draft survive reload",
+    "Issue 3.85-4.19 selects and replays 3.65-4.39 with context",
+    "Successful issue playback saved as issue id in isolated automated test DB",
+    "Tab change pauses audio; task change disposes old player",
+    "Undo retains append-only history",
+    "Clean batch shows waveform and selection without analysis hints or VAD overlay",
+    "Narrow 466px viewport wraps controls without horizontal page overflow"
+  ],
+  "automated_ui_db": "runtime/audio-qc-v1/ui-test.db",
+  "screenshot": {
+    "path": "docs/screenshots/audio-qc-v1.png",
+    "sha256": "90670d3770cfd95d0f7ec3b496da62c6ff7f24f2b7f2c496c92969c53fcd8ba4"
+  },
+  "human_accuracy_evaluation": "pending",
+  "human_efficiency_evaluation": "pending",
+  "not_executed": [
+    "Docker build/run",
+    "Linux/ARM64 CI",
+    "Python 3.10 runtime",
+    "LLM or multi-ASR provider evaluation"
+  ],
+  "source_sha256": {
+    "Dockerfile": "b5cf111d0181a80bbc5e9286b2c37fdcf77bfee4125f8b5ca4441025774f0d3f",
+    "app/db.py": "2b58e593b7a76a8bc3c87adf9996c51609bdd7e2bb55d93c10c16b3df6d6b001",
+    "app/export.py": "2251395a13b3f69f582526b2a31d86b83fe57a76619acd44455ceef858205114",
+    "app/main.py": "f73377adcadaddda3d002fef9e08a76267d032358b0da23964375177becdd181",
+    "app/models.py": "eec56d4bb1b886a1121f6354db24322f931219ad2880a67d5959cdbe5b6ba8ef",
+    "app/speech.py": "2e49599d406b37e6f197634313647fa29ae38ecb70fc4fbb341bbbd1c45511e2",
+    "requirements-audioqc.txt": "575634b38fd24a787169b0b8fe4849794a176351b3ffc9c37416fa1ec31296de",
+    "run.py": "41540c0d7dd3f55ca8fb1894c653f7d9685f221f15f3939f53261fea8bc458f4",
+    "scripts/evaluate_audio_qc.py": "c46f55365be347c4bc1f05a9eb8af532719b9ddde9b89d1a3e453d9940187bae",
+    "speechqc/__init__.py": "10ef77484f56e8633bf1333b76838819e0d55184dbf755832b2bff7170b5118f",
+    "speechqc/__main__.py": "1267df0244fcb60692ef417c87437b97b84ab1a2dd6444f99519cab336392a4a",
+    "speechqc/analysis.py": "9d1d7ce0fd08459222e38f13246e7e06a75e5e30ddffeef7bb58fe2b19c1c41f",
+    "speechqc/cache.py": "48da0db7ea1688eb5eabdf8415c7fabd186faf2cd8872be9430599fdaea24216",
+    "speechqc/schema.py": "5f13b7bd85d4e9432bc40dbc0ad8900cc972973ed9ce358fd3cbb84656972ddc",
+    "speechqc/vad.py": "cb87b2196f2d113d8fb9812c4285d34193a149a5ef9d749ba15d6230315a9604",
+    "static/app.js": "5b31fa0f9475a224e75c395c03e1c0537b8332e76c236e21b3e0b1182d6058b6",
+    "static/speech.js": "18917e8b7784476dea9e7425c5bfe6503417a68fe025759f45b7389856d70028",
+    "static/style.css": "118a5b55548ef4bb02b83777372b9a27662c0cd973e50d03460446ab5cea176e",
+    "tests/fixtures/audio-qc-silence-v1.json": "61e51b94c337edcdfb4861a740745316837b7352ed9bcca1dbecc6a7d989feab",
+    "tests/test_audio_qc_api.py": "775d79534118deabcb3551e5ec5c59c7dd84b1544f2725579dcd498706d2bc80",
+    "tests/test_audio_qc_experiment.py": "364dadcb2a14256a2893a16c786deee7111595bb767dd4fb011cbc913e5c5832",
+    "tests/test_speech_backend.py": "9373f4696498cff1305b57678d099bb205a81ab98944f607dafc658a5822f63e",
+    "tests/test_speechqc.py": "d81800f1e5fc6a1e34285eea0c14886ed746b6975d6741454be3f1087a73c8fc"
+  }
+}

@@ -1,0 +1,261 @@
+{
+  "schema_version": "speechrank-independent-audit-v2",
+  "started_at_utc": "2026-10-17T08:24:03.854925+00:00",
+  "audit_continued_by_model": "gpt-6.1-sol",
+  "study": "C:\\Users\\rog\\Desktop\\TTS\\anota\\evals\\runs\\2026-10-17-librispeech-ml-ranking-v2",
+  "audit_source_sha256": "b264ee50d3a4a2db25cdfd6c72c93a32f27abd0ea11295c4c0ec45d36129de53",
+  "status": "failed",
+  "completed_at_utc": "2026-10-17T08:24:10.740197+00:00",
+  "elapsed_seconds": 6.88457329999801,
+  "checks": [
+    {
+      "check": "completed gate",
+      "passed": true
+    },
+    {
+      "check": "all_output_artifact_hashes_before_gold",
+      "passed": true,
+      "detail": {
+        "files": 100,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "status_excluded_from_pre_gold_seal",
+      "passed": true
+    },
+    {
+      "check": "all_pre_gold_sealed_artifact_hashes",
+      "passed": true,
+      "detail": {
+        "files": 85,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "frozen_study_protocol_config_source_snapshot_hashes",
+      "passed": true,
+      "detail": {
+        "files": 38,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "live_source_hashes",
+      "passed": true,
+      "detail": {
+        "files": 36,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "all_frozen_input_hashes",
+      "passed": true,
+      "detail": {
+        "files": 27,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "configuration_hash",
+      "passed": true
+    },
+    {
+      "check": "environment av",
+      "passed": true
+    },
+    {
+      "check": "environment ctranslate2",
+      "passed": true
+    },
+    {
+      "check": "environment faster-whisper",
+      "passed": true
+    },
+    {
+      "check": "environment joblib",
+      "passed": true
+    },
+    {
+      "check": "environment matplotlib",
+      "passed": true
+    },
+    {
+      "check": "environment numpy",
+      "passed": true
+    },
+    {
+      "check": "environment onnxruntime",
+      "passed": true
+    },
+    {
+      "check": "environment scikit-learn",
+      "passed": true
+    },
+    {
+      "check": "environment scipy",
+      "passed": true
+    },
+    {
+      "check": "environment soundfile",
+      "passed": true
+    },
+    {
+      "check": "environment threadpoolctl",
+      "passed": true
+    },
+    {
+      "check": "same_python_environment",
+      "passed": true
+    },
+    {
+      "check": "frozen_training_seal_heldout_completion_order",
+      "passed": true,
+      "detail": [
+        "2026-10-17T08:20:28.610087+00:00",
+        "2026-10-17T08:22:48.578919+00:00",
+        "2026-10-17T08:23:17.532974+00:00",
+        "2026-10-17T08:23:18.268670+00:00",
+        "2026-10-17T08:23:40.499894+00:00",
+        "2026-10-17T08:24:04.193498+00:00"
+      ]
+    },
+    {
+      "check": "labels_and_no_new_test_asr_declarations",
+      "passed": true
+    },
+    {
+      "check": "independent_full_assignment_reconstruction",
+      "passed": true
+    },
+    {
+      "check": "exact_selected_role_id_sets",
+      "passed": true
+    },
+    {
+      "check": "all_role_metadata_equals_prepared_sources",
+      "passed": true,
+      "detail": {
+        "mismatches": []
+      }
+    },
+    {
+      "check": "all_source_speaker_item_audio_isolation_including_unselected",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "all_selected_dev_and_test_audio_hashes",
+      "passed": true,
+      "detail": {
+        "count": 7743,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "completed_dev_asr_identity",
+      "passed": true
+    },
+    {
+      "check": "dev_asr_model_file_hashes",
+      "passed": true,
+      "detail": {
+        "files": 4,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "dev_asr_source_snapshot_hashes",
+      "passed": true,
+      "detail": {
+        "files": 14,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "independent test source snapshot complete resolved metadata equality",
+      "passed": true
+    },
+    {
+      "check": "prepared verification hashes",
+      "passed": true
+    },
+    {
+      "check": "independent input checked_files exact identities",
+      "passed": true
+    },
+    {
+      "check": "independent v1 checked_files exact identities",
+      "passed": true
+    },
+    {
+      "check": "train exact feature allowlists and numeric values",
+      "passed": true
+    },
+    {
+      "check": "train exact IDs",
+      "passed": true
+    },
+    {
+      "check": "train independent_normalization_SDI_and_source_identity",
+      "passed": true,
+      "detail": {
+        "items": 1290,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "train failure_tier_and_tie_hash",
+      "passed": true
+    },
+    {
+      "check": "tune exact feature allowlists and numeric values",
+      "passed": true
+    },
+    {
+      "check": "tune exact IDs",
+      "passed": true
+    },
+    {
+      "check": "tune independent_normalization_SDI_and_source_identity",
+      "passed": true,
+      "detail": {
+        "items": 414,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "tune failure_tier_and_tie_hash",
+      "passed": true
+    },
+    {
+      "check": "holdout exact feature allowlists and numeric values",
+      "passed": true
+    },
+    {
+      "check": "holdout exact IDs",
+      "passed": true
+    },
+    {
+      "check": "holdout independent_normalization_SDI_and_source_identity",
+      "passed": true,
+      "detail": {
+        "items": 480,
+        "mismatches": []
+      }
+    },
+    {
+      "check": "holdout failure_tier_and_tie_hash",
+      "passed": true
+    },
+    {
+      "check": "test exact feature allowlists and numeric values",
+      "passed": false
+    },
+    {
+      "check": "audit_completed_without_exception",
+      "passed": false,
+      "detail": "ValueError: test exact feature allowlists and numeric values"
+    }
+  ]
+}

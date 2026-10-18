@@ -1,0 +1,61 @@
+{
+  "checked_at_utc": "2026-10-17T06:12:04.302811+00:00",
+  "frozen_evaluation_checkpoint": {
+    "tests_passed": 130,
+    "failures": 0,
+    "warnings": 1,
+    "scope": "Windows evaluation checkpoint before the long inference run; log and JUnit XML retained.",
+    "log": "validation/validation-tests.log",
+    "junit": "validation/validation-tests.xml"
+  },
+  "later_workspace_checkpoint": {
+    "at_utc": "2026-10-17T06:11:33.406562+00:00",
+    "exit_code": 0,
+    "counts": {
+      "tests": 158,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "files_changed_during_tests": [],
+    "scope": "Current shared workspace, including concurrent speech work. The frozen evaluation checkpoint was 130 tests."
+  },
+  "later_workspace_evidence": "validation/current-workspace-check.json",
+  "frozen_inputs_unchanged_at_completion": true,
+  "baseline_integrity": {
+    "hashes_verified": 12,
+    "timed_attempts_rederived": 40,
+    "original_labels_and_assets": "unchanged"
+  },
+  "resume_on_ignored_copy": {
+    "completed_resume_exit_code": 0,
+    "raw_unchanged": true,
+    "attempts": 118,
+    "changed_identity_exit_code": 2,
+    "rejected_message": "resume identity changed; use a new run",
+    "scope": "Executed against an ignored copy; published run untouched."
+  },
+  "blind_review_database": {
+    "tasks": 24,
+    "overlap": 2,
+    "show_suggestions": false,
+    "golden_answers": 0,
+    "judge_results": 0,
+    "published": false
+  },
+  "checks": {
+    "ruff_fatal": "passed: E9,F63,F7,F82 across app/scripts/tests",
+    "pip_check": "No broken requirements found",
+    "git_diff_check": "passed",
+    "provider_discovery": "Passed for anota-qwen3-14b-q4km; discovery is not a generation test",
+    "actual_generation": "118 requests completed; raw attempts and frozen order retained"
+  },
+  "runtime_scope": "Windows desktop. Host power, thermals and background workload were not isolated. Other speech-project files were being edited in the shared workspace; frozen evaluation input hashes remained unchanged.",
+  "not_executed": [
+    "Linux CI",
+    "ARM64 CI",
+    "Docker smoke",
+    "H100 experiments",
+    "AWS deployment/load/failover tests"
+  ]
+}

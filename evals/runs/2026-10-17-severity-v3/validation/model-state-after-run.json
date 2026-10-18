@@ -1,0 +1,33 @@
+{
+  "observed_at_utc": "2026-10-17T07:05:20.482013+00:00",
+  "models": [
+    {
+      "type": "llm",
+      "modelKey": "qwen3-14b",
+      "format": "gguf",
+      "displayName": "Qwen3 14B",
+      "publisher": "Qwen",
+      "path": "Qwen/Qwen3-14B-GGUF/Qwen3-14B-Q4_K_M.gguf",
+      "sizeBytes": 9001752960,
+      "indexedModelIdentifier": "Qwen/Qwen3-14B-GGUF/Qwen3-14B-Q4_K_M.gguf",
+      "deviceIdentifier": null,
+      "paramsString": "14B",
+      "architecture": "qwen3",
+      "quantization": {
+        "name": "Q4_K_M",
+        "bits": 4
+      },
+      "identifier": "anota-qwen3-14b-q4km",
+      "ttlMs": null,
+      "lastUsedTime": 1792220705791,
+      "vision": false,
+      "trainedForToolUse": true,
+      "maxContextLength": 40960,
+      "contextLength": 4096,
+      "status": "idle",
+      "queued": 0,
+      "parallel": 1
+    }
+  ],
+  "scope": "CLI loaded-model state observed after completion; not per-request GPU telemetry."
+}

@@ -2,6 +2,9 @@
 evals/data/*.jsonl -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 evals/runs/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 docs/figures/* -text
+# Generated, hash-bound SVGs retain their renderer's whitespace verbatim.
+evals/runs/**/*.svg -whitespace
+docs/figures/*.svg -whitespace
 # Runtime trust anchors hash these source bytes; Windows checkout must keep LF.
 speechrank/features.py text eol=lf
 speechrank/models.py text eol=lf

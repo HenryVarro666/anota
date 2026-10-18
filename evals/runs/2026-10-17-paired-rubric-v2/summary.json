@@ -1,0 +1,496 @@
+{
+  "holdout_unique_items": 24,
+  "development_unique_items": 20,
+  "completed_measured_requests": 116,
+  "expected_measured_requests": 116,
+  "complete": true,
+  "arms": {
+    "baseline": {
+      "passes": {
+        "1": {
+          "attempts": 24,
+          "unique_examples": 24,
+          "valid_output": {
+            "numerator": 24,
+            "denominator": 24,
+            "rate": 1.0
+          },
+          "exact_error_types": {
+            "numerator": 19,
+            "denominator": 24,
+            "rate": 0.7916666666666666
+          },
+          "binary_accuracy": {
+            "numerator": 24,
+            "denominator": 24,
+            "rate": 1.0
+          },
+          "severity_accuracy": {
+            "numerator": 15,
+            "denominator": 24,
+            "rate": 0.625
+          },
+          "critical_severity_recall": {
+            "numerator": 9,
+            "denominator": 9,
+            "rate": 1.0
+          },
+          "clean_false_alarm": {
+            "numerator": 0,
+            "denominator": 4,
+            "rate": 0.0
+          },
+          "per_type_recall": {
+            "addition": {
+              "numerator": 1,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "grammar": {
+              "numerator": 1,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "mistranslation": {
+              "numerator": 2,
+              "denominator": 2,
+              "rate": 1.0
+            },
+            "negation_polarity": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            },
+            "no_error": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            },
+            "number_unit": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            },
+            "omission": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            },
+            "terminology": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            }
+          },
+          "binary_kappa_valid_only": 1.0,
+          "latency_seconds": {
+            "p50": 12.364852949998749,
+            "p95": 16.95442208500099,
+            "total": 343.4082204000006
+          },
+          "effective_output_tokens_per_second": 4.449514919066852,
+          "token_rate_scope": "completion_tokens / client request wall time; includes prefill; not decode-only throughput"
+        },
+        "2": {
+          "attempts": 24,
+          "unique_examples": 24,
+          "valid_output": {
+            "numerator": 24,
+            "denominator": 24,
+            "rate": 1.0
+          },
+          "exact_error_types": {
+            "numerator": 18,
+            "denominator": 24,
+            "rate": 0.75
+          },
+          "binary_accuracy": {
+            "numerator": 24,
+            "denominator": 24,
+            "rate": 1.0
+          },
+          "severity_accuracy": {
+            "numerator": 15,
+            "denominator": 24,
+            "rate": 0.625
+          },
+          "critical_severity_recall": {
+            "numerator": 9,
+            "denominator": 9,
+            "rate": 1.0
+          },
+          "clean_false_alarm": {
+            "numerator": 0,
+            "denominator": 4,
+            "rate": 0.0
+          },
+          "per_type_recall": {
+            "addition": {
+              "numerator": 1,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "grammar": {
+              "numerator": 1,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "mistranslation": {
+              "numerator": 2,
+              "denominator": 2,
+              "rate": 1.0
+            },
+            "negation_polarity": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            },
+            "no_error": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            },
+            "number_unit": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            },
+            "omission": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            },
+            "terminology": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            }
+          },
+          "binary_kappa_valid_only": 1.0,
+          "latency_seconds": {
+            "p50": 14.804324250002537,
+            "p95": 18.794112560001302,
+            "total": 343.24613810001756
+          },
+          "effective_output_tokens_per_second": 4.480749611673261,
+          "token_rate_scope": "completion_tokens / client request wall time; includes prefill; not decode-only throughput"
+        }
+      },
+      "pooled_timing": {
+        "p50": 14.018788550001773,
+        "p95": 18.778640240001188,
+        "total": 686.6543585000181
+      },
+      "repeat_label_agreement": {
+        "numerator": 23,
+        "denominator": 24,
+        "rate": 0.9583333333333334
+      }
+    },
+    "candidate": {
+      "passes": {
+        "1": {
+          "attempts": 24,
+          "unique_examples": 24,
+          "valid_output": {
+            "numerator": 24,
+            "denominator": 24,
+            "rate": 1.0
+          },
+          "exact_error_types": {
+            "numerator": 21,
+            "denominator": 24,
+            "rate": 0.875
+          },
+          "binary_accuracy": {
+            "numerator": 24,
+            "denominator": 24,
+            "rate": 1.0
+          },
+          "severity_accuracy": {
+            "numerator": 14,
+            "denominator": 24,
+            "rate": 0.5833333333333334
+          },
+          "critical_severity_recall": {
+            "numerator": 8,
+            "denominator": 9,
+            "rate": 0.8888888888888888
+          },
+          "clean_false_alarm": {
+            "numerator": 0,
+            "denominator": 4,
+            "rate": 0.0
+          },
+          "per_type_recall": {
+            "addition": {
+              "numerator": 1,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "grammar": {
+              "numerator": 1,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "mistranslation": {
+              "numerator": 2,
+              "denominator": 2,
+              "rate": 1.0
+            },
+            "negation_polarity": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            },
+            "no_error": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            },
+            "number_unit": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            },
+            "omission": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            },
+            "terminology": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            }
+          },
+          "binary_kappa_valid_only": 1.0,
+          "latency_seconds": {
+            "p50": 16.219401000002108,
+            "p95": 26.743737754996253,
+            "total": 418.06226149999566
+          },
+          "effective_output_tokens_per_second": 4.90835980420113,
+          "token_rate_scope": "completion_tokens / client request wall time; includes prefill; not decode-only throughput"
+        },
+        "2": {
+          "attempts": 24,
+          "unique_examples": 24,
+          "valid_output": {
+            "numerator": 24,
+            "denominator": 24,
+            "rate": 1.0
+          },
+          "exact_error_types": {
+            "numerator": 22,
+            "denominator": 24,
+            "rate": 0.9166666666666666
+          },
+          "binary_accuracy": {
+            "numerator": 24,
+            "denominator": 24,
+            "rate": 1.0
+          },
+          "severity_accuracy": {
+            "numerator": 15,
+            "denominator": 24,
+            "rate": 0.625
+          },
+          "critical_severity_recall": {
+            "numerator": 8,
+            "denominator": 9,
+            "rate": 0.8888888888888888
+          },
+          "clean_false_alarm": {
+            "numerator": 0,
+            "denominator": 4,
+            "rate": 0.0
+          },
+          "per_type_recall": {
+            "addition": {
+              "numerator": 1,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "grammar": {
+              "numerator": 1,
+              "denominator": 1,
+              "rate": 1.0
+            },
+            "mistranslation": {
+              "numerator": 2,
+              "denominator": 2,
+              "rate": 1.0
+            },
+            "negation_polarity": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            },
+            "no_error": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            },
+            "number_unit": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            },
+            "omission": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            },
+            "terminology": {
+              "numerator": 4,
+              "denominator": 4,
+              "rate": 1.0
+            }
+          },
+          "binary_kappa_valid_only": 1.0,
+          "latency_seconds": {
+            "p50": 18.7392906999994,
+            "p95": 25.744500954998873,
+            "total": 472.6644200999799
+          },
+          "effective_output_tokens_per_second": 4.311727122530005,
+          "token_rate_scope": "completion_tokens / client request wall time; includes prefill; not decode-only throughput"
+        }
+      },
+      "pooled_timing": {
+        "p50": 18.14288304999718,
+        "p95": 26.578186739996088,
+        "total": 890.7266815999756
+      },
+      "repeat_label_agreement": {
+        "numerator": 23,
+        "denominator": 24,
+        "rate": 0.9583333333333334
+      }
+    }
+  },
+  "paired": {
+    "1": {
+      "binary": {
+        "candidate_wins": 0,
+        "candidate_losses": 0,
+        "ties": 24
+      },
+      "types": {
+        "candidate_wins": 3,
+        "candidate_losses": 1,
+        "ties": 20
+      },
+      "severity": {
+        "candidate_wins": 1,
+        "candidate_losses": 2,
+        "ties": 21
+      }
+    },
+    "2": {
+      "binary": {
+        "candidate_wins": 0,
+        "candidate_losses": 0,
+        "ties": 24
+      },
+      "types": {
+        "candidate_wins": 4,
+        "candidate_losses": 0,
+        "ties": 20
+      },
+      "severity": {
+        "candidate_wins": 1,
+        "candidate_losses": 1,
+        "ties": 22
+      }
+    }
+  },
+  "gates": {
+    "1": {
+      "validity_no_worse": true,
+      "binary_no_worse": true,
+      "critical_recall_no_worse": false,
+      "clean_false_alarm_no_worse": true,
+      "p95_within_1_5x": false
+    },
+    "2": {
+      "validity_no_worse": true,
+      "binary_no_worse": true,
+      "critical_recall_no_worse": false,
+      "clean_false_alarm_no_worse": true,
+      "p95_within_1_5x": true
+    }
+  },
+  "caveat": "Novel synthetic source parents; labels authored by the same agent before inference, not independently expert-adjudicated. Repeats are dependent.",
+  "development_candidate": {
+    "attempts": 20,
+    "unique_examples": 20,
+    "valid_output": {
+      "numerator": 20,
+      "denominator": 20,
+      "rate": 1.0
+    },
+    "exact_error_types": {
+      "numerator": 18,
+      "denominator": 20,
+      "rate": 0.9
+    },
+    "binary_accuracy": {
+      "numerator": 20,
+      "denominator": 20,
+      "rate": 1.0
+    },
+    "severity_accuracy": {
+      "numerator": 14,
+      "denominator": 20,
+      "rate": 0.7
+    },
+    "critical_severity_recall": {
+      "numerator": 10,
+      "denominator": 12,
+      "rate": 0.8333333333333334
+    },
+    "clean_false_alarm": {
+      "numerator": 0,
+      "denominator": 4,
+      "rate": 0.0
+    },
+    "per_type_recall": {
+      "negation_polarity": {
+        "numerator": 4,
+        "denominator": 4,
+        "rate": 1.0
+      },
+      "no_error": {
+        "numerator": 4,
+        "denominator": 4,
+        "rate": 1.0
+      },
+      "number_unit": {
+        "numerator": 4,
+        "denominator": 4,
+        "rate": 1.0
+      },
+      "omission": {
+        "numerator": 4,
+        "denominator": 4,
+        "rate": 1.0
+      },
+      "terminology": {
+        "numerator": 2,
+        "denominator": 4,
+        "rate": 0.5
+      }
+    },
+    "binary_kappa_valid_only": 1.0,
+    "latency_seconds": {
+      "p50": 25.617979700000433,
+      "p95": 36.9773108299989,
+      "total": 509.99080350001896
+    },
+    "effective_output_tokens_per_second": 3.5020239340451824,
+    "token_rate_scope": "completion_tokens / client request wall time; includes prefill; not decode-only throughput"
+  },
+  "all_pilot_gates_pass": false
+}
