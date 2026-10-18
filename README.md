@@ -4,19 +4,23 @@
 
 **Annotation *interfaces* are a commodity. Annotation *operations* are not.**
 
-Anota is a keyboard-first, self-hosted workbench for **translation & interpretation quality
-assessment** that bakes the hard part — blind golden sets, append-only audit trails, an LLM
+Anota is a keyboard-first, self-hosted workbench for **translation quality assessment
+and speech transcription review** that bakes the hard part — blind golden sets, append-only audit trails, an LLM
 judge you must *calibrate before you trust*, and content-hashed citable exports — straight
 into the data model.
 
-**One Python process · three dependencies · no build step · boots in seconds.**
+**One Python web process · three core dependencies · no frontend build step.**
+
+Start the offline demo below, or use the [Windows guide](docs/local-windows.md).
+See the [project map](docs/project-map.md) for the four modules, six frozen studies
+and related GitHub repositories.
 
 <br>
 
-![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)
+![Python 3.12 verified](https://img.shields.io/badge/Python-3.12%20verified-3776AB?style=flat-square&logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688?style=flat-square&logo=fastapi&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-stdlib%20%C2%B7%20no%20ORM-003B57?style=flat-square&logo=sqlite&logoColor=white)
-![Tests](https://img.shields.io/badge/tests-83%20passing-brightgreen?style=flat-square)
+[CPU test workflow](.github/workflows/tests.yml)
 ![No build step](https://img.shields.io/badge/frontend-no%20build%20step-ff69b4?style=flat-square)
 ![Footprint](https://img.shields.io/badge/footprint-1%20process%20%C2%B7%203%20deps-1f6feb?style=flat-square)
 ![LLM judge](https://img.shields.io/badge/LLM%20judge-mock%20or%20OpenAI--compatible-6f42c1?style=flat-square)
@@ -26,28 +30,110 @@ into the data model.
 
 ---
 
+## Quick start
+
+### Run the workbench
+
+**Windows + LM Studio / Ollama:** see the [local Windows guide](docs/local-windows.md).
+
+Use **Python 3.12**, the verified Windows and configured CI version. The core
+annotation application targets Python ≥3.10; some speech preparation and experiment
+commands use `datetime.UTC` (Python ≥3.11). Full speech/ML support on Python 3.10
+is not established.
+
+Windows PowerShell (no environment activation required):
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt -c constraints-runtime.txt
+.\.venv\Scripts\python.exe run.py --demo
+```
+
+Linux / macOS:
+
+```bash
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt -c constraints-runtime.txt
+.venv/bin/python run.py --demo
+```
+
+Open <http://localhost:8420>.
+
+`--demo` boots a throwaway DB with **30 synthetic EN→ES tasks** (12 planted errors across
+three latency arms), a **6-item golden set**, a second annotator's seed labels, and
+pre-computed mock-judge verdicts — so every screen has data on first open.
+
+For a persistent database, replace `--demo` with `--db anota.db` using the same
+Python executable.
+
+> All bundled demo data is synthetic (EN→ES medication instructions written for this project).
+> Bundled fixtures contain **no real patient records**; scale limits are documented
+> ([§Limitations](#limitations)).
+
+For a separate local judge server, use
+`python scripts/run_local.py --judge-profile evals/profiles/local-lmstudio.json`.
+Demo verdicts remain labeled mock until a real judge run replaces their latest
+view. See the [Windows guide](docs/local-windows.md) for model discovery and the
+[project map](docs/project-map.md) for datasets and ASR benchmarks.
+
+### Docker
+
+```bash
+docker build -t anota .
+docker run -p 8420:8420 -v anota-data:/data anota     # persistent DB in a named volume
+docker run -p 8420:8420 anota --demo                  # throwaway demo instance
+```
+
+The default image runs the CPU web application with its three core dependencies.
+It does not install ASR/VAD/ML inference dependencies or include local audio,
+`runtime/` data, research evidence or a SpeechRank model bundle. Imported speech
+review uses registered audio; optional ML ordering falls back to QC when its
+dependencies or bundle are absent. See [portable model deployment](docs/audio-ml-review-queue.md#portable-deployment)
+for a separate inference image and external bundle.
+
+Any args after the image name are passed to `run.py`. The configured Docker CI
+checks must pass on GitHub before treating this image as a validated release;
+Docker has not been executed on the local Windows machine.
+
+---
+
 ## Highlights
+
+- **🎧 Real speech review.** A [20-clip English/Chinese speech workflow](docs/speech-smoke.md)
+  connects resumable CPU ASR to listening, transcript revisions and traceable exports.
+  Speech dependencies are optional and the web process does not load the ASR model.
+  Open **Review → Speech review** for ML/QC/original ordering, then claim a clip
+  to listen and revise. The [ML queue guide](docs/audio-ml-review-queue.md) explains
+  confidence routing, QC fallback, blind order and portable model deployment.
+
+- **🔎 Audio QC and focused replay.** Independent `speechqc` analysis combines DSP,
+  Silero VAD and transcript timing coverage. Anota adds a navigable waveform,
+  bounded/looped selection playback and clickable review hints. Clean batches receive
+  the neutral waveform; machine hints are removed by the server. See the
+  [design, usage and human-study plan](docs/audio-qc-v1.md),
+  [frozen 66-case engineering experiment](evals/runs/2026-10-17-audio-qc-v1/RESULTS.md)
+  and [integration validation](evals/reviews/audio-qc-v1-integration.md).
 
 - **🕵️ Blind by construction.** For golden-collection batches, judge/lint hints are *stripped
   from the JSON on the wire* — not hidden with CSS. A test fails if a clean claim response ever
   leaks a suggestion field. Anchoring bias can't sneak in through DevTools.
-- **⚖️ A judge you calibrate before you trust.** Synthetic perturbations with *known* truth
-  score the LLM judge's per-type recall and false-alarm rate against golden — zero human
-  labeling. Field-tested at **κ_bin 1.0 · κ_sev 0.85 · 4/4 recall · 0/5 false alarms** on a
-  self-hosted Qwen3-14B.
+- **⚖️ A judge you calibrate before you trust.** Synthetic perturbations with assigned reference labels
+  supply a reproducible pilot for per-type recall and false alarms. A real Qwen3-14B
+  run on a Radeon 890M includes **raw responses, timing, reference-label disagreements
+  and model hashes**. Synthetic reference labels still need expert review.
 - **🔌 Provider-agnostic judge.** GPT, Gemini, or a self-hosted vLLM/Ollama — the judge speaks
   the OpenAI Chat Completions protocol, so you swap models with **two env vars**; self-host and
   the content never leaves your boundary.
 - **🧾 Append-only, fully audited.** Corrections and undo create *new* rows (latest-wins);
-  every claim / submit / undo / lease-reap / review is an audit entry. No destructive write
-  path exists — anywhere.
+  every claim / submit / undo / lease-reap / review is an audit entry. Annotation
+  and audit history is preserved.
 - **📐 Agreement math from scratch.** Hand-written Cohen's κ (plain + linear-weighted) pinned
   to textbook values in tests (0.4 on the 2×2, −1.0 on an adjacent-category swap). No sklearn.
-- **📊 A domain analytic nobody else ships.** An *error-type × latency-arm* matrix that answers
+- **📊 Error-type × latency-arm analysis.** A matrix that helps investigate
   the real question for simultaneous translation: *what does low latency cost you in dropped
   negations and numbers?*
-- **⚡ Runs anywhere, instantly.** Two commands, port 8420, same artifact deploys inside a
-  compliance boundary. **83 tests, sub-second.**
+- **⚡ Small CPU application.** Direct Python startup, port 8420, the application runs inside a
+  local development environment. The regression suite covers annotation and judge failures.
 
 <div align="center">
 
@@ -60,6 +146,8 @@ into the data model.
 <details>
 <summary><b>Table of contents</b></summary>
 
+Local evidence: [Experiment 03](#experiment-03-one-severity-rule-a-new-test-set) · [Experiment 02](#experiment-02-frozen-holdout-comparison) · [Original pilot](#measured-on-a-radeon-890m)
+
 1. [Quick start](#quick-start) · [Docker](#docker)
 2. [Architecture at a glance](#architecture-at-a-glance)
 3. [Core ideas](#core-ideas)
@@ -70,45 +158,19 @@ into the data model.
 8. [The judge, calibrated](#the-judge-calibrated)
 9. [Screens](#screens)
 10. Reference (collapsed): [Importing](#importing-your-own-data) · [Configuration](#configuration) · [HTTP API](#http-api) · [Exports](#exports) · [Project layout](#project-layout) · [Development](#development)
-11. [Limitations](#limitations) · [Roadmap](#roadmap)
+11. [Research evidence](#research-evidence) · [Project map](docs/project-map.md)
+12. [Limitations](#limitations) · [Roadmap](#roadmap)
 
 </details>
 
 ---
 
-## Quick start
-
-Requires Python ≥ 3.10.
-
-```bash
-python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-.venv/bin/python run.py --demo        # → http://localhost:8420
-```
-
-`--demo` boots a throwaway DB with **30 synthetic EN→ES tasks** (12 planted errors across
-three latency arms), a **6-item golden set**, a second annotator's seed labels, and
-pre-computed mock-judge verdicts — so every screen has data on first open.
-
-Persistent DB instead: `.venv/bin/python run.py --db anota.db`
-
-> All bundled demo data is synthetic (EN→ES medication instructions written for this project).
-> **No PHI anywhere** — demo-grade by design; scale limits are documented, not hidden
-> ([§Limitations](#limitations)).
-
-### Docker
-
-```bash
-docker build -t anota .
-docker run -p 8420:8420 -v anota-data:/data anota     # persistent DB in a named volume
-docker run -p 8420:8420 anota --demo                  # throwaway demo instance
-```
-
-One container, no sidecar services — that absence is deliberate
-([docs/DESIGN.md §5](docs/DESIGN.md)). Any args after the image name are passed to `run.py`.
-
----
-
 ## Architecture at a glance
+
+![Local annotation architecture](docs/figures/local-architecture.png)
+
+Editable [SVG](docs/figures/local-architecture.svg); regenerate with
+`python scripts/render_readme_figure.py` (optional PNG dependency: `resvg-py`).
 
 One FastAPI process over stdlib `sqlite3` (one connection, one lock, no ORM — [on
 purpose](docs/DESIGN.md)). Lint runs once at import; the judge subsystem feeds routing and
@@ -131,13 +193,13 @@ flowchart LR
   agg --> stats["kappa · error×arm matrix<br>golden scoring"]
 
   subgraph judgesub["Judge subsystem"]
-    runner["main._run_judge_batch<br>pooled 8 workers"]
+    runner["main._run_judge_batch<br>shared worker budget"]
     judge["judge.get_judge<br>Mock or OpenAI"]
     jr[("judge_results")]
     probe["perturb.build_probe<br>synthetic hard-negatives"]
     routebuild["main routing/build<br>low conf or LF conflict"]
     runner --> judge --> jr
-    probe --> probebatch[("probe batch<br>golden truth")]
+    probe --> probebatch[("probe batch<br>synthetic reference labels")]
     routebuild --> routebatch[("routing batch<br>show_suggestions=1")]
   end
 
@@ -147,7 +209,7 @@ flowchart LR
   jr --> routebuild
   jr --> stats
   jr -->|"vs golden"| cal["quality.judge_golden_calibration"]
-  probebatch -->|"known truth"| cal
+  probebatch -->|"reference labels"| cal
 
   ann --> revq["main.review/queue<br>3-way disagreement"]
   jr --> revq
@@ -162,7 +224,7 @@ flowchart LR
 ```
 
 <details>
-<summary>Module &amp; table map (one process, 9 tables, 3 no-build JS files)</summary>
+<summary>Module &amp; table map (one process, 13 application tables, 4 no-build JS files)</summary>
 
 ```mermaid
 flowchart TB
@@ -170,14 +232,17 @@ flowchart TB
     appjs["app.js<br>Annotate · exposes window.ANOTA"]
     reviewjs["review.js<br>Review tab"]
     dashjs["dash.js<br>Dashboard tab"]
+    speechjs["speech.js<br>Playback · transcript revisions"]
     reviewjs -.->|"window.ANOTA"| appjs
     dashjs -.->|"window.ANOTA"| appjs
+    speechjs -.->|"window.ANOTA"| appjs
   end
 
   subgraph proc["One FastAPI process · app/main.py"]
     routes["FastAPI routes<br>claim · review · stats<br>judge · probe · routing · export"]
     subgraph mods["app modules"]
       tasks["tasks.py"]
+      speech["speech.py · speech_queue.py"]
       quality["quality.py"]
       judge["judge.py"]
       perturb["perturb.py"]
@@ -189,15 +254,16 @@ flowchart TB
     end
   end
 
-  subgraph sqlite["SQLite · 9 tables"]
-    t["batches · tasks · golden_answers<br>assignments · annotations · judge_results<br>reviews · audit_log · exports"]
+  subgraph sqlite["SQLite · 13 application tables"]
+    t["batches · tasks · golden_answers<br>assignments · annotations · judge_results<br>reviews · audit_log · exports<br>schema_migrations · audio_assets<br>speech_tasks · speech_annotations"]
   end
 
   appjs -->|"fetch /api/*"| routes
   reviewjs --> routes
   dashjs --> routes
-  routes --> tasks & quality & judge & perturb & exportm & models
-  tasks & quality & judge & perturb & exportm & importer --> dbm
+  speechjs --> routes
+  routes --> tasks & quality & judge & perturb & exportm & models & speech
+  tasks & quality & judge & perturb & exportm & importer & speech --> dbm
   perturb & importer --> lf
   dbm --> sqlite
 ```
@@ -232,7 +298,7 @@ The 5-minute path through the whole closed loop:
 |---|---|---|
 | 1 | **Annotate** | Enter an id, press **Start**. A clean record is two keystrokes (`0` then `Space`). This batch shows **no machine hints** — it collects golden labels (idea #1). |
 | 2 | **Dashboard** | The error-type × latency-arm matrix shows what the low-latency arm costs; annotator table tracks golden accuracy + pace; κ panels track inter-annotator and judge–human agreement. |
-| 3 | **Probe & calibrate** | *Build judge probe* → synthetic errors with known truth; *run judge* (pooled, live progress); the calibration card fills in per-type recall and false-alarm rates. |
+| 3 | **Probe & calibrate** | *Build judge probe* → synthetic errors with provisional reference labels; *run judge* (pooled, live progress); the calibration card fills in per-type recall and false-alarm rates. |
 | 4 | **Route** | *Build routing batch* from lowest judge confidence, then **annotate** it — claims now carry judge + lint chips (labeled `MOCK` when the mock judge produced them). |
 | 5 | **Review** | The queue ranks human/judge/lint disagreement first. Open an item for the three-way comparison; **Approve** or **Overturn** with a case note — the raw material for the next guideline version. |
 | 6 | **Export** | A content-hashed, versioned snapshot lands in `exports/`. |
@@ -258,7 +324,8 @@ negation_polarity, grammar, punctuation.
 
 ## Concepts & data model
 
-Nine SQLite tables; the ones that carry the design:
+Thirteen application tables: nine translation/core tables, one migration registry
+and three speech tables (excluding SQLite internal tables).
 
 | Table | Role | Design notes |
 |---|---|---|
@@ -271,6 +338,10 @@ Nine SQLite tables; the ones that carry the design:
 | `judge_results` | LLM verdicts | verdict JSON + confidence + `is_mock` flag |
 | `audit_log` | everything | append-only record of claim/submit/skip/undo/reap/review/import/export |
 | `exports` | snapshot registry | version, filters, sha256, path |
+| `schema_migrations` | additive migration registry | translation databases gain speech support in place |
+| `audio_assets` | registered audio | path is server-only; bytes are verified against SHA256 |
+| `speech_tasks` | speech provenance | links a task to audio and persisted ASR/QC evidence |
+| `speech_annotations` | transcript revisions | append-only corrections and review/playback context |
 
 The task lifecycle — the correctness-critical part of the backend, all under one lock:
 
@@ -329,16 +400,19 @@ reviewers and routing, hidden from clean-batch annotators:
 ## The judge, calibrated
 
 The judge is treated as an **uncalibrated instrument until proven otherwise**. *Build judge
-probe* creates a batch of **synthetic hard negatives with known truth** — clean demo
+probe* creates a batch of **synthetic hard negatives with intended error labels** — clean demo
 translations programmatically perturbed (negation injected, first number ×10, a domain term
 swapped, a trailing clause dropped) plus unmodified controls. Because the injected error *is*
-the ground truth, probe items feed the judge-vs-golden calibration card with **no human
-labeling**: per-error-type recall, false-alarm rate on clean items, and κ against golden.
+the intended label, probe items feed the judge-vs-golden calibration card automatically:
+per-error-type recall, false-alarm rate on clean items, and κ against the synthetic
+references. Expert review is still needed to validate category and severity labels.
 
-Field-tested against a self-hosted **Qwen3-14B** (vLLM, reasoning on): a 15-task probe judged
-in **10 s** (pooled 8-wide; ~4 s/task sequential), and across demo golden + probe (n=21) it
-scored **κ_bin 1.0, κ_sev 0.85, 4/4 recall on every error type, 0/5 clean false alarms** —
-including terminology swaps invisible to lint.
+The [measured local pilot](evals/runs/2026-10-17-lmstudio-qwen3-14b-q4km/report.md)
+uses **Qwen3-14B Q4_K_M, LM Studio / Vulkan, reasoning disabled**, on 20 unique
+synthetic examples (11 parent templates), repeated twice. It publishes every raw
+response and disagreement. The earlier vLLM figures and screenshots used a different
+protocol with a duplicate control; they are historical UI illustrations, not a
+comparable baseline. Current claims are backed by the committed run artifacts.
 
 <div align="center">
 
@@ -348,8 +422,8 @@ including terminology swaps invisible to lint.
 
 That contrast (lint-bound MockJudge vs semantic LLM judge) is the point of the card:
 **calibrate before you trust** the judge's confidence for routing. Judge failure never breaks
-annotation — the top-bar badge degrades and humans keep working. Runs are pooled (8 workers)
-and can run in the background with live `done/total` progress.
+annotation — the top-bar badge degrades and humans keep working. Runs share a configurable
+worker budget (local profile: one) and can run in the background with live `done/total` progress.
 
 ---
 
@@ -362,6 +436,175 @@ and can run in the background with live `done/total` progress.
 Keyboard-first annotation with the anchoring notice ("this batch collects golden labels"); and
 the three-way Human · Judge · LF-Lint comparison that ranks disagreement first for the reviewer.
 The UI follows system light/dark with an override cycle.
+
+---
+
+## Research evidence
+
+These frozen studies retain their original protocols, results and limitations.
+They measure different questions and datasets; their results are not one trend line.
+The [project map](docs/project-map.md#six-frozen-studies) indexes all six studies.
+
+<details>
+<summary><b>Translation judge: original pilot and two rubric comparisons</b></summary>
+
+<!-- SEVERITY_V3_START -->
+## Experiment 03: one severity rule, a new test set
+
+![Unified severity comparison](evals/runs/2026-10-17-severity-v3/figures/severity-comparison.png)
+
+**24 new primary texts · four predeclared disputed texts · two counterbalanced primary passes.**
+The candidate replaces the system rubric with one ordered policy: changed clinical action or its prerequisite → critical; other meaning change → major; form-only error → minor; correct translation → neutral. The baseline retains the original rubric. All other request settings are identical.
+
+| Metric | Baseline: passes 1 · 2 | Candidate: passes 1 · 2 |
+|---|---:|---:|
+| Valid output | 24/24 · 24/24 | 24/24 · 24/24 |
+| Critical recall | 12/12 · 12/12 | 12/12 · 12/12 |
+| Clinical-condition critical recall | 6/6 · 6/6 | 6/6 · 6/6 |
+| Severity agreement | 19/24 · 19/24 | 22/24 · 23/24 |
+| Exact category set | 15/24 · 15/24 | 13/24 · 11/24 |
+| False critical on major/minor errors | 2/8 · 2/8 | 1/8 · 1/8 |
+| False alarms on clean controls | 0/4 · 0/4 | 0/4 · 0/4 |
+| Pooled request P50 / P95 | 15.74 / 48.90 s | 16.44 / 56.70 s |
+
+**PASS: all predeclared pilot gates passed in both passes.** The default is unchanged; independent bilingual/domain reference review is still needed.
+
+**Category tradeoff:** mean exact type-set agreement falls by 12.5 percentage points. Passing the severity pilot gates would not establish full taxonomy quality.
+
+**Known critical regression, h19:** previous candidate `omission / major` → severity-v3 `omission / critical`. This missing clinical prerequisite was used to design the rule. Its single follow-up is development evidence, not a held-out gain; the original critical reference is unchanged.
+
+The 96 primary calls represent 24 synthetic source parents. Reference labels and the rubric were authored by the same agent before inference. Four disputed cases have no single gold and are reported separately, never silently removed after seeing predictions. Previous rounds and their labels remain intact; their different datasets are not a direct trend line.
+
+[Full report and every undergrade](evals/runs/2026-10-17-severity-v3/report.md) · [Raw evidence](evals/runs/2026-10-17-severity-v3/attempts.jsonl) · [Unified rule](data/guidelines/severity-v3.md) · [Dispute register](evals/reviews/disputed-labels-v3.md) · [Protocol](evals/severity-v3-protocol.md)
+
+<details><summary>Ordered severity rule, complete case map and editable figures</summary>
+
+![Severity policy](evals/runs/2026-10-17-severity-v3/figures/severity-policy.png)
+
+![Primary case map](evals/runs/2026-10-17-severity-v3/figures/case-map.png)
+
+[Comparison SVG](evals/runs/2026-10-17-severity-v3/figures/severity-comparison.svg) · [Policy SVG](evals/runs/2026-10-17-severity-v3/figures/severity-policy.svg) · [Case-map SVG](evals/runs/2026-10-17-severity-v3/figures/case-map.svg)
+
+</details>
+
+[Validation and scope](evals/runs/2026-10-17-severity-v3/validation.json). Windows CPU checks are recorded separately from actual model calls. H100, AWS, Docker and cross-platform CI are not measured by this experiment.
+
+**Timing context:** the user [confirmed concurrent computation](evals/runs/2026-10-17-severity-v3/validation/user-load-context.json). Workload duration and intensity were not logged. All outliers remain included; the latency gate is descriptive and does not establish isolated prompt or 890M performance.
+
+[Interpretation, historical regressions and remaining label questions](evals/runs/2026-10-17-severity-v3/interpretation.md).
+
+<!-- SEVERITY_V3_END -->
+
+<!-- COMPARISON_V2_START -->
+## Experiment 02: frozen holdout comparison
+
+![Paired rubric comparison](evals/runs/2026-10-17-paired-rubric-v2/figures/comparison.png)
+
+**24 new EN→ES source parents · two counterbalanced passes · identical Qwen3-14B Q4_K_M weights.**
+The candidate changes only the prompt suffix: proposition checks, minimal specific labels and consequence-based severity.
+Both arms see the same items; original baseline artifacts and labels remain intact.
+
+| Metric | Baseline: passes 1 / 2 | Candidate: passes 1 / 2 |
+|---|---:|---:|
+| Valid responses | 24/24 · 24/24 | 24/24 · 24/24 |
+| Error / clean agreement | 24/24 · 24/24 | 24/24 · 24/24 |
+| Exact type-set agreement | 19/24 · 18/24 | 21/24 · 22/24 |
+| Severity agreement | 15/24 · 15/24 | 14/24 · 15/24 |
+| Critical severity recall | 9/9 · 9/9 | 8/9 · 8/9 |
+| Clean false alarms | 0/4 · 0/4 | 0/4 · 0/4 |
+| Pooled request P50 / P95 | 14.02 / 18.78 s | 18.14 / 26.58 s |
+
+**HOLD: the candidate did not pass all predeclared gates. The baseline remains the default.**
+
+The exploratory revisit detects both earlier misses (a missing time span and medication→supplement), but still grades both minor. On the new holdout, a missing clinical-action prerequisite is downgraded from critical to major in both candidate passes.
+
+Exact-label gains may come from a clearer annotation convention, not improved semantic detection. Severity references are provisional.
+The same agent authored the new texts, reference labels and candidate before inference; independent bilingual adjudication is still needed.
+The 96 holdout calls represent **24 source parents**, not 96 independent examples. All regressions and latency outliers are retained.
+
+[Full report, paired wins/losses and regressions](evals/runs/2026-10-17-paired-rubric-v2/report.md) · [raw attempts](evals/runs/2026-10-17-paired-rubric-v2/attempts.jsonl) · [frozen protocol](evals/comparison-v2.md) · [label diagnosis](evals/reviews/pilot-v1-audit.md) · [interpretation and next experiment](evals/reviews/paired-v2-interpretation.md)
+
+A [two-reviewer blind batch](evals/reviews/blind-review.md) can be prepared without provisional gold or model suggestions.
+This prompt experiment leaves the system rubric and default model profile unchanged; candidate selection is explicit.
+
+Validation at the frozen evaluation checkpoint: **130 Windows tests passed**. See [validation evidence](evals/runs/2026-10-17-paired-rubric-v2/validation.json) for scope and later checks. Linux/ARM64 CI, Docker, H100 and AWS remain unexecuted here.
+
+<details><summary>Item-by-item comparison and editable figures</summary>
+
+![Complete case map](evals/runs/2026-10-17-paired-rubric-v2/figures/case-map.png)
+
+[Overview SVG](evals/runs/2026-10-17-paired-rubric-v2/figures/comparison.svg) · [Case-map SVG](evals/runs/2026-10-17-paired-rubric-v2/figures/case-map.svg)
+
+</details>
+
+<!-- COMPARISON_V2_END -->
+
+### Measured on a Radeon 890M
+
+![Local Qwen evaluation: quality, repeatability and request latency](docs/figures/local-qwen-evaluation.png)
+
+**2026-10-17 · Ryzen AI 9 HX 370 · Qwen3-14B Q4_K_M · LM Studio 0.4.21 / Vulkan.**
+One warmup, then two shuffled passes over 20 unique synthetic EN→ES examples from
+11 parent templates. One request at a time, 4096 context, JSON schema, `/no_think`.
+This is a real inference pilot with synthetic reference labels, not clinical validation.
+
+| Observed metric | Pass 1 | Pass 2 |
+|---|---:|---:|
+| Valid responses | 20/20 | 20/20 |
+| Error vs clean agreement | 18/20 (90%) | 18/20 (90%) |
+| Exact error-type set agreement | 11/20 (55%) | 12/20 (60%) |
+| Severity agreement | 14/20 (70%) | 14/20 (70%) |
+| Critical severity recall | 9/12 (75%) | 9/12 (75%) |
+| False alarms on clean controls | 0/4 | 0/4 |
+| Client request P50 / P95 | 10.03 / 13.80 s | 10.24 / 13.44 s |
+
+Across all 40 timed requests, **P50 is 10.24 s and P95 is 13.80 s**. Repeat labels
+match on types and severity for **19/20** examples. Timing includes prefill and
+generation; repeated prefixes may benefit from server caching. These repeated,
+related examples are not 40 independent quality samples.
+
+The useful finding is the gap between coarse error detection and detailed labels.
+Both passes missed the omitted “throughout the day” in one item and the
+medication→supplement substitution in another. Extra `mistranslation` tags also
+reduce exact-set agreement, and several severity ratings disagree with the
+synthetic references. This supports **human-reviewed suggestions and disagreement
+routing**; it does not establish automatic acceptance quality. A separate, blinded,
+expert-reviewed held-out set is the next quality gate.
+
+[Full results and every disagreement](evals/runs/2026-10-17-lmstudio-qwen3-14b-q4km/report.md)
+· [raw requests/responses](evals/runs/2026-10-17-lmstudio-qwen3-14b-q4km/attempts.jsonl)
+· [model/runtime/code provenance](evals/runs/2026-10-17-lmstudio-qwen3-14b-q4km/manifest.json)
+· [reproduce the experiment](evals/README.md)
+· [editable SVG](docs/figures/local-qwen-evaluation.svg)
+· [H100 / AWS experiment boundaries](docs/runtime-matrix.md)
+
+The application remains CPU-only with a separate model server. At this original
+pilot checkpoint, **126 Windows regression tests passed**; Linux/ARM64 and Docker
+checks were configured in CI but not executed locally. H100 and AWS profiles remain
+templates awaiting real validation. The newer comparison above records its own checks.
+
+</details>
+
+<details>
+<summary><b>Audio QC and ASR review-ranking studies</b></summary>
+
+The [audio QC engineering experiment](evals/runs/2026-10-17-audio-qc-v1/RESULTS.md)
+contains 66 frozen cases.
+
+The [LibriSpeech ranking study](evals/runs/2026-10-17-librispeech-qc-ranking-v1/README.md)
+  reuses existing ASR and official transcripts to compare QC with 1,000 random
+  review orders at 10%/20% audio-duration budgets. On all 5,559 recordings, the
+  frozen QC rule captured 10.06%/19.81% of errors versus random means of
+  9.99%/20.00%; it did not establish a useful ranking gain. Interim and full
+  results, configurations and raw evidence are retained separately.
+  The [v2 learning pilot](evals/runs/2026-10-17-librispeech-ml-ranking-v2/README.md)
+  adds aggregate ASR/QC features and real decoder confidence. On a speaker-isolated
+  480-recording holdout, legacy captured 14.97%/28.77% and confidence 28.65%/46.19%
+  of errors at 10%/20% duration budgets (random: 9.78%/19.76%). The previously
+  exposed test is secondary; its missing confidence was not fabricated.
+  These checks identify review candidates; human accuracy and time savings remain unmeasured.
+
+</details>
 
 ---
 
@@ -421,9 +664,14 @@ duplicated. `--suggestions` marks the imported batch as a routing batch (hints v
 |---|---|---|
 | `ANOTA_JUDGE` | `mock` | `mock` (deterministic, offline) or `openai` |
 | `ANOTA_JUDGE_BASE_URL` | `http://localhost:8000/v1` | any OpenAI-compatible endpoint — self-hosted vLLM / llama.cpp / Ollama, OpenAI, Gemini (compat) |
-| `ANOTA_JUDGE_MODEL` | auto-detect | first model served if unset (via `/models`); **set explicitly for hosted providers** |
+| `ANOTA_JUDGE_MODEL` | auto-detect only with one model | set the exact chat-model ID explicitly; zero/multiple models fail discovery |
 | `ANOTA_JUDGE_API_KEY` | `EMPTY` | bearer token if the endpoint needs one |
 | `ANOTA_JUDGE_SAMPLES` | `1` | self-consistency: sample k verdicts at temperature 0.7 and majority-aggregate; confidence becomes the severity-agreement fraction across samples |
+| `ANOTA_JUDGE_WORKERS` | `8` | shared concurrent request budget per application process, 1–64; local launcher uses 1 |
+| `ANOTA_JUDGE_TIMEOUT` | `30` | positive finite HTTP I/O timeout in seconds; local launcher uses 120 |
+| `ANOTA_JUDGE_MAX_TOKENS` | `512` | output budget, 32–8192; measured profile uses 256 |
+| `ANOTA_JUDGE_JSON_SCHEMA` | `0` | `1` requests strict JSON schema from a compatible server; validation always runs |
+| `ANOTA_JUDGE_PROMPT_SUFFIX` | empty | model-specific user-prompt suffix; measured Qwen profile uses a short rationale and `/no_think` |
 
 **Judge providers.** The judge is provider-agnostic *by protocol* — it talks to any endpoint
 that speaks the OpenAI Chat Completions API, so switching models is two env vars, no code change:
@@ -468,7 +716,7 @@ ANOTA_JUDGE=openai ANOTA_JUDGE_BASE_URL=https://generativelanguage.googleapis.co
 | `/review/queue` | GET | unreviewed latest annotations, disagreement-ranked, with judge + lint context |
 | `/review/{annotation_id}` | POST | `{verdict: approved\|overturned, case_note, replacement?}` |
 | `/stats/overview` · `/stats/matrix` · `/stats/annotators` · `/stats/agreement` | GET | dashboard aggregates (pairwise κ, judge×human κ, judge-vs-golden calibration, golden accuracy, error×arm matrix with `sources` disclosure) |
-| `/judge/run` | POST | `{batch_id, background?}` → judge every task, pooled 8-wide; sync returns `{n}`, background returns immediately (`503` unreachable, `409` already running) |
+| `/judge/run` | POST | `{batch_id, background?}` → judge every task under a shared worker budget; sync returns `{n}`, background returns immediately (`503` failed, `409` already running) |
 | `/judge/status` | GET | per-batch judge-run progress `{done, total, running, error}` |
 | `/probe/build` | POST | `{source_batch_id?, per_type?}` → synthetic hard-negative batch with golden truth auto-registered |
 | `/routing/build` | POST | `{top_n, signal: judge_confidence\|lf_conflict}` → new routing batch |
@@ -500,26 +748,26 @@ ANOTA_JUDGE=openai ANOTA_JUDGE_BASE_URL=https://generativelanguage.googleapis.co
 
 <br>
 
-```
-run.py               entry point: server, demo seeding, CLI import
-app/
-  main.py            API layer; batch policy enforced here (response shaping)
-  db.py              SQLite + DDL (9 tables) + audit helper; one lock, no ORM
-  models.py          schema constants + payload validation (the annotation rules)
-  tasks.py           claim/lease/submit/skip/undo state machine
-  lf.py              4 labeling functions × 2 language profiles
-  judge.py           MockJudge (deterministic) + OpenAI-compatible client
-  quality.py         Cohen's κ (plain/weighted, textbook-pinned), golden scoring,
-                     final-label resolution, error×arm matrix
-  importer.py        import profiles, golden loading, demo seeding
-  export.py          canonical-JSON snapshots + sha256 + golden JSONL
-static/              no-build frontend: index.html + app.js (annotate) +
-                     review.js + dash.js + style.css (Apple-style, light/dark)
-data/                synthetic demo corpus, golden set, seed labels, guideline.md
-tests/               83 tests: state machine, LFs, κ math, policy-leak checks,
-                     export determinism, full API flows
-docs/                DESIGN.md (rationale & industry analysis), screenshots,
-                     make_screenshots.js, plans/ (development history)
+```text
+run.py               server, synthetic demo, translation/speech import CLI
+app/                 Anota API, SQLite migrations, leases, policy, audit and exports
+  db.py              13 application tables; one connection + RLock, no ORM
+  speech.py          registered audio, speech import and immutable transcript revisions
+  speech_queue.py    ML/QC/original review order and safe whole-queue fallback
+  judge.py           deterministic mock + OpenAI-compatible translation judge
+  evaluation.py      judge experiment reporting and provenance
+  comparison.py      paired-rubric experiment support
+  severity_study.py  unified-severity experiment support
+speechprep/          optional offline ASR, manifests, state and resumable cache
+speechqc/            independent audio analysis, report schema and QC priority
+speechrank/          frozen features/models and optional verified ML inference
+static/              index.html + app.js + review.js + dash.js + speech.js + style.css
+data/                synthetic demo, golden labels and versioned guidelines
+scripts/             launchers, preparation, verification, experiment and packaging tools
+evals/               protocols, profiles, six frozen runs and integration reviews
+tests/               annotation, judge, speech/QC/ML and release regression checks
+docs/                design, Windows/runtime guides, project map and screenshots
+requirements*.txt    core and separate optional dependency environments
 ```
 
 </details>
@@ -530,9 +778,19 @@ docs/                DESIGN.md (rationale & industry analysis), screenshots,
 <br>
 
 ```bash
-.venv/bin/python -m pytest -q        # 83 tests, sub-second
-node --check static/app.js static/review.js static/dash.js   # no build step; syntax-check JS
+.venv/bin/python -m pytest -q        # offline; no model or GPU required
+# node --check checks one entry point; run it once for each frontend file
+node --check static/app.js
+node --check static/review.js
+node --check static/dash.js
+node --check static/speech.js
 ```
+
+Use `./.venv/Scripts/python.exe -m pytest -q` in PowerShell. Core tests are offline;
+optional ASR/QC/ML tests may skip without their extra dependencies. A full-suite
+pass alone does not prove real-model inference or container behavior. See
+[verification commands](docs/local-windows.md#verification) and the
+[runtime matrix](docs/runtime-matrix.md) for the tested scope.
 
 **Add an error type**: extend `ERROR_TYPES` in `app/models.py`, add a letter key in
 `static/app.js` (`ERRORS`), describe it in `data/guideline.md`. Rules apply automatically.
@@ -567,11 +825,12 @@ test fails if a clean-batch claim response ever contains suggestion fields.
 
 Stated, not hidden:
 
-- **SQLite + a single process lock:** comfortable to ~10 concurrent annotators and
-  low-hundreds-of-thousands of records; some dashboard queries are N+1 (fine at this scale).
+- **SQLite + a single process lock:** one application process; production concurrency
+  and dataset capacity have not been established. Some dashboard queries are N+1.
 - **Identity is self-reported** (`annotator id` box); put SSO in front of it via a reverse
   proxy for anything real. Reviewer identity is a fixed `lead` pending RBAC.
-- **Text-only today** (audio rendition playback is the top roadmap item).
+- **Audio QC is advisory:** signal thresholds and VAD/ASR timing disagreements need
+  human review. Semantic transcription errors and reviewer time savings are not validated.
 - 5-second dashboard polling, not SSE.
 - US-QWERTY assumption for `⇧1–5` fluency keys.
 
@@ -580,9 +839,18 @@ Stated, not hidden:
 **Near term** — reverse-proxy SSO identity · `pipx` packaging · HF `datasets` export ·
 ESA-style span marking · guideline-version drafting from case notes.
 
-**Mid term** — **audio rendition playback** · honeypot rotation & calibration batches · IAA
+**Mid term** — audio QC calibration and multi-ASR disagreement review · honeypot rotation & calibration batches · IAA
 drill-down · continuous uncertainty routing · xCOMET as a second automated signal.
 
 **Long term** — Postgres + SSE · multi-project workspaces · LF plugin registry.
 
 Full reasoning behind each item: [docs/DESIGN.md §6](docs/DESIGN.md).
+
+## License and reused sources
+
+Anota's project license is [MIT](LICENSE). Selected speech utilities were reused
+from a user-provided source; [the provenance record](speechprep/vendor/SOURCES.json)
+records original paths, hashes and adaptations. An original license file was not
+found for that source, and this record does not assert a third-party license.
+Dataset and model terms remain separate; consult the corresponding data cards
+and model provenance before redistribution.
