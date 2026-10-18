@@ -2,6 +2,8 @@
 
 # Anota&nbsp;Workbench
 
+**English** | [简体中文](README.zh-CN.md)
+
 **Annotation *interfaces* are a commodity. Annotation *operations* are not.**
 
 Anota is a keyboard-first, self-hosted workbench for **translation quality assessment
@@ -20,7 +22,7 @@ and related GitHub repositories.
 ![Python 3.12 verified](https://img.shields.io/badge/Python-3.12%20verified-3776AB?style=flat-square&logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688?style=flat-square&logo=fastapi&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-stdlib%20%C2%B7%20no%20ORM-003B57?style=flat-square&logo=sqlite&logoColor=white)
-[CPU test workflow](.github/workflows/tests.yml)
+[![CPU tests](https://github.com/HenryVarro666/anota/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/HenryVarro666/anota/actions/workflows/tests.yml)
 ![No build step](https://img.shields.io/badge/frontend-no%20build%20step-ff69b4?style=flat-square)
 ![Footprint](https://img.shields.io/badge/footprint-1%20process%20%C2%B7%203%20deps-1f6feb?style=flat-square)
 ![LLM judge](https://img.shields.io/badge/LLM%20judge-mock%20or%20OpenAI--compatible-6f42c1?style=flat-square)
@@ -70,8 +72,18 @@ Python executable.
 > Bundled fixtures contain **no real patient records**; scale limits are documented
 > ([§Limitations](#limitations)).
 
-For a separate local judge server, use
-`python scripts/run_local.py --judge-profile evals/profiles/local-lmstudio.json`.
+For a separate local judge server, use one of these commands:
+
+```powershell
+# Windows PowerShell
+.\.venv\Scripts\python.exe scripts/run_local.py --judge-profile evals/profiles/local-lmstudio.json
+```
+
+```bash
+# Linux / macOS
+.venv/bin/python scripts/run_local.py --judge-profile evals/profiles/local-lmstudio.json
+```
+
 Demo verdicts remain labeled mock until a real judge run replaces their latest
 view. See the [Windows guide](docs/local-windows.md) for model discovery and the
 [project map](docs/project-map.md) for datasets and ASR benchmarks.
@@ -91,9 +103,12 @@ review uses registered audio; optional ML ordering falls back to QC when its
 dependencies or bundle are absent. See [portable model deployment](docs/audio-ml-review-queue.md#portable-deployment)
 for a separate inference image and external bundle.
 
-Any args after the image name are passed to `run.py`. The configured Docker CI
-checks must pass on GitHub before treating this image as a validated release;
-Docker has not been executed on the local Windows machine.
+Any args after the image name are passed to `run.py`. This PR's
+[GitHub Actions checks](https://github.com/HenryVarro666/anota/pull/1/checks)
+passed the actual CPU image build, speech review lifecycle and both missing-bundle
+and missing-ML-dependency QC fallback paths. The image was tested in CI;
+Docker has not been executed on the local Windows machine. These checks do not
+establish real ASR inference, an ML-enabled image or an AWS deployment.
 
 ---
 
@@ -376,7 +391,7 @@ statistics rather than silently coerced.
 - **Error types (9):** `no_error, mistranslation, omission, addition, terminology, number_unit,
   negation_polarity, grammar, punctuation` — an MQM-derived set, with the three medical-critical
   categories (dosage numbers, negation, terminology) promoted to first-class labels.
-- **Severity:** `neutral / minor / major / critical` (weights 0/1/5/25, per MQM convention).
+- **Severity:** `neutral / minor / major / critical` (project weights 0/1/5/25).
 - **Ratings:** adequacy and fluency, 1–5.
 - **Rules enforced server-side** (and mirrored client-side so annotators never round-trip to
   learn them): `no_error` is exclusive and forces severity neutral; a real error can never be
@@ -610,6 +625,8 @@ The [LibriSpeech ranking study](evals/runs/2026-10-17-librispeech-qc-ranking-v1/
 
 ## Reference
 
+<a id="importing-your-own-data"></a>
+
 <details>
 <summary><b>Importing your own data</b></summary>
 
@@ -644,6 +661,8 @@ duplicated. `--suggestions` marks the imported batch as a routing batch (hints v
 
 </details>
 
+<a id="configuration"></a>
+
 <details>
 <summary><b>Configuration</b> — CLI flags &amp; the LLM judge</summary>
 
@@ -655,6 +674,8 @@ duplicated. `--suggestions` marks the imported batch as a routing batch (hints v
 |---|---|---|
 | `--demo` | off | fresh temp DB + synthetic data |
 | `--db PATH` | `anota.db` | SQLite file |
+| `--export-dir PATH` | application `exports/` directory | versioned snapshot destination |
+| `--speech-manifest PATH` | unset | import persisted `speech-v1` ASR/QC results; registered audio must be accessible |
 | `--port` / `--host` | `8420` / `127.0.0.1` | bind address (`0.0.0.0` in containers) |
 | `--import-file / --profile / --lang / --batch / --golden / --suggestions / --overlap` | — | see Importing |
 
@@ -673,14 +694,17 @@ duplicated. `--suggestions` marks the imported batch as a routing batch (hints v
 | `ANOTA_JUDGE_JSON_SCHEMA` | `0` | `1` requests strict JSON schema from a compatible server; validation always runs |
 | `ANOTA_JUDGE_PROMPT_SUFFIX` | empty | model-specific user-prompt suffix; measured Qwen profile uses a short rationale and `/no_think` |
 
-**Judge providers.** The judge is provider-agnostic *by protocol* — it talks to any endpoint
-that speaks the OpenAI Chat Completions API, so switching models is two env vars, no code change:
+**Judge endpoint contract.** Set the endpoint, exact model ID and any required
+credentials. The endpoint/model must accept Chat Completions requests with
+`temperature`, `max_tokens` and, when enabled, the configured JSON schema.
+Protocol compatibility does not establish compatibility with every provider/model;
+test model discovery and actual generation with your selected endpoint.
 
 | Provider | `ANOTA_JUDGE_BASE_URL` | `ANOTA_JUDGE_MODEL` (example) |
 |---|---|---|
-| Self-hosted vLLM / llama.cpp / Ollama | `http://localhost:8000/v1` | auto-detect (single model) |
-| **OpenAI GPT** | `https://api.openai.com/v1` | `gpt-4o` |
-| **Google Gemini** | `https://generativelanguage.googleapis.com/v1beta/openai` | `gemini-2.0-flash` |
+| Self-hosted compatible server | `http://localhost:8000/v1` (server-dependent) | auto-detect (single model), or exact server ID |
+| **OpenAI-compatible chat model** | `https://api.openai.com/v1` | `YOUR_CHAT_MODEL_ID` |
+| **Gemini compatibility endpoint** | `https://generativelanguage.googleapis.com/v1beta/openai` | `YOUR_GEMINI_MODEL_ID` |
 
 ```bash
 # Self-hosted (default) — content never leaves your machine
@@ -688,19 +712,21 @@ ANOTA_JUDGE=openai ANOTA_JUDGE_BASE_URL=http://localhost:8000/v1 .venv/bin/pytho
 
 # OpenAI GPT
 ANOTA_JUDGE=openai ANOTA_JUDGE_BASE_URL=https://api.openai.com/v1 \
-  ANOTA_JUDGE_API_KEY=sk-... ANOTA_JUDGE_MODEL=gpt-4o .venv/bin/python run.py --demo
+  ANOTA_JUDGE_API_KEY="$OPENAI_API_KEY" ANOTA_JUDGE_MODEL=YOUR_CHAT_MODEL_ID .venv/bin/python run.py --demo
 
 # Google Gemini (via its OpenAI-compatible endpoint)
 ANOTA_JUDGE=openai ANOTA_JUDGE_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai \
-  ANOTA_JUDGE_API_KEY=$GEMINI_API_KEY ANOTA_JUDGE_MODEL=gemini-2.0-flash .venv/bin/python run.py --demo
+  ANOTA_JUDGE_API_KEY="$GEMINI_API_KEY" ANOTA_JUDGE_MODEL=YOUR_GEMINI_MODEL_ID .venv/bin/python run.py --demo
 ```
 
-> **Any other provider** (native Gemini/Claude, Bedrock, Azure OpenAI, Together, Groq…): drop a
-> [LiteLLM](https://github.com/BerriAI/litellm) proxy in front — it exposes a unified
-> OpenAI-compatible `/v1` for 100+ models — and point `ANOTA_JUDGE_BASE_URL` at it. (Note: some
-> reasoning models such as o1/o3 reject the `temperature` parameter.)
+Other providers require a gateway implementing that same request contract and
+their own validation. The bundled judge does not automatically translate
+provider-specific parameters. These examples use POSIX shell syntax; use the
+[Windows guide](docs/local-windows.md) for PowerShell and local server profiles.
 
 </details>
+
+<a id="http-api"></a>
 
 <details>
 <summary><b>HTTP API</b> — all JSON under <code>/api</code>; the frontend is just a client</summary>
@@ -711,12 +737,15 @@ ANOTA_JUDGE=openai ANOTA_JUDGE_BASE_URL=https://generativelanguage.googleapis.co
 |---|---|---|
 | `/claim` | POST | `{annotator, batch_id?}` → next task + progress; suggestion fields present **only** for routing batches |
 | `/submit` | POST | annotation payload; `422` invalid, `404` foreign assignment, `409` not open |
+| `/speech/review/queue` | GET | `{annotator, batch_id?, sort?, limit?}` query; speech queue with ML/QC/FIFO order, subject to batch policy |
+| `/speech/submit` | POST | append a transcript revision with optional uncertain spans and review context |
+| `/audio/{audio_id}` | GET | registered, hash-checked audio; supports byte-range playback |
 | `/skip`, `/undo` | POST | skip with reason; reopen last submitted |
 | `/batches` | GET | batches incl. `n_tasks`, policy, overlap |
 | `/review/queue` | GET | unreviewed latest annotations, disagreement-ranked, with judge + lint context |
 | `/review/{annotation_id}` | POST | `{verdict: approved\|overturned, case_note, replacement?}` |
 | `/stats/overview` · `/stats/matrix` · `/stats/annotators` · `/stats/agreement` | GET | dashboard aggregates (pairwise κ, judge×human κ, judge-vs-golden calibration, golden accuracy, error×arm matrix with `sources` disclosure) |
-| `/judge/run` | POST | `{batch_id, background?}` → judge every task under a shared worker budget; sync returns `{n}`, background returns immediately (`503` failed, `409` already running) |
+| `/judge/run` | POST | `{batch_id, background?}` → judge translation tasks under a shared worker budget; sync returns `{n}`, background returns immediately (`503` failed, `409` already running or no translation tasks) |
 | `/judge/status` | GET | per-batch judge-run progress `{done, total, running, error}` |
 | `/probe/build` | POST | `{source_batch_id?, per_type?}` → synthetic hard-negative batch with golden truth auto-registered |
 | `/routing/build` | POST | `{top_n, signal: judge_confidence\|lf_conflict}` → new routing batch |
@@ -724,6 +753,8 @@ ANOTA_JUDGE=openai ANOTA_JUDGE_BASE_URL=https://generativelanguage.googleapis.co
 | `/guideline`, `/health` | GET | rubric text; server + judge status |
 
 </details>
+
+<a id="exports"></a>
 
 <details>
 <summary><b>Exports</b> — content-hashed, versioned, citable</summary>
@@ -742,6 +773,8 @@ ANOTA_JUDGE=openai ANOTA_JUDGE_BASE_URL=https://generativelanguage.googleapis.co
 `app/export.py` also provides `export_golden_jsonl()` for round-tripping golden sets.
 
 </details>
+
+<a id="project-layout"></a>
 
 <details>
 <summary><b>Project layout</b></summary>
@@ -771,6 +804,8 @@ requirements*.txt    core and separate optional dependency environments
 ```
 
 </details>
+
+<a id="development"></a>
 
 <details>
 <summary><b>Development</b></summary>
@@ -813,6 +848,15 @@ in `PERTURBATIONS` with its truth label — probe batches pick it up automatical
 npm i puppeteer-core && node docs/make_screenshots.js
 ```
 
+The screenshot script defaults to the macOS Chrome path. On Windows or Linux,
+set `CHROME_BIN` to the browser executable before running it. For example:
+
+```powershell
+$env:CHROME_BIN = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
+npm install puppeteer-core
+node docs/make_screenshots.js
+```
+
 Conventions: server-side validation is the source of truth (client mirrors it for UX);
 annotations/audit are never UPDATEd; anything annotator-facing must respect batch policy — a
 test fails if a clean-batch claim response ever contains suggestion fields.
@@ -833,6 +877,7 @@ Stated, not hidden:
   human review. Semantic transcription errors and reviewer time savings are not validated.
 - 5-second dashboard polling, not SSE.
 - US-QWERTY assumption for `⇧1–5` fluency keys.
+- README documentation has English and Simplified Chinese versions; application UI copy is currently English.
 
 ## Roadmap
 
