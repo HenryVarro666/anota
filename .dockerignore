@@ -1,9 +1,26 @@
-.git
-.venv
-__pycache__
-*.pyc
-*.db
-exports/
-.pytest_cache
-docs/
-tests/
+# Ship only the CPU application and its source dependencies. In particular,
+# runtime/, evals/, models/, caches, .env files and developer tools stay local.
+**
+!requirements.txt
+!requirements-speechrank-runtime.txt
+!constraints-runtime.txt
+!run.py
+!app/
+!app/**
+!speechqc/
+!speechqc/**
+!speechrank/
+!speechrank/**
+!speechprep/
+!speechprep/**
+!static/
+!static/**
+!data/
+!data/guideline.md
+!data/guidelines/
+!data/guidelines/**
+!data/demo_*.jsonl
+**/__pycache__/
+**/*.py[cod]
+**/.env
+**/.env.*
