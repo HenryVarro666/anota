@@ -1,0 +1,8 @@
+{
+  "completed_resume_exit_code": 0,
+  "raw_unchanged": true,
+  "attempts": 118,
+  "changed_identity_exit_code": 2,
+  "rejected_message": "resume identity changed; use a new run",
+  "scope": "Executed against an ignored copy; published run untouched."
+}

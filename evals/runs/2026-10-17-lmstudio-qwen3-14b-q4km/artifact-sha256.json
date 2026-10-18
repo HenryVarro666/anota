@@ -1,0 +1,14 @@
+{
+  "evals/runs/2026-10-17-lmstudio-qwen3-14b-q4km/manifest.json": "94b142bb85d1667cce44193499f82594b632535cbd89aa79dee1f01ef169f87a",
+  "evals/runs/2026-10-17-lmstudio-qwen3-14b-q4km/attempts.jsonl": "32d9072ca61dcbf40c8967764f615385800a6f580eb4c983646b533a3ded2a02",
+  "evals/runs/2026-10-17-lmstudio-qwen3-14b-q4km/summary.json": "6ff4d5dacaa73aa52944215a88c81ac533ffbbfbfbc9063e4a2ce5cc3d714a00",
+  "evals/runs/2026-10-17-lmstudio-qwen3-14b-q4km/report.md": "7737b9a0b0d25be3537af59d57cc8797e901a90666cd73b6ef9559da0a5036df",
+  "evals/runs/2026-10-17-lmstudio-qwen3-14b-q4km/validation.json": "f99ade7c60744cebc9349f8d43c8a1ee93f70e8de3670a4dde145e1c64e46b58",
+  "evals/runs/2026-10-17-lmstudio-qwen3-14b-q4km/source-snapshot/app/judge.py": "02aedbf725f7380a738fe4d65d8084599251ea5e87a2e5917ac2c6a29dc4e059",
+  "evals/runs/2026-10-17-lmstudio-qwen3-14b-q4km/source-snapshot/app/evaluation.py": "9f97d1850e5b49dd564b865c0c18e1e58f92d6036c34b8264444567980228262",
+  "evals/runs/2026-10-17-lmstudio-qwen3-14b-q4km/source-snapshot/scripts/evaluate_judge.py": "a5ca25c3eebc61476540f3a032c275127188bd23bc9d313f53b39f2143dd5f4e",
+  "evals/runs/2026-10-17-lmstudio-qwen3-14b-q4km/source-snapshot/data/guideline.md": "043e9209236ef90d10968ca2048a8eb65c0b8b075c74bb43e850b70f47c8c0fb",
+  "evals/data/translation_probe_v1.jsonl": "8500c93c2b39ae68cc3389b2f06a8b5936b6add9822ceeef4679d10c75147d93",
+  "docs/figures/local-qwen-evaluation.png": "ca86819c2aaa01b9126c4a58f1500b48e818a9626c7d85773943288130ac2579",
+  "docs/figures/local-qwen-evaluation.svg": "c122632498df79ce41cd229971916e44105a440a0d861bc7da329bf83b53374a"
+}

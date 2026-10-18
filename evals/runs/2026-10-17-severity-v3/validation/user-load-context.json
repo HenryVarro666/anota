@@ -1,0 +1,16 @@
+{
+  "recorded_at_utc": "2026-10-17T06:49:11.354696+00:00",
+  "source": "Direct user reply during this evaluation",
+  "question_context": "Later requests increased from roughly 10-20 seconds to 45-60 seconds; asked whether other computation was running concurrently.",
+  "user_reply_original": "有，正在同时运行",
+  "concurrent_computation_confirmed": true,
+  "workload_type": "Not specified",
+  "workload_start_end": "Not recorded",
+  "scope": "Post-observation context; does not establish idle conditions in the first pass or causally attribute any individual request. All attempts and predeclared gates retained. Timing is confounded for isolated policy/hardware performance claims.",
+  "own_validation_workload": {
+    "kind": "Windows CPU pytest suite, no model inference replay",
+    "started_at_utc": "2026-10-17T06:53:40.383494+00:00",
+    "finished_at_utc": "2026-10-17T06:54:38.268175+00:00",
+    "scope": "An additional documented local workload near the end of the primary comparison; no claim of an otherwise idle host."
+  }
+}

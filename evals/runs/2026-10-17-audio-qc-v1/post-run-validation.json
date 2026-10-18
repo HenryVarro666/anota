@@ -1,0 +1,34 @@
+{
+  "recorded_at_utc": "2026-10-17T06:37:51.907426+00:00",
+  "measurement_snapshot_preserved": true,
+  "changes_after_measurement": [
+    "Nonfunctional Ruff import formatting and documented intentional exception boundaries.",
+    "Evaluator datetime.UTC replaced by equivalent timezone.utc for Python 3.10 API compatibility.",
+    "Live design documentation updated with measured results and final release demo paths."
+  ],
+  "detector_algorithm_or_threshold_changed": false,
+  "validation": [
+    {
+      "command": ".venv/Scripts/python.exe -m pytest tests/test_audio_qc_experiment.py -q",
+      "exit_code": 0,
+      "result": "10 passed (Python 3.12.10)"
+    },
+    {
+      "command": ".venv/Scripts/python.exe -m ruff check scripts/evaluate_audio_qc.py tests/test_audio_qc_experiment.py",
+      "exit_code": 0,
+      "result": "All checks passed"
+    }
+  ],
+  "python_310_runtime_tested": false,
+  "working_source_sha256": {
+    "scripts/evaluate_audio_qc.py": "c46f55365be347c4bc1f05a9eb8af532719b9ddde9b89d1a3e453d9940187bae",
+    "tests/test_audio_qc_experiment.py": "364dadcb2a14256a2893a16c786deee7111595bb767dd4fb011cbc913e5c5832",
+    "docs/audio-qc-v1.md": "87bfcb61e07f77337fca526e2341d43f270b212ea3ab62a2f9098cf46f5ffa9f",
+    "speechqc/__init__.py": "10ef77484f56e8633bf1333b76838819e0d55184dbf755832b2bff7170b5118f",
+    "speechqc/__main__.py": "1267df0244fcb60692ef417c87437b97b84ab1a2dd6444f99519cab336392a4a",
+    "speechqc/analysis.py": "9d1d7ce0fd08459222e38f13246e7e06a75e5e30ddffeef7bb58fe2b19c1c41f",
+    "speechqc/cache.py": "48da0db7ea1688eb5eabdf8415c7fabd186faf2cd8872be9430599fdaea24216",
+    "speechqc/schema.py": "5f13b7bd85d4e9432bc40dbc0ad8900cc972973ed9ce358fd3cbb84656972ddc",
+    "speechqc/vad.py": "cb87b2196f2d113d8fb9812c4285d34193a149a5ef9d749ba15d6230315a9604"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "changed_live_paths": [
+    "app/models.py"
+  ],
+  "frozen_snapshots_intact": true,
+  "judge_constants_and_annotation_schema_ast_unchanged": true,
+  "scope": "Live app/models.py gained separate speech-review fields while inference was running. Preserve those edits. Running Python modules were already imported; all actual request payloads are checked against the frozen protocol.",
+  "live_sha256": {
+    "app/models.py": "eec56d4bb1b886a1121f6354db24322f931219ad2880a67d5959cdbe5b6ba8ef"
+  }
+}

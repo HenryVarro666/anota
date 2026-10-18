@@ -1,0 +1,30 @@
+{
+  "started_at_utc": "2026-10-17T06:53:40.383494+00:00",
+  "finished_at_utc": "2026-10-17T06:54:38.268175+00:00",
+  "returncode": 0,
+  "counts": {
+    "tests": 230,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "app_hashes_at_start": {
+    "app\\__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "app\\comparison.py": "4b3aa07368749d6d57da6706edb0fe3541178b5295fd90944ef28d5bdb87697a",
+    "app\\db.py": "2b58e593b7a76a8bc3c87adf9996c51609bdd7e2bb55d93c10c16b3df6d6b001",
+    "app\\evaluation.py": "9f97d1850e5b49dd564b865c0c18e1e58f92d6036c34b8264444567980228262",
+    "app\\export.py": "2251395a13b3f69f582526b2a31d86b83fe57a76619acd44455ceef858205114",
+    "app\\importer.py": "8c315a18f2ebcd267974180dc8f2814f0b193890f657e5d9654a64d8766623b5",
+    "app\\judge.py": "02aedbf725f7380a738fe4d65d8084599251ea5e87a2e5917ac2c6a29dc4e059",
+    "app\\lf.py": "7773c1050ed888b04f5c78e632555e3188fac8e29279f8aa2a09b7e687cb6225",
+    "app\\main.py": "f73377adcadaddda3d002fef9e08a76267d032358b0da23964375177becdd181",
+    "app\\models.py": "eec56d4bb1b886a1121f6354db24322f931219ad2880a67d5959cdbe5b6ba8ef",
+    "app\\perturb.py": "3adf7bacd7b9471d6e6e32d0fe17dfcb145570572bb64277e7bcfa46d783b5aa",
+    "app\\quality.py": "05c19189e5aff39700302daf1f916bed9c9b9e2ac38e21045dcb54111c3cc591",
+    "app\\severity_study.py": "fe6c486af402d634e2e04c7c8ff99c068c2b50a784714fa737233eb6e3dc07f9",
+    "app\\speech.py": "2e49599d406b37e6f197634313647fa29ae38ecb70fc4fbb341bbbd1c45511e2",
+    "app\\tasks.py": "3d206213e9b7bbdd0473770d1efd1238c0dec790d2e107e32533981f18e70233"
+  },
+  "app_changed_during_tests": [],
+  "scope": "Windows current shared workspace, including speech updates. Separate from the 173 pre-inference tests of the frozen evaluation checkout. No inference replay and no GPU performance claim."
+}

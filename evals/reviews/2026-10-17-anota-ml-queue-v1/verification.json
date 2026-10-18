@@ -1,0 +1,1755 @@
+{
+  "status": "passed",
+  "inputs": [
+    {
+      "arm": "confidence",
+      "asr": "runtime/librispeech-dev-ml-v2-r1/asr.jsonl",
+      "qc": "evals/runs/2026-10-17-librispeech-ml-ranking-v2/outputs/dev-qc/qc-reports.jsonl.gz",
+      "count": 10,
+      "asr_sha256": "6a8ad852c2f6aa3344e5903216da722e8d5031896f439848e63367b298753021",
+      "qc_sha256": "cfa1e24300a4738e2f82c776a23be50d611f2e94b5e7fefbfeef646e7b23f7d0",
+      "item_ids": [
+        "librispeech:dev-clean:1272:128104:1272-128104-0001",
+        "librispeech:dev-clean:1272:128104:1272-128104-0003",
+        "librispeech:dev-clean:1272:128104:1272-128104-0010",
+        "librispeech:dev-clean:1272:128104:1272-128104-0011",
+        "librispeech:dev-clean:1272:128104:1272-128104-0012",
+        "librispeech:dev-clean:1272:128104:1272-128104-0013",
+        "librispeech:dev-clean:1272:128104:1272-128104-0014",
+        "librispeech:dev-clean:1272:135031:1272-135031-0000",
+        "librispeech:dev-clean:1272:135031:1272-135031-0001",
+        "librispeech:dev-clean:1272:135031:1272-135031-0008"
+      ]
+    },
+    {
+      "arm": "legacy",
+      "asr": "runtime/librispeech-base-2026-10-17/test-clean.completed.asr.jsonl",
+      "qc": "evals/runs/2026-10-17-librispeech-qc-ranking-v1/cohorts/full/qc-reports.jsonl.gz",
+      "count": 10,
+      "asr_sha256": "37b427af048a7e8da5fe0d978c3f72e38618341952e2eaab4f96fb93af4d5306",
+      "qc_sha256": "67b4be69c7095bc6d0e3515e18d845e0ca6e93f51e65065da3c7771c8f43594b",
+      "item_ids": [
+        "librispeech:test-clean:1089:134686:1089-134686-0000",
+        "librispeech:test-clean:1089:134686:1089-134686-0001",
+        "librispeech:test-clean:1089:134686:1089-134686-0002",
+        "librispeech:test-clean:1089:134686:1089-134686-0003",
+        "librispeech:test-clean:1089:134686:1089-134686-0004",
+        "librispeech:test-clean:1089:134686:1089-134686-0005",
+        "librispeech:test-clean:1089:134686:1089-134686-0006",
+        "librispeech:test-clean:1089:134686:1089-134686-0007",
+        "librispeech:test-clean:1089:134686:1089-134686-0008",
+        "librispeech:test-clean:1089:134686:1089-134686-0009"
+      ]
+    }
+  ],
+  "imported": 20,
+  "source_sha256": {
+    "app/main.py": "fd608ecdb890b0bfb5d2797266ed3e316f51bc02efc75f4a59ef3008a79d89b3",
+    "app/tasks.py": "558f3b77cae26fcebc5f72147d46d2a985607030f2bf260bbc67a79526a34721",
+    "app/speech.py": "8dbd1fd9ef1619de53ceb5adec571ed81aeadff464ffe768fd9ca6a0a2f17b7a",
+    "app/speech_queue.py": "6535e949c1f28408d9502651d1a5484d4273aa54b0c663eace28502bf4128580",
+    "speechrank/runtime.py": "e9c869c5cee358496909efb318a6596023ec7d280d8090639ca967605fa16803",
+    "speechrank/features.py": "22c2a0d25ed900f42ec417dbf091837e6621ab366be49d20a3f526ac25e86497",
+    "speechrank/models.py": "49a9903202559b191a66bfd85693979d3cc799230dc7053f3dbf551685a6b003",
+    "scripts/package_speechrank_models.py": "e654266c4b6677ce37139df4c75a235925c621d1f0a35e9e40cb426cf576c020",
+    "scripts/verify_speech_ml_queue.py": "a53296e2c0a2de1506b5309cc93cbbbb093c5cf8b4fba541609b27d76a61adcf",
+    "static/app.js": "b03ecc82669c7e824017aad6502828a59f6746de2d38bc3be9f4172165325f90",
+    "static/speech.js": "18917e8b7784476dea9e7425c5bfe6503417a68fe025759f45b7389856d70028",
+    "static/review.js": "608e1b5c17d89bb1076bea4c818806588026deb61e78d8d1d2c07ac83f42149e",
+    "static/index.html": "a3748a22b8a0a22552e3b531ea55393a5d2e5daf40d3283c3a5ed7d7f109eaf0",
+    "static/style.css": "abaf42e341b2710a63abcf2c3b9288051c2a8461e93ac5501d7f669e9a065042"
+  },
+  "new_asr_calls": 0,
+  "human_labels": 0,
+  "automated_lifecycle_submissions": 1,
+  "gold_read": false,
+  "provenance_confidence_qc": "exactly preserved",
+  "checks": [
+    "ML confidence and legacy arms",
+    "ML density descending",
+    "QC and FIFO sorting",
+    "claim agrees with queue",
+    "target lease conflict",
+    "submit undo export restart",
+    "raw confidence never exposed",
+    "clean ranking hidden",
+    "translation unchanged",
+    "missing bundle QC fallback",
+    "tampered bundle QC fallback"
+  ],
+  "queues": {
+    "ml": {
+      "items": [
+        {
+          "task_id": "speech-7e35cce745d802c96e10bb4aa056056d363d59f438d0ec0262b16146a848eb93",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0014",
+          "duration_s": 2.245,
+          "ranking": {
+            "method": "ml",
+            "arm": "confidence",
+            "density": 0.5393981131077128,
+            "model_id": "speechrank-confidence-5c8a4f7170dedee5",
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        },
+        {
+          "task_id": "speech-12e76d1672335a83365af0fb9332073c835c6c994a8f4426128aea4e210cf8e8",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0004",
+          "duration_s": 5.2150625,
+          "ranking": {
+            "method": "ml",
+            "arm": "legacy",
+            "density": 0.52995178672862,
+            "model_id": "speechrank-legacy-af35e81e35ea3689",
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        },
+        {
+          "task_id": "speech-6cb58f8ee43b88d687199a71ee0395f0c23427bd2278922c5e63f9e7ab491a3f",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-135031-0000",
+          "duration_s": 10.885,
+          "ranking": {
+            "method": "ml",
+            "arm": "confidence",
+            "density": 0.36395116868330574,
+            "model_id": "speechrank-confidence-5c8a4f7170dedee5",
+            "reason": null,
+            "qc_score": 0.14552135966926968,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        },
+        {
+          "task_id": "speech-fde0c0107867a64a9bd0b5c8003033ea08e9ea59e590684f2f8261e0fe7ade2c",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0003",
+          "duration_s": 2.68,
+          "ranking": {
+            "method": "ml",
+            "arm": "legacy",
+            "density": 0.28460462208011533,
+            "model_id": "speechrank-legacy-af35e81e35ea3689",
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        },
+        {
+          "task_id": "speech-f3c0ffdaf30f39a23d326b9cc8097a3e24de7e567a77ce8c5b5602c374c457d2",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0001",
+          "duration_s": 3.275,
+          "ranking": {
+            "method": "ml",
+            "arm": "legacy",
+            "density": 0.2807634419204284,
+            "model_id": "speechrank-legacy-af35e81e35ea3689",
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        },
+        {
+          "task_id": "speech-f3ba7ea4286a578360d48533c5e055dbab303de02bfc8d044e89123f6279ba26",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0003",
+          "duration_s": 9.9,
+          "ranking": {
+            "method": "ml",
+            "arm": "confidence",
+            "density": 0.2611790186992703,
+            "model_id": "speechrank-confidence-5c8a4f7170dedee5",
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        },
+        {
+          "task_id": "speech-7c8e25a34d129a9c47d00190f95705754d223d13a1596820cb713fda5405fa71",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-135031-0008",
+          "duration_s": 3.67,
+          "ranking": {
+            "method": "ml",
+            "arm": "confidence",
+            "density": 0.2422822485488589,
+            "model_id": "speechrank-confidence-5c8a4f7170dedee5",
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        },
+        {
+          "task_id": "speech-910dd6acb8f6c3765970c58b464798e35d30dbf4403e8184d506c0cf671ddbea",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0007",
+          "duration_s": 4.275,
+          "ranking": {
+            "method": "ml",
+            "arm": "legacy",
+            "density": 0.23872492774034185,
+            "model_id": "speechrank-legacy-af35e81e35ea3689",
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        },
+        {
+          "task_id": "speech-14a4c2687ae657a988f4d05fc3bf09aa6959c1b78ec0e42cf7a72c4744fd5741",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0005",
+          "duration_s": 9.635,
+          "ranking": {
+            "method": "ml",
+            "arm": "legacy",
+            "density": 0.21771766698016107,
+            "model_id": "speechrank-legacy-af35e81e35ea3689",
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        },
+        {
+          "task_id": "speech-eb16b4f4bbd4ecded1544d3ec266c58e60c59a07062ebf47ba8c499e4df497ad",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0010",
+          "duration_s": 5.6,
+          "ranking": {
+            "method": "ml",
+            "arm": "confidence",
+            "density": 0.19834400838686753,
+            "model_id": "speechrank-confidence-5c8a4f7170dedee5",
+            "reason": null,
+            "qc_score": 0.13571428571428573,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        },
+        {
+          "task_id": "speech-a6ad359f2b57d29a3c9f3fd364d613e3a522bfa1145a9d71c56157b36c25a880",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0001",
+          "duration_s": 4.815,
+          "ranking": {
+            "method": "ml",
+            "arm": "confidence",
+            "density": 0.17776162935463324,
+            "model_id": "speechrank-confidence-5c8a4f7170dedee5",
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        },
+        {
+          "task_id": "speech-4493d7f402c767e000b8d7b17c7f4f4e7b3324c8ff32954327d07011115b8977",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-135031-0001",
+          "duration_s": 11.13,
+          "ranking": {
+            "method": "ml",
+            "arm": "confidence",
+            "density": 0.17470676738101593,
+            "model_id": "speechrank-confidence-5c8a4f7170dedee5",
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        },
+        {
+          "task_id": "speech-f18da81dcb82a8ad5caf3cab25ff92ae9e6e8f16f3f1f036e71a93fec5c39faa",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0009",
+          "duration_s": 10.575,
+          "ranking": {
+            "method": "ml",
+            "arm": "legacy",
+            "density": 0.17160464090947194,
+            "model_id": "speechrank-legacy-af35e81e35ea3689",
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        },
+        {
+          "task_id": "speech-64b44490e020b5dd606775f147c86c78c61e04cb163bb9d18136a025208b4ffe",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0008",
+          "duration_s": 6.73,
+          "ranking": {
+            "method": "ml",
+            "arm": "legacy",
+            "density": 0.1709587214080413,
+            "model_id": "speechrank-legacy-af35e81e35ea3689",
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        },
+        {
+          "task_id": "speech-efead589d359887771f2383fc2d132d77f35aa5f21ae41cb2ed6194193419809",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0002",
+          "duration_s": 6.625,
+          "ranking": {
+            "method": "ml",
+            "arm": "legacy",
+            "density": 0.16134941440579034,
+            "model_id": "speechrank-legacy-af35e81e35ea3689",
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        },
+        {
+          "task_id": "speech-c89f3e5784d696d1ced2eba986612289619370c9ea6e0b0c283f6d65563153bf",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0000",
+          "duration_s": 10.435,
+          "ranking": {
+            "method": "ml",
+            "arm": "legacy",
+            "density": 0.16128637821589817,
+            "model_id": "speechrank-legacy-af35e81e35ea3689",
+            "reason": null,
+            "qc_score": 0.07762338284619091,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        },
+        {
+          "task_id": "speech-ace5016f72ec58dcb486d17e6a4e7e751fcbcbe205ec1d60b651f46a13c7186a",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0006",
+          "duration_s": 10.555,
+          "ranking": {
+            "method": "ml",
+            "arm": "legacy",
+            "density": 0.14986277063188522,
+            "model_id": "speechrank-legacy-af35e81e35ea3689",
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        },
+        {
+          "task_id": "speech-f34584ceac3ecc85d56c5114229e4c591a050b23358be48eeb27d279aac83b68",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0011",
+          "duration_s": 15.115,
+          "ranking": {
+            "method": "ml",
+            "arm": "confidence",
+            "density": 0.1330383049570473,
+            "model_id": "speechrank-confidence-5c8a4f7170dedee5",
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        },
+        {
+          "task_id": "speech-fc9190e26c7ae190b9846c317121c39b33ab9540d71acc7e3549e358ab79ba0a",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0013",
+          "duration_s": 7.1,
+          "ranking": {
+            "method": "ml",
+            "arm": "confidence",
+            "density": 0.11745576024810267,
+            "model_id": "speechrank-confidence-5c8a4f7170dedee5",
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        },
+        {
+          "task_id": "speech-e319461c7fd2ee2c96ff6f18a9efbdc5835cb0e857291034e4c61ee2bcbecaa4",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0012",
+          "duration_s": 5.38,
+          "ranking": {
+            "method": "ml",
+            "arm": "confidence",
+            "density": 0.0991362783770653,
+            "model_id": "speechrank-confidence-5c8a4f7170dedee5",
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0,
+            "bundle_fingerprint": "2d3519f358a4d36a38ce2e939c9ea07942ce823f35f75cda5f117e460d6c9cf7",
+            "feature_schema": "speechrank-features-v1"
+          }
+        }
+      ],
+      "total": 20,
+      "sort": "ml",
+      "counts": {
+        "ml_confidence": 10,
+        "ml_legacy": 10,
+        "qc": 0,
+        "fifo": 0,
+        "blind": 0
+      }
+    },
+    "qc": {
+      "items": [
+        {
+          "task_id": "speech-6cb58f8ee43b88d687199a71ee0395f0c23427bd2278922c5e63f9e7ab491a3f",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-135031-0000",
+          "duration_s": 10.885,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.14552135966926968,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-eb16b4f4bbd4ecded1544d3ec266c58e60c59a07062ebf47ba8c499e4df497ad",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0010",
+          "duration_s": 5.6,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.13571428571428573,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-c89f3e5784d696d1ced2eba986612289619370c9ea6e0b0c283f6d65563153bf",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0000",
+          "duration_s": 10.435,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.07762338284619091,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-a6ad359f2b57d29a3c9f3fd364d613e3a522bfa1145a9d71c56157b36c25a880",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0001",
+          "duration_s": 4.815,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-f3c0ffdaf30f39a23d326b9cc8097a3e24de7e567a77ce8c5b5602c374c457d2",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0001",
+          "duration_s": 3.275,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-fde0c0107867a64a9bd0b5c8003033ea08e9ea59e590684f2f8261e0fe7ade2c",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0003",
+          "duration_s": 2.68,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-7c8e25a34d129a9c47d00190f95705754d223d13a1596820cb713fda5405fa71",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-135031-0008",
+          "duration_s": 3.67,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-12e76d1672335a83365af0fb9332073c835c6c994a8f4426128aea4e210cf8e8",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0004",
+          "duration_s": 5.2150625,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-e319461c7fd2ee2c96ff6f18a9efbdc5835cb0e857291034e4c61ee2bcbecaa4",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0012",
+          "duration_s": 5.38,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-14a4c2687ae657a988f4d05fc3bf09aa6959c1b78ec0e42cf7a72c4744fd5741",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0005",
+          "duration_s": 9.635,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-f3ba7ea4286a578360d48533c5e055dbab303de02bfc8d044e89123f6279ba26",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0003",
+          "duration_s": 9.9,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-7e35cce745d802c96e10bb4aa056056d363d59f438d0ec0262b16146a848eb93",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0014",
+          "duration_s": 2.245,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-fc9190e26c7ae190b9846c317121c39b33ab9540d71acc7e3549e358ab79ba0a",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0013",
+          "duration_s": 7.1,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-efead589d359887771f2383fc2d132d77f35aa5f21ae41cb2ed6194193419809",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0002",
+          "duration_s": 6.625,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-910dd6acb8f6c3765970c58b464798e35d30dbf4403e8184d506c0cf671ddbea",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0007",
+          "duration_s": 4.275,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-f18da81dcb82a8ad5caf3cab25ff92ae9e6e8f16f3f1f036e71a93fec5c39faa",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0009",
+          "duration_s": 10.575,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-f34584ceac3ecc85d56c5114229e4c591a050b23358be48eeb27d279aac83b68",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0011",
+          "duration_s": 15.115,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-ace5016f72ec58dcb486d17e6a4e7e751fcbcbe205ec1d60b651f46a13c7186a",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0006",
+          "duration_s": 10.555,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-4493d7f402c767e000b8d7b17c7f4f4e7b3324c8ff32954327d07011115b8977",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-135031-0001",
+          "duration_s": 11.13,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-64b44490e020b5dd606775f147c86c78c61e04cb163bb9d18136a025208b4ffe",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0008",
+          "duration_s": 6.73,
+          "ranking": {
+            "method": "qc",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        }
+      ],
+      "total": 20,
+      "sort": "qc",
+      "counts": {
+        "ml_confidence": 0,
+        "ml_legacy": 0,
+        "qc": 20,
+        "fifo": 0,
+        "blind": 0
+      }
+    },
+    "fifo": {
+      "items": [
+        {
+          "task_id": "speech-a6ad359f2b57d29a3c9f3fd364d613e3a522bfa1145a9d71c56157b36c25a880",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0001",
+          "duration_s": 4.815,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-f3ba7ea4286a578360d48533c5e055dbab303de02bfc8d044e89123f6279ba26",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0003",
+          "duration_s": 9.9,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-eb16b4f4bbd4ecded1544d3ec266c58e60c59a07062ebf47ba8c499e4df497ad",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0010",
+          "duration_s": 5.6,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.13571428571428573,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-f34584ceac3ecc85d56c5114229e4c591a050b23358be48eeb27d279aac83b68",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0011",
+          "duration_s": 15.115,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-e319461c7fd2ee2c96ff6f18a9efbdc5835cb0e857291034e4c61ee2bcbecaa4",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0012",
+          "duration_s": 5.38,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-fc9190e26c7ae190b9846c317121c39b33ab9540d71acc7e3549e358ab79ba0a",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0013",
+          "duration_s": 7.1,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-7e35cce745d802c96e10bb4aa056056d363d59f438d0ec0262b16146a848eb93",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-128104-0014",
+          "duration_s": 2.245,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-6cb58f8ee43b88d687199a71ee0395f0c23427bd2278922c5e63f9e7ab491a3f",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-135031-0000",
+          "duration_s": 10.885,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.14552135966926968,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-4493d7f402c767e000b8d7b17c7f4f4e7b3324c8ff32954327d07011115b8977",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-135031-0001",
+          "duration_s": 11.13,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-7c8e25a34d129a9c47d00190f95705754d223d13a1596820cb713fda5405fa71",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1272-135031-0008",
+          "duration_s": 3.67,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-c89f3e5784d696d1ced2eba986612289619370c9ea6e0b0c283f6d65563153bf",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0000",
+          "duration_s": 10.435,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.07762338284619091,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-f3c0ffdaf30f39a23d326b9cc8097a3e24de7e567a77ce8c5b5602c374c457d2",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0001",
+          "duration_s": 3.275,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-efead589d359887771f2383fc2d132d77f35aa5f21ae41cb2ed6194193419809",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0002",
+          "duration_s": 6.625,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-fde0c0107867a64a9bd0b5c8003033ea08e9ea59e590684f2f8261e0fe7ade2c",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0003",
+          "duration_s": 2.68,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-12e76d1672335a83365af0fb9332073c835c6c994a8f4426128aea4e210cf8e8",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0004",
+          "duration_s": 5.2150625,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-14a4c2687ae657a988f4d05fc3bf09aa6959c1b78ec0e42cf7a72c4744fd5741",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0005",
+          "duration_s": 9.635,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-ace5016f72ec58dcb486d17e6a4e7e751fcbcbe205ec1d60b651f46a13c7186a",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0006",
+          "duration_s": 10.555,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-910dd6acb8f6c3765970c58b464798e35d30dbf4403e8184d506c0cf671ddbea",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0007",
+          "duration_s": 4.275,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-64b44490e020b5dd606775f147c86c78c61e04cb163bb9d18136a025208b4ffe",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0008",
+          "duration_s": 6.73,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        },
+        {
+          "task_id": "speech-f18da81dcb82a8ad5caf3cab25ff92ae9e6e8f16f3f1f036e71a93fec5c39faa",
+          "batch_id": 1,
+          "batch_name": "real-hinted",
+          "source": "en · 1089-134686-0009",
+          "duration_s": 10.575,
+          "ranking": {
+            "method": "fifo",
+            "arm": null,
+            "density": null,
+            "model_id": null,
+            "reason": null,
+            "qc_score": 0.0,
+            "failure_tier": 0
+          }
+        }
+      ],
+      "total": 20,
+      "sort": "fifo",
+      "counts": {
+        "ml_confidence": 0,
+        "ml_legacy": 0,
+        "qc": 0,
+        "fifo": 20,
+        "blind": 0
+      }
+    }
+  },
+  "missing_bundle": {
+    "items": [
+      {
+        "task_id": "speech-6cb58f8ee43b88d687199a71ee0395f0c23427bd2278922c5e63f9e7ab491a3f",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1272-135031-0000",
+        "duration_s": 10.885,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "bundle_missing",
+          "qc_score": 0.14552135966926968,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-eb16b4f4bbd4ecded1544d3ec266c58e60c59a07062ebf47ba8c499e4df497ad",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1272-128104-0010",
+        "duration_s": 5.6,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "bundle_missing",
+          "qc_score": 0.13571428571428573,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-c89f3e5784d696d1ced2eba986612289619370c9ea6e0b0c283f6d65563153bf",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0000",
+        "duration_s": 10.435,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "bundle_missing",
+          "qc_score": 0.07762338284619091,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-a6ad359f2b57d29a3c9f3fd364d613e3a522bfa1145a9d71c56157b36c25a880",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1272-128104-0001",
+        "duration_s": 4.815,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "bundle_missing",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-f3c0ffdaf30f39a23d326b9cc8097a3e24de7e567a77ce8c5b5602c374c457d2",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0001",
+        "duration_s": 3.275,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "bundle_missing",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-fde0c0107867a64a9bd0b5c8003033ea08e9ea59e590684f2f8261e0fe7ade2c",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0003",
+        "duration_s": 2.68,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "bundle_missing",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-7c8e25a34d129a9c47d00190f95705754d223d13a1596820cb713fda5405fa71",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1272-135031-0008",
+        "duration_s": 3.67,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "bundle_missing",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-12e76d1672335a83365af0fb9332073c835c6c994a8f4426128aea4e210cf8e8",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0004",
+        "duration_s": 5.2150625,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "bundle_missing",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-e319461c7fd2ee2c96ff6f18a9efbdc5835cb0e857291034e4c61ee2bcbecaa4",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1272-128104-0012",
+        "duration_s": 5.38,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "bundle_missing",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-14a4c2687ae657a988f4d05fc3bf09aa6959c1b78ec0e42cf7a72c4744fd5741",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0005",
+        "duration_s": 9.635,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "bundle_missing",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-f3ba7ea4286a578360d48533c5e055dbab303de02bfc8d044e89123f6279ba26",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1272-128104-0003",
+        "duration_s": 9.9,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "bundle_missing",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-fc9190e26c7ae190b9846c317121c39b33ab9540d71acc7e3549e358ab79ba0a",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1272-128104-0013",
+        "duration_s": 7.1,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "bundle_missing",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-efead589d359887771f2383fc2d132d77f35aa5f21ae41cb2ed6194193419809",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0002",
+        "duration_s": 6.625,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "bundle_missing",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-910dd6acb8f6c3765970c58b464798e35d30dbf4403e8184d506c0cf671ddbea",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0007",
+        "duration_s": 4.275,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "bundle_missing",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-f18da81dcb82a8ad5caf3cab25ff92ae9e6e8f16f3f1f036e71a93fec5c39faa",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0009",
+        "duration_s": 10.575,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "bundle_missing",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-f34584ceac3ecc85d56c5114229e4c591a050b23358be48eeb27d279aac83b68",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1272-128104-0011",
+        "duration_s": 15.115,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "bundle_missing",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-ace5016f72ec58dcb486d17e6a4e7e751fcbcbe205ec1d60b651f46a13c7186a",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0006",
+        "duration_s": 10.555,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "bundle_missing",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-4493d7f402c767e000b8d7b17c7f4f4e7b3324c8ff32954327d07011115b8977",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1272-135031-0001",
+        "duration_s": 11.13,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "bundle_missing",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-64b44490e020b5dd606775f147c86c78c61e04cb163bb9d18136a025208b4ffe",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0008",
+        "duration_s": 6.73,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "bundle_missing",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      }
+    ],
+    "total": 19,
+    "sort": "ml",
+    "counts": {
+      "ml_confidence": 0,
+      "ml_legacy": 0,
+      "qc": 19,
+      "fifo": 0,
+      "blind": 0
+    }
+  },
+  "tampered_bundle": {
+    "items": [
+      {
+        "task_id": "speech-6cb58f8ee43b88d687199a71ee0395f0c23427bd2278922c5e63f9e7ab491a3f",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1272-135031-0000",
+        "duration_s": 10.885,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "artifact_hash_mismatch",
+          "qc_score": 0.14552135966926968,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-eb16b4f4bbd4ecded1544d3ec266c58e60c59a07062ebf47ba8c499e4df497ad",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1272-128104-0010",
+        "duration_s": 5.6,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "artifact_hash_mismatch",
+          "qc_score": 0.13571428571428573,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-c89f3e5784d696d1ced2eba986612289619370c9ea6e0b0c283f6d65563153bf",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0000",
+        "duration_s": 10.435,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "artifact_hash_mismatch",
+          "qc_score": 0.07762338284619091,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-a6ad359f2b57d29a3c9f3fd364d613e3a522bfa1145a9d71c56157b36c25a880",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1272-128104-0001",
+        "duration_s": 4.815,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "artifact_hash_mismatch",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-f3c0ffdaf30f39a23d326b9cc8097a3e24de7e567a77ce8c5b5602c374c457d2",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0001",
+        "duration_s": 3.275,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "artifact_hash_mismatch",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-fde0c0107867a64a9bd0b5c8003033ea08e9ea59e590684f2f8261e0fe7ade2c",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0003",
+        "duration_s": 2.68,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "artifact_hash_mismatch",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-7c8e25a34d129a9c47d00190f95705754d223d13a1596820cb713fda5405fa71",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1272-135031-0008",
+        "duration_s": 3.67,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "artifact_hash_mismatch",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-12e76d1672335a83365af0fb9332073c835c6c994a8f4426128aea4e210cf8e8",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0004",
+        "duration_s": 5.2150625,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "artifact_hash_mismatch",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-e319461c7fd2ee2c96ff6f18a9efbdc5835cb0e857291034e4c61ee2bcbecaa4",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1272-128104-0012",
+        "duration_s": 5.38,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "artifact_hash_mismatch",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-14a4c2687ae657a988f4d05fc3bf09aa6959c1b78ec0e42cf7a72c4744fd5741",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0005",
+        "duration_s": 9.635,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "artifact_hash_mismatch",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-f3ba7ea4286a578360d48533c5e055dbab303de02bfc8d044e89123f6279ba26",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1272-128104-0003",
+        "duration_s": 9.9,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "artifact_hash_mismatch",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-fc9190e26c7ae190b9846c317121c39b33ab9540d71acc7e3549e358ab79ba0a",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1272-128104-0013",
+        "duration_s": 7.1,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "artifact_hash_mismatch",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-efead589d359887771f2383fc2d132d77f35aa5f21ae41cb2ed6194193419809",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0002",
+        "duration_s": 6.625,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "artifact_hash_mismatch",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-910dd6acb8f6c3765970c58b464798e35d30dbf4403e8184d506c0cf671ddbea",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0007",
+        "duration_s": 4.275,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "artifact_hash_mismatch",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-f18da81dcb82a8ad5caf3cab25ff92ae9e6e8f16f3f1f036e71a93fec5c39faa",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0009",
+        "duration_s": 10.575,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "artifact_hash_mismatch",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-f34584ceac3ecc85d56c5114229e4c591a050b23358be48eeb27d279aac83b68",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1272-128104-0011",
+        "duration_s": 15.115,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "artifact_hash_mismatch",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-ace5016f72ec58dcb486d17e6a4e7e751fcbcbe205ec1d60b651f46a13c7186a",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0006",
+        "duration_s": 10.555,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "artifact_hash_mismatch",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-4493d7f402c767e000b8d7b17c7f4f4e7b3324c8ff32954327d07011115b8977",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1272-135031-0001",
+        "duration_s": 11.13,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "artifact_hash_mismatch",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      },
+      {
+        "task_id": "speech-64b44490e020b5dd606775f147c86c78c61e04cb163bb9d18136a025208b4ffe",
+        "batch_id": 1,
+        "batch_name": "real-hinted",
+        "source": "en · 1089-134686-0008",
+        "duration_s": 6.73,
+        "ranking": {
+          "method": "qc",
+          "arm": null,
+          "density": null,
+          "model_id": null,
+          "reason": "artifact_hash_mismatch",
+          "qc_score": 0.0,
+          "failure_tier": 0
+        }
+      }
+    ],
+    "total": 19,
+    "sort": "ml",
+    "counts": {
+      "ml_confidence": 0,
+      "ml_legacy": 0,
+      "qc": 19,
+      "fifo": 0,
+      "blind": 0
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "import_support": {
+    "path": "app/lf.py",
+    "git_commit": "6ceae1bed96b6a792ae57ad99b06a0764aff3485",
+    "sha256": "18e9133472c18eea79a06f2eb3138a8db9ef387b5b2ab4e999fa2ca4c720b8f0",
+    "scope": "Unchanged Git dependency for judge.py import; LF_TO_ERROR is used by MockJudge, not the real OpenAIJudge path. Not retrospectively added to the frozen input manifest."
+  },
+  "completed_resume_exit": 0,
+  "original_attempt_count": 110,
+  "completed_resume_raw_unchanged": true,
+  "changed_identity_rejected": true,
+  "concurrent_writer_rejected": true,
+  "corrupt_order_rejected": true,
+  "scope": "All recovery probes use an ignored run copy plus reconstructed frozen checkout; live workspace and original evidence untouched; no inference replay."
+}

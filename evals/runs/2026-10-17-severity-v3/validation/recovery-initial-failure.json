@@ -1,0 +1,6 @@
+{
+  "stage": "Initial isolated frozen-checkout reconstruction",
+  "error": "ModuleNotFoundError: No module named app.lf",
+  "impact": "Recovery probe only; evaluation already completed; no model calls replayed and original raw evidence untouched.",
+  "resolution": "Supply the unchanged Git app/lf.py import dependency and record it separately in recovery-check.json. Do not modify frozen manifest or source snapshots."
+}
