@@ -99,6 +99,63 @@ class Database:
         self.conn.execute("PRAGMA foreign_keys=ON")
         with self.lock, self.conn:
             self.conn.executescript(DDL)
+            self._migrate()
+            self._migrate_speech_review_context()
+
+    def _migrate_speech_review_context(self):
+        """Record hint exposure without rewriting any existing annotation row."""
+        if self.conn.execute("SELECT 1 FROM schema_migrations WHERE version=2").fetchone():
+            return
+        columns = {r[1] for r in self.conn.execute("PRAGMA table_info(speech_annotations)")}
+        if "review_context" not in columns:
+            self.conn.execute("ALTER TABLE speech_annotations ADD COLUMN review_context "
+                              "TEXT NOT NULL DEFAULT '{}'")
+        self.conn.execute("INSERT INTO schema_migrations(version,description) "
+                          "VALUES(2,'speech QC exposure and playback context on new revisions')")
+
+    def _migrate(self):
+        """Additive migrations preserve existing translation databases."""
+        self.conn.execute("CREATE TABLE IF NOT EXISTS schema_migrations("
+                          "version INTEGER PRIMARY KEY, description TEXT NOT NULL, "
+                          "applied_at TEXT NOT NULL DEFAULT (datetime('now')))")
+        if self.conn.execute("SELECT 1 FROM schema_migrations WHERE version=1").fetchone():
+            return
+        columns = {r[1] for r in self.conn.execute("PRAGMA table_info(tasks)")}
+        if "task_type" not in columns:
+            self.conn.execute("ALTER TABLE tasks ADD COLUMN task_type TEXT NOT NULL "
+                              "DEFAULT 'translation' CHECK(task_type IN ('translation','speech'))")
+        self.conn.executescript("""
+            CREATE TABLE IF NOT EXISTS audio_assets(
+              id TEXT PRIMARY KEY,
+              path TEXT NOT NULL,
+              sha256 TEXT NOT NULL,
+              duration_s REAL NOT NULL,
+              sample_rate INTEGER NOT NULL,
+              channels INTEGER NOT NULL,
+              created_at TEXT NOT NULL DEFAULT (datetime('now'))
+            );
+            CREATE TABLE IF NOT EXISTS speech_tasks(
+              task_id TEXT PRIMARY KEY REFERENCES tasks(id),
+              audio_id TEXT NOT NULL REFERENCES audio_assets(id),
+              provenance TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS speech_annotations(
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              task_id TEXT NOT NULL REFERENCES tasks(id),
+              assignment_id INTEGER NOT NULL,
+              annotator TEXT NOT NULL,
+              corrected_transcript TEXT NOT NULL,
+              uncertain_spans TEXT NOT NULL DEFAULT '[]',
+              note TEXT NOT NULL DEFAULT '',
+              elapsed_ms INTEGER NOT NULL DEFAULT 0,
+              active_ms INTEGER NOT NULL DEFAULT 0,
+              guideline_version TEXT NOT NULL DEFAULT 'speech-v1',
+              created_at TEXT NOT NULL DEFAULT (datetime('now'))
+            );
+            CREATE INDEX IF NOT EXISTS speech_annotations_task ON speech_annotations(task_id,id);
+        """)
+        self.conn.execute("INSERT INTO schema_migrations(version,description) "
+                          "VALUES(1,'speech tasks, audio registry and immutable revisions')")
 
     def query(self, sql, params=()):
         with self.lock:

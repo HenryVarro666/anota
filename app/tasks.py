@@ -20,15 +20,43 @@ def _task_payload(db, assignment_id, task_id):
     t = db.one("SELECT * FROM tasks WHERE id=?", (task_id,))
     b = db.one("SELECT id,name,show_suggestions,overlap,guideline_version,lang_profile "
                "FROM batches WHERE id=?", (t["batch_id"],))
+    if t["task_type"] == "speech":
+        from .speech import task_payload
+        return task_payload(db, assignment_id, t, b)
     return {"assignment_id": assignment_id, "task_id": t["id"], "batch_id": t["batch_id"],
             "source": t["source"], "hypothesis": t["hypothesis"], "reference": t["reference"],
             "metadata": json.loads(t["metadata"]), "lf_flags": json.loads(t["lf_flags"]),
             "batch": b}
 
 
-def claim(db, annotator, batch_id=None):
+def _claim_candidates(db, annotator, batch_id=None):
+    clause, params = "", [annotator, annotator]
+    if batch_id is not None:
+        clause = "AND t.batch_id=?"
+        params.append(batch_id)
+    return db.query(f"""
+        SELECT t.id,t.batch_id,t.task_type,b.show_suggestions,b.name AS batch_name
+        FROM tasks t JOIN batches b ON b.id=t.batch_id
+        WHERE NOT EXISTS (SELECT 1 FROM assignments a
+                          WHERE a.task_id=t.id AND a.annotator=?)
+          AND (SELECT COUNT(*) FROM assignments a2 WHERE a2.task_id=t.id
+               AND a2.annotator != ? AND a2.status IN ('assigned','submitted')) < b.overlap
+          {clause}
+        ORDER BY t.rowid""", tuple(params))
+
+
+def claim(db, annotator, batch_id=None, speech_sort="ml", task_id=None):
     with db.lock:
         _reap_expired(db)
+        if task_id is not None and batch_id is None:
+            raise ValueError("a targeted speech claim requires batch_id")
+        if task_id is not None:
+            # A targeted queue selection never silently replaces another lease,
+            # including an open task in a different batch.
+            open_target = db.one("SELECT task_id FROM assignments WHERE annotator=? "
+                                 "AND status='assigned' ORDER BY id LIMIT 1", (annotator,))
+            if open_target and open_target["task_id"] != task_id:
+                raise ValueError("Finish or skip your current task first.")
         resume_clause, resume_params = "", [annotator]
         if batch_id is not None:
             resume_clause = "AND t.batch_id=?"
@@ -42,25 +70,37 @@ def claim(db, annotator, batch_id=None):
                 "UPDATE assignments SET lease_expires_at=datetime('now', ?) WHERE id=?",
                 (f"+{LEASE_MINUTES} minutes", open_row["id"]))
             return _task_payload(db, open_row["id"], open_row["task_id"])
-        clause, params = "", [annotator, annotator]
-        if batch_id is not None:
-            clause = "AND t.batch_id=?"
-            params.append(batch_id)
-        cand = db.one(f"""
-            SELECT t.id FROM tasks t JOIN batches b ON b.id=t.batch_id
-            WHERE NOT EXISTS (SELECT 1 FROM assignments a
-                              WHERE a.task_id=t.id AND a.annotator=?)
-              AND (SELECT COUNT(*) FROM assignments a2 WHERE a2.task_id=t.id
-                   AND a2.annotator != ? AND a2.status IN ('assigned','submitted')) < b.overlap
-              {clause}
-            ORDER BY t.rowid LIMIT 1""", tuple(params))
+        candidates = _claim_candidates(db, annotator, batch_id)
+        all_candidates = candidates
+        ranking_records = {}
+        requested_target = task_id
+        if task_id is not None:
+            candidates = [row for row in candidates if row["id"] == task_id and row["task_type"] == "speech"]
+            if not candidates:
+                raise ValueError("This speech task is no longer available. Refresh the queue.")
+            if candidates[0]["show_suggestions"]:
+                from .speech_queue import prepare
+                _, ranking_records = prepare(db, all_candidates, speech_sort)
+        elif candidates and candidates[0]["task_type"] == "speech" and candidates[0]["show_suggestions"]:
+            from .speech_queue import prepare
+            candidates, ranking_records = prepare(db, candidates, speech_sort)
+        cand = candidates[0] if candidates else None
         if cand is None:
             return None
         aid = db.execute(
             "INSERT INTO assignments(task_id, annotator, lease_expires_at) "
             "VALUES(?,?,datetime('now', ?))",
             (cand["id"], annotator, f"+{LEASE_MINUTES} minutes"))
-        db.audit(annotator, "claim", "task", cand["id"])
+        if cand["task_type"] == "speech":
+            selection = {"speech_sort_requested": speech_sort,
+                         "selection": "targeted" if requested_target else "next",
+                         "effective_method": "fifo"}
+            if cand["show_suggestions"]:
+                selection["ranking"] = ranking_records[cand["id"]]["ranking"]
+                selection["effective_method"] = selection["ranking"]["method"]
+            db.audit(annotator, "claim", "task", cand["id"], selection)
+        else:
+            db.audit(annotator, "claim", "task", cand["id"])
         return _task_payload(db, aid, cand["id"])
 
 
@@ -74,6 +114,8 @@ def _owned_assignment(db, annotator, assignment_id):
 def submit(db, annotator, assignment_id, payload):
     with db.lock:
         a = _owned_assignment(db, annotator, assignment_id)
+        if db.one("SELECT task_type FROM tasks WHERE id=?", (a["task_id"],))["task_type"] != "translation":
+            raise ValueError("speech task requires the speech submission endpoint")
         if a["status"] != "assigned":
             raise ValueError(f"assignment is '{a['status']}', not open")
         gv = db.one("SELECT b.guideline_version gv FROM tasks t JOIN batches b "

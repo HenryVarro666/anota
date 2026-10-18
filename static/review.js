@@ -5,12 +5,78 @@
   const SEVS = ["neutral", "minor", "major", "critical"];
   const ETYPES = ["no_error","mistranslation","omission","addition","terminology",
                   "number_unit","negation_polarity","grammar","punctuation"];
-  let queue = [], selIdx = -1;
+  let queue = [], selIdx = -1, reviewSerial = 0, speechSerial = 0;
+  let speechBatch = window.ANOTA.state.batchId || "";
+
+  async function loadSpeechQueue() {
+    const serial = ++speechSerial;
+    const holder = document.querySelector("#speech-rq-items");
+    if (!holder) return;
+    const { state } = window.ANOTA;
+    const annotator = state.annotator, sort = state.speechSort;
+    if (!annotator) {
+      holder.innerHTML = '<div class="empty">Enter annotator id and press Start to review speech.</div>';
+      return;
+    }
+    holder.innerHTML = '<div class="empty">Loading speech queue…</div>';
+    const params = new URLSearchParams({ annotator, sort, limit: "200" });
+    if (speechBatch) params.set("batch_id", speechBatch);
+    try {
+      const result = await api("/speech/review/queue?" + params);
+      if (serial !== speechSerial || !holder.isConnected || annotator !== state.annotator) return;
+      const items = result.items || [];
+      holder.innerHTML = `<p class="speech-hint">${esc(result.total)} eligible tasks · showing ${items.length}. Opening an item starts its annotation lease.</p>
+        ${items.length ? '<button class="primary" id="speech-rq-next">Review next</button>' : '<div class="empty">No eligible speech tasks in this selection.</div>'}
+        <div class="speech-rq-list">${items.map((item, i) => {
+          const r = item.ranking;
+          const label = r ? (r.method === "ml" ? "ML" + (r.arm ? " · " + r.arm : "") : r.method === "qc" ? "QC" : "Original order") : "Original order";
+          const fallback = r?.method === "qc" && r.reason ? "QC fallback: ML ranking unavailable for this queue." : "";
+          const density = r?.method === "ml" && Number.isFinite(r.density) ? `${r.density.toFixed(3)} estimated edits/s` : "";
+          const taskLabel = String(item.task_id).length > 18 ? String(item.task_id).slice(0, 18) + "…" : item.task_id;
+          return `<article class="speech-rq-item"><div><b>${esc(item.source || "Speech task")}</b><span class="speech-rq-batch">${esc(item.batch_name)}</span>
+            <small title="${esc(item.task_id)}">${esc(taskLabel)}</small><small>${esc(label)}${Number.isFinite(item.duration_s) ? " · " + esc(item.duration_s.toFixed(1)) + " s" : ""}</small>
+            ${r && Number.isFinite(r.qc_score) ? `<small>QC score ${esc(r.qc_score.toFixed(2))}</small>` : ""}${density ? `<small>${esc(density)}</small>` : ""}${fallback ? `<small>${esc(fallback)}</small>` : ""}</div>
+            <button data-open="${i}">Open</button></article>`;
+        }).join("")}</div>`;
+      const open = async index => {
+        const item = items[index]; if (!item) return;
+        holder.querySelectorAll("button").forEach(b => b.disabled = true);
+        await window.ANOTA.reviewSpeechTask(item.task_id, item.batch_id, sort);
+        if (holder.isConnected) holder.querySelectorAll("button").forEach(b => b.disabled = false);
+      };
+      holder.querySelector("#speech-rq-next")?.addEventListener("click", () => open(0));
+      holder.querySelectorAll("[data-open]").forEach(b => b.onclick = () => open(Number(b.dataset.open)));
+    } catch (e) {
+      if (serial !== speechSerial || !holder.isConnected) return;
+      holder.innerHTML = `<div class="empty">Speech queue unavailable: ${esc(e.message)} <button id="speech-rq-retry">Retry</button></div>`;
+      holder.querySelector("#speech-rq-retry").onclick = loadSpeechQueue;
+    }
+  }
 
   window.renderReview = async function () {
-    const v = document.querySelector("#view-review");
+    const serial = ++reviewSerial;
+    const root = document.querySelector("#view-review");
+    root.innerHTML = `<section class="card speech-rq"><h2>Speech review</h2>
+      <div class="speech-rq-controls"><label>Order <select id="speech-rq-sort"><option value="ml">ML priority</option><option value="qc">QC priority</option><option value="fifo">Original order</option></select></label>
+      <label>Batch <select id="speech-rq-batch"><option value="">All batches</option></select></label>
+      <button id="speech-rq-refresh">Refresh</button>${window.ANOTA.state.task ? '<button class="primary" id="speech-rq-resume">Resume current task</button>' : ""}</div><div id="speech-rq-items"></div></section>
+      <h2>Translation adjudication</h2><div id="translation-review"><div class="empty">Loading adjudication queue…</div></div>`;
+    const sortSelect = root.querySelector("#speech-rq-sort");
+    sortSelect.value = window.ANOTA.state.speechSort;
+    sortSelect.onchange = () => { window.ANOTA.setSpeechSort(sortSelect.value); loadSpeechQueue(); };
+    root.querySelector("#speech-rq-refresh").onclick = loadSpeechQueue;
+    root.querySelector("#speech-rq-resume")?.addEventListener("click", () => {
+      document.querySelector('.tab[data-tab="annotate"]').click();
+    });
+    const batchSelect = root.querySelector("#speech-rq-batch");
+    batchSelect.innerHTML = document.querySelector("#batch-select").innerHTML;
+    batchSelect.value = speechBatch;
+    batchSelect.onchange = () => { speechBatch = batchSelect.value; loadSpeechQueue(); };
+    loadSpeechQueue();
+    const v = root.querySelector("#translation-review");
     try { queue = await api("/review/queue"); }
-    catch (e) { v.innerHTML = `<div class="empty">${esc(e.message)}</div>`; return; }
+    catch (e) { if (serial === reviewSerial) v.innerHTML = `<div class="empty">${esc(e.message)}</div>`; return; }
+    if (serial !== reviewSerial) return;
     if (!queue.length) { v.innerHTML = `<div class="empty">Review queue is empty ✓</div>`; return; }
     v.innerHTML = `<div class="review-grid">
       <div class="card" id="rq-list">
