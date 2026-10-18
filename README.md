@@ -88,6 +88,11 @@ Demo verdicts remain labeled mock until a real judge run replaces their latest
 view. See the [Windows guide](docs/local-windows.md) for model discovery and the
 [project map](docs/project-map.md) for datasets and ASR benchmarks.
 
+RTX 5080 deployment notes (Chinese): [environment preflight and portability](docs/5080-environment-and-portability-2026-10-18.md)
+and [CPU/CUDA real-audio acceptance](docs/5080-deployment-2026-10-18.md).
+They record a 2026-10-18 source snapshot and a 20-clip FLEURS smoke check;
+cluster deployment, production capacity and GPU speedup have not been established.
+
 ### Docker
 
 ```bash
