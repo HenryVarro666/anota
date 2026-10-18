@@ -68,6 +68,9 @@ The run retains a `source-snapshot/` of the executed judge, runner, metric code 
 rubric. These are evidence copies, not imported application modules. Their hashes
 match the manifest even if a future checkout normalizes ordinary source line endings.
 `.gitattributes` preserves dataset, run and figure bytes for cross-platform verification.
+One historical pytest bytecode file in the paired-v2 source snapshot is retained
+because that run's original hash manifest explicitly includes it. It is frozen
+evidence, not an application dependency; ordinary bytecode caches remain ignored.
 `scripts/verify_evaluation.py` checks those hashes and recomputes the metrics without
 a model or plotting dependencies. The published `validation.json` separately records
 the application regression suite and a real HTTP API → Qwen → SQLite smoke check.
