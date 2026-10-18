@@ -1,11 +1,14 @@
 FROM python:3.12-slim
 
 WORKDIR /srv/anota
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt constraints-runtime.txt ./
+RUN pip install --no-cache-dir -r requirements.txt -c constraints-runtime.txt
 
 COPY run.py .
 COPY app ./app
+COPY speechqc ./speechqc
+COPY speechrank ./speechrank
+COPY speechprep ./speechprep
 COPY static ./static
 COPY data ./data
 

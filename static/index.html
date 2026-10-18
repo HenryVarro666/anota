@@ -17,6 +17,8 @@
   </nav>
   <div class="top-right">
     <span id="judge-badge" class="badge">judge: …</span>
+    <select id="batch-select" aria-label="Task batch"><option value="">All batches</option></select>
+    <button id="export-btn" title="Export the selected batch">Export</button>
     <input id="annotator" placeholder="annotator id" autocomplete="off">
     <button id="start-btn" class="primary">Start</button>
     <button id="theme-btn" title="appearance: auto">◐</button>
@@ -31,6 +33,7 @@
 </main>
 <div id="modal" class="hidden"><div id="modal-card"><button id="modal-close">✕</button><div id="modal-body"></div></div></div>
 <div id="toast" class="hidden"></div>
+<script src="speech.js"></script>
 <script src="app.js"></script>
 <script src="review.js"></script>
 <script src="dash.js"></script>

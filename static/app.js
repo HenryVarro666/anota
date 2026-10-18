@@ -2,7 +2,9 @@
 "use strict";
 
 const state = { annotator: localStorage.getItem("anota_annotator") || "",
-                task: null, startTs: 0, sel: null, timerId: null, batchId: null };
+                speechSort: ["ml", "qc", "fifo"].includes(localStorage.getItem("anota_speech_sort")) ? localStorage.getItem("anota_speech_sort") : "ml",
+                task: null, startTs: 0, sel: null, timerId: null,
+                batchId: Number(new URLSearchParams(location.search).get("batch")) || null };
 
 const $ = (s, el) => (el || document).querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g,
@@ -14,7 +16,7 @@ async function api(path, body) {
   if (!r.ok) {
     let msg = r.status;
     try { const j = await r.json(); msg = Array.isArray(j.detail) ? (j.detail[0]?.msg || msg) : (j.detail || msg); } catch {}
-    throw new Error(msg);
+    const error = new Error(msg); error.status = r.status; throw error;
   }
   return r.json();
 }
@@ -57,11 +59,33 @@ async function health() {
   try {
     const h = await api("/health");
     const b = $("#judge-badge");
+    if (state.task?.task_type === "speech") {
+      b.textContent = state.task.speech.audio_analysis ? "speech · review hints" : "speech · manual";
+      b.className = "badge on"; return;
+    }
     b.textContent = "judge: " + h.judge.mode + (h.judge.reachable ? "" : " (offline)");
     b.className = "badge " + (h.judge.mode === "mock" ? "mock" : h.judge.reachable ? "on" : "off");
   } catch { $("#judge-badge").className = "badge off"; }
 }
 health();
+
+async function loadBatches() {
+  try {
+    const batches = await api("/batches");
+    $("#batch-select").innerHTML = '<option value="">All batches</option>' + batches.map(b =>
+      `<option value="${b.id}">${esc(b.name)} (${b.n_tasks})</option>`).join("");
+    $("#batch-select").value = state.batchId || "";
+  } catch (e) { toast("batch list: " + e.message, true); }
+}
+$("#batch-select").onchange = e => {
+  state.batchId = Number(e.target.value) || null;
+  const url = new URL(location.href);
+  if (state.batchId) url.searchParams.set("batch", state.batchId); else url.searchParams.delete("batch");
+  history.replaceState(null, "", url);
+  if (state.annotator) claimNext();
+};
+loadBatches();
+$("#export-btn").onclick = window.exportCurrentBatch;
 
 /* ---------- annotate ---------- */
 const ERRORS = [["m","mistranslation"],["o","omission"],["a","addition"],["t","terminology"],
@@ -73,20 +97,41 @@ function freshSel() { return { errors: new Set(), severity: null, adequacy: null
 $("#annotator").value = state.annotator;
 $("#start-btn").onclick = start;
 function start() {
-  state.annotator = $("#annotator").value.trim();
-  if (!state.annotator) return toast("annotator id required", true);
+  const nextAnnotator = $("#annotator").value.trim();
+  if (!nextAnnotator) return toast("annotator id required", true);
+  if (state.annotator !== nextAnnotator) {
+    window.speechSaveDraft?.(); state.task = null;
+  }
+  state.annotator = nextAnnotator;
   localStorage.setItem("anota_annotator", state.annotator);
   claimNext();
 }
 
-async function claimNext() {
+let claimSerial = 0;
+async function claimNext(targetTaskId) {
+  if (typeof targetTaskId !== "string") targetTaskId = null;
+  const previousTask = state.task;
+  const serial = ++claimSerial;
+  const annotator = state.annotator, batchId = state.batchId;
+  window.speechSaveDraft?.();
+  state.task = null;
+  window.stopSpeechTimer?.(); clearInterval(state.timerId);
+  $("#view-annotate").innerHTML = '<div class="empty">Loading task…</div>';
   try {
-    const body = { annotator: state.annotator };
-    if (state.batchId != null) body.batch_id = state.batchId;
+    const body = { annotator, speech_sort: state.speechSort };
+    if (targetTaskId) body.task_id = targetTaskId;
+    if (batchId != null) body.batch_id = batchId;
     const r = await api("/claim", body);
+    if (serial !== claimSerial || annotator !== state.annotator || batchId !== state.batchId) return;
     state.progress = r.progress;
     renderTask(r.task);
   } catch (e) {
+    if (serial !== claimSerial) return;
+    if (targetTaskId && previousTask) {
+      renderTask(previousTask);
+      toast(e.status === 409 ? "Finish or skip your current task first." : "claim failed: " + e.message, true);
+      return;
+    }
     toast("claim failed: " + e.message, true);
     $("#view-annotate").innerHTML = `<div class="empty">claim failed — <button id="btn-retry" class="primary">Retry</button></div>`;
     $("#btn-retry").onclick = claimNext;
@@ -94,10 +139,19 @@ async function claimNext() {
 }
 
 function renderTask(task) {
+  window.stopSpeechTimer?.();
   clearInterval(state.timerId);
   state.task = task; state.sel = freshSel(); state.startTs = Date.now();
   const v = $("#view-annotate");
-  if (!task) { v.innerHTML = `<div class="empty">🎉 Queue empty — nothing left to annotate.</div>`; return; }
+  if (!task) {
+    v.innerHTML = `<div class="empty">🎉 Queue empty — nothing left to annotate.
+      <div class="actions"><button id="empty-undo">Undo last submission</button>
+      <button id="empty-export">Export batch</button></div></div>`;
+    $("#empty-undo").onclick = undo;
+    $("#empty-export").onclick = window.exportCurrentBatch;
+    return;
+  }
+  if (task.task_type === "speech") return window.renderSpeechTask(task);
   const meta = task.metadata || {};
   const sugg = task.suggestions;
   v.innerHTML = `
@@ -189,6 +243,7 @@ function toggleError(e) {
 let submitting = false;
 async function submit() {
   const { sel, task } = state;
+  if (task?.task_type === "speech") return window.submitSpeech();
   if (submitting || !task) return;
   if (!sel.errors.size) return toast("pick error types (0 = no error)", true);
   if (!sel.severity) return toast("pick severity (v)", true);
@@ -216,13 +271,20 @@ async function submit() {
 }
 async function skip() {
   if (!state.task) return;
-  try { await api("/skip", { annotator: state.annotator, assignment_id: state.task.assignment_id });
-        toast("skipped"); claimNext(); } catch (e) { toast(e.message, true); }
+  const task = state.task, annotator = state.annotator;
+  try { await api("/skip", { annotator, assignment_id: task.assignment_id });
+        toast("skipped");
+        if (state.task === task && state.annotator === annotator) claimNext();
+  } catch (e) { toast(e.message, true); }
 }
 async function undo() {
+  const annotator = state.annotator, serial = ++claimSerial;
   try {
-    const r = await api("/undo", { annotator: state.annotator });
+    const r = await api("/undo", { annotator });
+    if (annotator !== state.annotator || serial !== claimSerial) return;
     if (!r.task) return toast("nothing to undo", true);
+    state.batchId = r.task.batch_id;
+    $("#batch-select").value = state.batchId;
     state.progress.done = Math.max(0, state.progress.done - 1);
     renderTask(r.task); toast("reopened — previous row kept (append-only)");
   } catch (e) { toast(e.message, true); }
@@ -234,6 +296,12 @@ async function showGuideline() {
 
 /* ---------- keyboard ---------- */
 document.addEventListener("keydown", e => {
+  if (state.task?.task_type === "speech" && $("#view-annotate").classList.contains("active") &&
+      $("#modal").classList.contains("hidden") && e.altKey && e.key.toLowerCase() === "p") {
+    e.preventDefault(); const player = $("#speech-player");
+    if (player.paused) player.play().catch(err => toast(err.message, true)); else player.pause();
+    return;
+  }
   if (e.key === "Escape") {
     if (e.target.matches("input, textarea")) return e.target.blur();
     return $("#modal").classList.add("hidden");
@@ -241,6 +309,13 @@ document.addEventListener("keydown", e => {
   if (e.target.matches("input, textarea, select")) return;
   if (!$("#view-annotate").classList.contains("active") || !state.task) {
     if (e.key === "?") showGuideline();
+    return;
+  }
+  if (state.task.task_type === "speech") {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault(); window.submitSpeech();
+    } else if (e.key === "u") undo();
+    else if (e.key === "c") $("#speech-correction").focus();
     return;
   }
   if (/^[1-5]$/.test(e.key) && !e.shiftKey) return setSeg("adequacy", +e.key);
@@ -265,6 +340,26 @@ document.addEventListener("keydown", e => {
 });
 
 window.ANOTA = { api, esc, toast, state };
+window.ANOTA.setSpeechSort = (sort) => {
+  state.speechSort = ["ml", "qc", "fifo"].includes(sort) ? sort : "ml";
+  localStorage.setItem("anota_speech_sort", state.speechSort);
+};
+window.ANOTA.reviewSpeechTask = async (taskId, batchId, sort) => {
+  if (!state.annotator) return toast("Enter annotator id and press Start.", true);
+  window.ANOTA.setSpeechSort(sort);
+  if (state.task) {
+    document.querySelector('.tab[data-tab="annotate"]').click();
+    if (state.task.task_id !== taskId) toast("Finish or skip your current task first.", true);
+    return;
+  }
+  state.batchId = Number(batchId);
+  $("#batch-select").value = state.batchId;
+  const url = new URL(location.href);
+  url.searchParams.set("batch", state.batchId);
+  history.replaceState(null, "", url);
+  document.querySelector('.tab[data-tab="annotate"]').click();
+  await claimNext(taskId);
+};
 window.ANOTA.annotateBatch = (id) => {
   state.batchId = id;
   document.querySelector('.tab[data-tab="annotate"]').click();
