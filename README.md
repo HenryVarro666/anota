@@ -30,6 +30,22 @@ and related GitHub repositories.
 
 </div>
 
+<!-- problem-framing:start -->
+
+## Problem and evidence
+
+> **With a fixed human review budget, can calibrated machine assistance surface more consequential translation and transcription errors than original ordering while preserving blind review and traceable revisions?**
+
+**Why it matters:** Review time limits how much training and evaluation data a team can inspect. A useful workbench must help reviewers find errors and produce corrections that downstream users can trace.
+
+**Central tension:** Hints and ranking may focus attention, but can also anchor reviewers or hide errors outside the model's supported domain. Finding more reference edit errors does not by itself establish faster human review or better trained models.
+
+[Full problem and verification plan](PROBLEM.md) · [Reusable framing prompt](PROBLEM_PROMPT.md)
+
+<!-- problem-framing:end -->
+
+
+
 ---
 
 ## Quick start
