@@ -30,6 +30,13 @@ and related GitHub repositories.
 
 </div>
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/overview-dark.svg">
+    <img src="docs/overview-light.svg" alt="Overview: MT and ASR outputs flow into a blind review queue fed by annotators and a calibrated LLM judge, with an audit log and hashed exports" width="560">
+  </picture>
+</p>
+
 ---
 
 ## Quick start
