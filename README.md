@@ -26,9 +26,13 @@ and related GitHub repositories.
 ![No build step](https://img.shields.io/badge/frontend-no%20build%20step-ff69b4?style=flat-square)
 ![Footprint](https://img.shields.io/badge/footprint-1%20process%20%C2%B7%203%20deps-1f6feb?style=flat-square)
 ![LLM judge](https://img.shields.io/badge/LLM%20judge-mock%20or%20OpenAI--compatible-6f42c1?style=flat-square)
+[![homepage](https://img.shields.io/badge/homepage-ccao2679.com-555555?style=flat-square)](https://www.ccao2679.com/projects/#anota)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 
 </div>
+
+<p align="center"><img src="docs/figures/local-architecture.png" alt="Anota workbench: ingest, assist, review, export" width="100%"></p>
+
 
 ---
 
@@ -186,8 +190,6 @@ Local evidence: [Experiment 03](#experiment-03-one-severity-rule-a-new-test-set)
 ---
 
 ## Architecture at a glance
-
-![Local annotation architecture](docs/figures/local-architecture.png)
 
 Editable [SVG](docs/figures/local-architecture.svg); regenerate with
 `python scripts/render_readme_figure.py` (optional PNG dependency: `resvg-py`).
