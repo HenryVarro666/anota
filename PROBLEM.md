@@ -11,3 +11,5 @@
 **Decisive verification:** Counterbalance assisted and blind review over source-disjoint items. Hold reviewer time and annotation guidelines fixed; measure consequential errors corrected, agreement, active review time and unresolved cases. Test that protected fields remain absent from blind responses. If ranking gains disappear with real reviewers or correction quality declines, retain blind review as the default.
 
 This module defines a prospective evaluation; it adds no experimental result.
+
+中文版：[PROBLEM.zh.md](PROBLEM.zh.md)

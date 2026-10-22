@@ -2,7 +2,7 @@
 
 # Anota&nbsp;Workbench
 
-**English** | [简体中文](README.zh-CN.md)
+**English** · [简体中文](README.zh-CN.md)
 
 **Annotation *interfaces* are a commodity. Annotation *operations* are not.**
 
@@ -46,7 +46,7 @@ and related GitHub repositories.
 
 **Central tension:** Hints and ranking may focus attention, but can also anchor reviewers or hide errors outside the model's supported domain. Finding more reference edit errors does not by itself establish faster human review or better trained models.
 
-[Full problem and verification plan](PROBLEM.md)
+[Full problem and verification plan](PROBLEM.md) · [中文](PROBLEM.zh.md)
 
 <!-- problem-framing:end -->
 
@@ -211,6 +211,45 @@ Editable [SVG](docs/figures/local-architecture.svg); regenerate with
 One FastAPI process over stdlib `sqlite3` (one connection, one lock, no ORM — [on
 purpose](docs/DESIGN.md)). Lint runs once at import; the judge subsystem feeds routing and
 calibration but never blocks human annotation.
+
+```mermaid
+flowchart LR
+    subgraph offline ["Offline speech tools · separate processes"]
+        SP["speechprep<br/>faster-whisper ASR"] --> SQC["speechqc analyze<br/>DSP · VAD"]
+    end
+    IN[("corpus.jsonl<br/>golden.jsonl")]
+    UI["Browser · static/<br/>app.js · review.js<br/>dash.js · speech.js"]
+    subgraph proc ["One Python process"]
+        RUN["run.py<br/>import CLI · uvicorn"]
+        API["app/main.py<br/>/api routes"]
+        CORE["tasks.py · speech.py<br/>quality.py"]
+        Q["speech_queue.py<br/>ML / QC / FIFO"]
+        JR["judge.py<br/>Mock or OpenAI client"]
+        EX["export.py<br/>sha256 snapshot"]
+    end
+    DB[("SQLite · 13 tables<br/>one conn + RLock")]
+    AU[("registered audio<br/>SHA256-checked")]
+    SR[("ML model bundle<br/>optional")]
+    LLM(["OpenAI-compatible<br/>chat endpoint"])
+    OUT[("exports/<br/>dataset_vN.json")]
+    SQC -- "speech-v1 manifest" --> RUN
+    IN --> RUN
+    RUN --> DB
+    UI -- "fetch /api/*" --> API
+    API --> CORE
+    CORE --> DB
+    API -- "/api/audio" --> AU
+    API --> Q
+    Q -. "speechrank.runtime" .-> SR
+    API --> JR
+    JR -. "Chat Completions" .-> LLM
+    API --> EX
+    EX --> OUT
+```
+
+This runtime view complements the poster above: it shows which process runs what, and what crosses a process or network boundary. Speech ASR and QC run offline and reach the app only as `speech-v1` manifests imported by `run.py`; dotted edges are optional paths, since the judge calls an OpenAI-compatible endpoint only when `ANOTA_JUDGE=openai` (otherwise the in-process `MockJudge` answers) and ML ordering falls back to QC when the `speechrank` bundle or its dependencies are missing.
+
+Inside that process, function by function:
 
 ```mermaid
 flowchart LR
